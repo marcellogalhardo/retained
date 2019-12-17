@@ -1,7 +1,6 @@
 # Retained Instance
 
-A lightweight library built on top of Android Architecture Components to simply the usage of
-Android's ViewModels to retain instance.
+A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity or Fragment) retain instances.
 
 Retained Instance was created to level up Android's ViewModels in a consistent, reliable
 and composable way - no inheritances, no factories and no parameters like application 
@@ -47,7 +46,7 @@ data class SimplePresenter(
 )
 ```
 
-Then on your UI Controller (Activity or Fragment) ask it to retain the instance.
+Then on your UI Controller ask it to retain the instance.
 
 ```kotlin
 class SampleActivity : AppCompatActivity() {
@@ -148,7 +147,7 @@ class ApplicationOwnerRetainedInstance(
 ```kotlin
 class SavedStateOwnerRetainedInstance(
     var counter: Int = 0
-) : RetainedInstance.OnClearedListener {
+) : RetainInstance.OnAttachSavedStateHandleListener {
 
     private lateinit var savedStateHandle: SavedStateHandle
 
