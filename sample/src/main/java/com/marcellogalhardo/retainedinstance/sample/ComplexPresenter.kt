@@ -6,15 +6,15 @@ import com.marcellogalhardo.retainedinstance.RetainedInstance
 
 class ComplexPresenter(
     var counter: Int
-) : RetainedInstance.OnAttachApplicationListener, RetainedInstance.OnAttachSavedStateHandleListener {
+) : RetainedInstance.ApplicationAttachable, RetainedInstance.SavedStateHandleAttachable {
 
     private lateinit var application: Application
 
-    override fun onAttachApplication(application: Application) {
+    override fun attachApplication(application: Application) {
         this.application = application
     }
 
-    override fun onAttachSavedStateHandle(savedStateHandle: SavedStateHandle) {
+    override fun attachSavedStateHandle(savedStateHandle: SavedStateHandle) {
         print(savedStateHandle.toString())
     }
 }

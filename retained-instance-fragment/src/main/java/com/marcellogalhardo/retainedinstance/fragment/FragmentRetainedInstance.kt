@@ -7,12 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateViewModelFactory
-import androidx.lifecycle.ViewModelStoreOwner
 import com.marcellogalhardo.retainedinstance.RetainedInstance
 import com.marcellogalhardo.retainedinstance.RetainedInstanceStore
-import com.marcellogalhardo.retainedinstance.RetainedInstanceValueProducer
-
-internal typealias OwnerProducer = () -> ViewModelStoreOwner
+import com.marcellogalhardo.retainedinstance.RetainedInstanceProvider
 
 /**
  * Returns [RetainedInstanceStore] associated to this [Fragment].
@@ -33,13 +30,11 @@ internal typealias OwnerProducer = () -> ViewModelStoreOwner
 @[MainThread Throws(IllegalArgumentException::class)]
 fun Fragment.getRetainedInstanceStore(
     defaultArgs: Bundle? = null,
-    ownerProducer: OwnerProducer = { this }
+    targetFragment: Fragment = this
 ): RetainedInstanceStore {
-    val viewModel = viewModels<RetainedInstance>(ownerProducer) {
+    return viewModels<RetainedInstance>({ targetFragment }) {
         SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
     }.value
-    lifecycle.addObserver(viewModel)
-    return viewModel
 }
 
 /**
@@ -52,17 +47,15 @@ fun Fragment.getRetainedInstanceStore(
 fun Fragment.getActivityRetainedInstanceStore(
     defaultArgs: Bundle? = null
 ): RetainedInstanceStore {
-    val viewModel = activityViewModels<RetainedInstance> {
+    return activityViewModels<RetainedInstance> {
         SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
     }.value
-    lifecycle.addObserver(viewModel)
-    return viewModel
 }
 
 /**
  *
  * Returns a [Lazy] delegate to access the [Fragment]'s [RetainedInstance], if
- * [valueProducer] is specified then [RetainedInstanceValueProducer] returned by it will be used
+ * [instanceProvider] is specified then [RetainedInstanceProvider] returned by it will be used
  * to create value first time.
  *
  * ```
@@ -87,17 +80,17 @@ fun Fragment.getActivityRetainedInstanceStore(
 @[MainThread Throws(IllegalArgumentException::class)]
 inline fun <reified T : Any> Fragment.retainedInstances(
     defaultArgs: Bundle? = null,
-    noinline ownerProducer: OwnerProducer = { this },
+    noinline targetFragment: () -> Fragment = { this },
     key: Any = T::class,
-    noinline valueProducer: RetainedInstanceValueProducer<T> = { T::class.java.newInstance() }
+    noinline instanceProvider: RetainedInstanceProvider<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    getRetainedInstanceStore(defaultArgs, ownerProducer)
-        .getOrPut(key, valueProducer) as T
+    getRetainedInstanceStore(defaultArgs, targetFragment())
+        .getOrPut(key, instanceProvider) as T
 }
 
 /**
  * Returns a property delegate to access parent [ComponentActivity]'s [RetainedInstance],
- * [valueProducer] is specified then [RetainedInstanceValueProducer] returned by it will be used
+ * [instanceProvider] is specified then [RetainedInstanceProvider] returned by it will be used
  * to create value first time.
  *
  * ```
@@ -113,8 +106,8 @@ inline fun <reified T : Any> Fragment.retainedInstances(
 inline fun <reified T : Any> Fragment.activityRetainedInstances(
     defaultArgs: Bundle? = null,
     key: Any = T::class,
-    noinline valueProducer: RetainedInstanceValueProducer<T> = { T::class.java.newInstance() }
+    noinline instanceProvider: RetainedInstanceProvider<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
     getActivityRetainedInstanceStore(defaultArgs)
-        .getOrPut(key, valueProducer) as T
+        .getOrPut(key, instanceProvider) as T
 }

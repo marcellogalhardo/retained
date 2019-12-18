@@ -2,14 +2,11 @@
 
 A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity or Fragment) retain instances.
 
-Retained Instance was created to level up Android's ViewModels in a consistent, reliable
-and composable way - no inheritances, no factories and no parameters like application 
-or saved state handle. Instead, you get a very composable API based on interfaces.
+Retained Instance was created to leverage ViewModels in a consistent, reliable and composable way - no inheritances, no factories and no parameters like application or saved state handle. Instead, we provide a very composable API based on delegation.
 
-You get what you implement - literally, through interfaces.
+You get what you implement - literally, through interfaces - what allow us to easily support new features like the brand new SavedStateHandle out of the box without modifying any code.
 
-Note that no major changes will be done on this library except by updates to support the latest
-features of Android's ViewModel. This library API is stable.
+This library API is considered stable and won't changed except by providing support to the latest features of Android's ViewModel.
 
 ## Download
 
@@ -41,7 +38,7 @@ That's it!
 First, create the object that you want to retain instances.
 
 ```kotlin
-data class SimplePresenter(
+data class ViewModel(
     var counter: Int = 0
 )
 ```
@@ -51,13 +48,13 @@ Then on your UI Controller ask it to retain the instance.
 ```kotlin
 class SampleActivity : AppCompatActivity() {
 
-    private val presenter: SimplePresenter by retainedInstances { SimplePresenter(counter = 5) }
+    private val viewModel: ViewModel by retainedInstances { ViewModel(counter = 5) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Do your logic.
-        Log.v("Presenter.Counter", presenter.counter.toString())
-        presenter.counter++
+        // ...
+        Log.v("ViewModel.Counter", viewModel.counter.toString())
+        viewModel.counter++
     }
 }
 ```
@@ -66,94 +63,116 @@ Rotate the screen and check the instance will be preserved.
 
 ### Fragments
 
-If you are using Fragment supports, you can do the same with Fragments.
+We also provide support for Fragments - same API:
+
 ```kotlin
 class SampleFragment : Fragment() {
 
-    private val presenter: SimplePresenter by retainedInstances() // No-args constructor used.
+    private val viewModel: ViewModel by retainedInstances() // No-args constructor used.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Do your logic.
-        Log.v("Presenter.Counter", presenter.counter.toString())
-        presenter.counter++
+        // ...
+        Log.v("ViewModel.Counter", viewModel.counter.toString())
+        viewModel.counter++
     }
 }
 ```
 
-### Lifecycle-aware retained instances
+### Delegates
+
+Delegates are a set of interface delegation that we use to communicate your instance with the Android Framework - you plug a "Delegate interface" to your instance and we will delegate the given from the UI Controller to yours instance.
+
+#### Initializable
+
+The `Initializable` interface allows you to receive a callback `initialize()` when the instance is created for the first time - after attachments is added to this instance.
 
 ```kotlin
-class LifecycleAwareRetainedInstance(
-    var counter: Int = 0
-) : RetainedInstance.OnLifecycleListener {
+class ViewModel : RetainedInstance.Initializable {
 
-    override fun onCreate() {
-        TODO("not implemented")
-    }
-
-    override fun onStart() {
-        TODO("not implemented")
-    }
-
-    override fun onResume() {
-        TODO("not implemented")
-    }
-
-    override fun onPause() {
-        TODO("not implemented")
-    }
-
-    override fun onStop() {
-        TODO("not implemented")
-    }
-
-    override fun onDestroy() {
-        TODO("not implemented")
+    override fun initialize() {
+        print("Instance is initialized.")
     }
 }
 ```
 
-### ViewModels onCleared-aware retained instances
+#### Deinitializable
+
+The `Deinitializable` interface allows you to receive a callback `deinitialize()` when the instance is terminated - we use [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) for this callback.
 
 ```kotlin
-class OnClearedAwareRetainedInstance(
-    var counter: Int = 0
-) : RetainedInstance.OnClearedListener {
+class ViewModel : RetainedInstance.Deinitializable {
 
-    override fun onCleared() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun deinitialize() {
+        print("Instance is terminated.")
     }
 }
 ```
 
-### Attaching an Application to a Retained Instance
+### Attachables
+
+Sometimes you might need to "attach" other instances provided by the Android Framework to your instances. Following the same concept of the Delegates interface, you can use the `*Attachable` ones.
+
+**All attachables** will be called **before** `initialize()`.
+
+##### ApplicationAttachable
+
+The `ApplicationAttachable` interface allows you to receive a callback `attachApplication(application: Application)` **before** the `initiliaze()` - we attach the [AndroidViewModel.application](https://developer.android.com/reference/androidx/lifecycle/AndroidViewModel.html#getApplication()) for you.
 
 ```kotlin
-class ApplicationOwnerRetainedInstance(
-    var counter: Int = 0
-) : RetainedInstance.OnAttachApplicationListener {
+class ViewModel : RetainedInstance.ApplicationAttachable {
 
     private lateinit var application: Application
 
-    override fun onAttachApplication(application: Application) {
+    override fun attachApplication(application: Application) {
         this.application = application
     }
 }
 ```
 
-### Attaching a SavedStateHandle to a Retained Instance
+#### SavedStateHandleAttachable
+
+The `SavedStateHandleAttachable` interface allows you to receive a callback `attachSavedStateHandle(savedStateHandle: SavedStateHandle)` **before** the `initiliaze()`, which can be used to save the state of your instance in case of [process death](https://developer.android.com/topic/libraries/architecture/saving-states#use_onsaveinstancestate_as_backup_to_handle_system-initiated_process_death) - we use [SavedStateViewModelFactory](https://developer.android.com/reference/androidx/lifecycle/SavedStateViewModelFactory.html#SavedStateViewModelFactory(android.app.Application,%20androidx.savedstate.SavedStateRegistryOwner,%20android.os.Bundle)) to create a SavedStateHandle and we attach it to your instance for you.
+
 
 ```kotlin
-class SavedStateOwnerRetainedInstance(
-    var counter: Int = 0
-) : RetainInstance.OnAttachSavedStateHandleListener {
+class ViewModel : RetainedInstance.SavedStateHandleAttachable {
 
     private lateinit var savedStateHandle: SavedStateHandle
 
-    override fun onAttachSavedStateHandle(savedStateHandle: SavedStateHandle) {
+    override fun attachSavedStateHandle(savedStateHandle: SavedStateHandle) {
         this.savedStateHandle = savedStateHandle
     }
+}
+```
+
+#### CoroutineScopeAttachable
+
+The `CoroutineScopeAttachable` interface allows you to receive a callback `attachCoroutineScope(coroutineScope: CoroutineScope)` **before** the `initiliaze()` - we attach the [ViewModel.viewModelScope](https://developer.android.com/topic/libraries/architecture/coroutines#viewmodelscope) for you.
+
+```kotlin
+class ViewModel : RetainedInstance.SavedStateHandleAttachable {
+
+    private lateinit var coroutineScope: CoroutineScope
+
+    override fun attachCoroutineScope(coroutineScope: CoroutineScope) {
+        this.coroutineScope = coroutineScope
+    }
+}
+```
+
+## Dependency Injection integration
+
+Integrate with a good dependency injection framework is as simple as asking an instance to be retained.
+For matter of simplicity, the following example will use a generic [javax.inject](https://docs.oracle.com/javaee/6/api/javax/inject) API.
+
+```kotlin
+class InjectedActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelProvider: Provider<ViewModel>
+     
+    private val viewModel: ViewModel by retainedInstances(instanceProvider = viewModelProvider::get)
 }
 ```
 

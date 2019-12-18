@@ -5,6 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.annotation.MainThread
 import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelLazy
+import androidx.lifecycle.ViewModelProvider
 
 /**
  * Returns [RetainedInstanceStore] associated to this [ComponentActivity].
@@ -16,16 +19,27 @@ import androidx.lifecycle.SavedStateViewModelFactory
 fun ComponentActivity.getRetainedInstanceStore(
     defaultArgs: Bundle? = null
 ): RetainedInstanceStore {
-    val viewModel = viewModels<RetainedInstance> {
+    return viewModels<RetainedInstance> {
         SavedStateViewModelFactory(application, this, defaultArgs)
     }.value
-    lifecycle.addObserver(viewModel)
-    return viewModel
+}
+
+@MainThread
+inline fun <reified VM : ViewModel> ComponentActivity.viewModels(
+    noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
+): Lazy<VM> {
+    val factoryPromise = factoryProducer ?: {
+        val application = application ?: throw IllegalArgumentException(
+            "ViewModel can be accessed only when Activity is attached"
+        )
+        ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+    }
+    return ViewModelLazy(VM::class, { viewModelStore }, factoryPromise)
 }
 
 /**
  * Returns a [Lazy] delegate to access the [ComponentActivity]'s [RetainedInstance], if
- * [valueProducer] is specified then [RetainedInstanceValueProducer] returned by it will be used
+ * [instanceProvider] is specified then [RetainedInstanceProvider] returned by it will be used
  * to create value first time.
  *
  * ```
@@ -41,7 +55,7 @@ fun ComponentActivity.getRetainedInstanceStore(
 inline fun <reified T : Any> ComponentActivity.retainedInstances(
     defaultArgs: Bundle? = null,
     key: Any = T::class,
-    noinline valueProducer: RetainedInstanceValueProducer<T> = { T::class.java.newInstance() }
+    noinline instanceProvider: RetainedInstanceProvider<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    getRetainedInstanceStore(defaultArgs).getOrPut(key, valueProducer) as T
+    getRetainedInstanceStore(defaultArgs).getOrPut(key, instanceProvider) as T
 }
