@@ -151,7 +151,7 @@ class ViewModel : RetainedInstance.SavedStateHandleAttachable {
 The `CoroutineScopeAttachable` interface allows you to receive a callback `attachCoroutineScope(coroutineScope: CoroutineScope)` **before** the `initiliaze()` - we attach the [ViewModel.viewModelScope](https://developer.android.com/topic/libraries/architecture/coroutines#viewmodelscope) for you.
 
 ```kotlin
-class ViewModel : RetainedInstance.SavedStateHandleAttachable {
+class ViewModel : RetainedInstance.CorourineScopeAttachable {
 
     private lateinit var coroutineScope: CoroutineScope
 
