@@ -81,82 +81,35 @@ class SampleFragment : Fragment() {
 
 ### Delegates
 
-Delegates are a set of interface delegation that we use to communicate your instance with the Android Framework - you plug a "Delegate interface" to your instance and we will delegate the given from the UI Controller to yours instance.
+Delegate is an interface that allows you to communicate your instance with the Android Framework - you plug a "Delegate interface" to your instance and we will delegate the given from the UI Controller to yours instance.
 
-#### Initializable
+The `init(vararg args: Any)` method allows you to receive a callback when an instance is created for the first time with an array of parameters from the Android system.
 
-The `Initializable` interface allows you to receive a callback `initialize()` when the instance is created for the first time - after attachments is added to this instance.
+The following args are available today:
+- application: Application
+- savedStateHandle: SavedStateHandle
+- coroutineScope: CoroutineScope
 
-```kotlin
-class ViewModel : RetainedInstance.Initializable {
-
-    override fun initialize() {
-        print("Instance is initialized.")
-    }
-}
-```
-
-#### Deinitializable
-
-The `Deinitializable` interface allows you to receive a callback `deinitialize()` when the instance is terminated - we use [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) for this callback.
+The `deinit()` method allows you to receive a callback `deinitialize()` when the instance is terminated - we use [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) for this callback.
 
 ```kotlin
-class ViewModel : RetainedInstance.Deinitializable {
-
-    override fun deinitialize() {
-        print("Instance is terminated.")
-    }
-}
-```
-
-### Attachables
-
-Sometimes you might need to "attach" other instances provided by the Android Framework to your instances. Following the same concept of the Delegates interface, you can use the `*Attachable` ones.
-
-**All attachables** will be called **before** `initialize()`.
-
-##### ApplicationAttachable
-
-The `ApplicationAttachable` interface allows you to receive a callback `attachApplication(application: Application)` **before** the `initiliaze()` - we attach the [AndroidViewModel.application](https://developer.android.com/reference/androidx/lifecycle/AndroidViewModel.html#getApplication()) for you.
-
-```kotlin
-class ViewModel : RetainedInstance.ApplicationAttachable {
-
+class ViewModel : RetainedInstance.Delegate {
     private lateinit var application: Application
-
-    override fun attachApplication(application: Application) {
-        this.application = application
-    }
-}
-```
-
-#### SavedStateHandleAttachable
-
-The `SavedStateHandleAttachable` interface allows you to receive a callback `attachSavedStateHandle(savedStateHandle: SavedStateHandle)` **before** the `initiliaze()`, which can be used to save the state of your instance in case of [process death](https://developer.android.com/topic/libraries/architecture/saving-states#use_onsaveinstancestate_as_backup_to_handle_system-initiated_process_death) - we use [SavedStateViewModelFactory](https://developer.android.com/reference/androidx/lifecycle/SavedStateViewModelFactory.html#SavedStateViewModelFactory(android.app.Application,%20androidx.savedstate.SavedStateRegistryOwner,%20android.os.Bundle)) to create a SavedStateHandle and we attach it to your instance for you.
-
-
-```kotlin
-class ViewModel : RetainedInstance.SavedStateHandleAttachable {
-
     private lateinit var savedStateHandle: SavedStateHandle
-
-    override fun attachSavedStateHandle(savedStateHandle: SavedStateHandle) {
-        this.savedStateHandle = savedStateHandle
-    }
-}
-```
-
-#### CoroutineScopeAttachable
-
-The `CoroutineScopeAttachable` interface allows you to receive a callback `attachCoroutineScope(coroutineScope: CoroutineScope)` **before** the `initiliaze()` - we attach the [ViewModel.viewModelScope](https://developer.android.com/topic/libraries/architecture/coroutines#viewmodelscope) for you.
-
-```kotlin
-class ViewModel : RetainedInstance.CorourineScopeAttachable {
-
     private lateinit var coroutineScope: CoroutineScope
 
-    override fun attachCoroutineScope(coroutineScope: CoroutineScope) {
-        this.coroutineScope = coroutineScope
+    override fun init(vararg args: Any) {
+        for (arg in args) {
+            when (arg) {
+                is Application -> application = arg
+                is SavedStateHandle -> savedStateHandle = arg
+                is CoroutineScope -> coroutineScope = arg
+            }
+        }
+    }
+
+    override fun deinit() {
+        coroutineScope.coroutineContext.cancelChildren()
     }
 }
 ```

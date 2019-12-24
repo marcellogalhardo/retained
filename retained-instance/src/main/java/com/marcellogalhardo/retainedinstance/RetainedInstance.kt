@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 
 typealias RetainedInstanceProvider<T> = () -> T
 typealias RetainedInstanceStore = MutableMap<Any, Any>
@@ -29,47 +28,23 @@ class RetainedInstance @JvmOverloads constructor(
 
     override fun put(key: Any, value: Any): Any? {
         if (!retainedInstanceStore.contains(key)) {
-            if (value is ApplicationAttachable) {
-                value.attachApplication(getApplication())
-            }
-            if (value is SavedStateHandleAttachable) {
-                value.attachSavedStateHandle(savedStateHandle)
-            }
-            if (value is CoroutineScopeAttachable) {
-                value.attachCoroutineScope(viewModelScope)
-            }
-            if (value is Initializable) {
-                value.initialize()
+            if (value is Delegate) {
+                value.init(getApplication(), savedStateHandle, viewModelScope)
             }
         }
         return retainedInstanceStore.put(key, value)
     }
 
     override fun onCleared() {
-        retainedInstanceStore.forEachInstanceOf(Deinitializable::class.java) {
-            it.deinitialize()
+        retainedInstanceStore.forEachInstanceOf(Delegate::class.java) {
+            it.deinit()
         }
         super.onCleared()
     }
 
-    interface Initializable {
-        fun initialize()
-    }
-
-    interface Deinitializable {
-        fun deinitialize()
-    }
-
-    interface CoroutineScopeAttachable {
-        fun attachCoroutineScope(coroutineScope: CoroutineScope)
-    }
-
-    interface SavedStateHandleAttachable {
-        fun attachSavedStateHandle(savedStateHandle: SavedStateHandle)
-    }
-
-    interface ApplicationAttachable {
-        fun attachApplication(application: Application)
+    interface Delegate {
+        fun init(vararg args: Any) {}
+        fun deinit() {}
     }
 }
 
