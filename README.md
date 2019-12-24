@@ -2,11 +2,9 @@
 
 A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity or Fragment) retain instances.
 
-Retained Instance was created to leverage ViewModels in a consistent, reliable and composable way - no inheritances, no factories and no parameters like application or saved state handle. Instead, we provide a very composable API based on delegation.
+Retained Instance was created to leverage ViewModels in a consistent, reliable and composable way - no inheritances, no factories and no parameters like application or saved state handle.
 
-You get what you implement - literally, through interfaces - what allow us to easily support new features like the brand new SavedStateHandle out of the box without modifying any code.
-
-This library API is considered stable and won't changed except by providing support to the latest features of Android's ViewModel.
+The Public API is considered stable and won't change except by providing support to the latest features of Android's ViewModel.
 
 ## Download
 
