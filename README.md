@@ -21,10 +21,10 @@ allprojects {
 ```gradle
 dependencies {
     // For Activity support.
-	implementation 'com.github.marcellogalhardo:retained-instance:{Tag}'
+	implementation 'com.github.marcellogalhardo.android-retained-instance:retained-instance:{Tag}'
 	
 	// For Fragments support. You don't need to add retained-instance - we included for you!
-	implementation 'com.github.marcellogalhardo:retained-instance-fragment:{Tag}'
+	implementation 'com.github.marcellogalhardo.android-retained-instance:retained-instance-fragment:{Tag}'
 }
 ```
 (Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/android-retained-instance/releases): [![](https://jitpack.io/v/marcellogalhardo/android-retained-instance.svg)](https://jitpack.io/#marcellogalhardo/android-retained-instance))
