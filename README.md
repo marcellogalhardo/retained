@@ -27,7 +27,7 @@ dependencies {
 	implementation 'com.github.marcellogalhardo:retained-instance-fragment:{Tag}'
 }
 ```
-(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained-instance/releases): [![](https://jitpack.io/v/marcellogalhardo/retained-instance.svg)](https://jitpack.io/#marcellogalhardo/retained-instance))
+(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/android-retained-instance/releases): [![](https://jitpack.io/v/marcellogalhardo/android-retained-instance.svg)](https://jitpack.io/#marcellogalhardo/android-retained-instance))
 
 That's it!
 
