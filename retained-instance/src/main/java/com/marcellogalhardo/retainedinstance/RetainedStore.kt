@@ -20,7 +20,7 @@ typealias RetainedMap = MutableMap<Any, Any>
  * E.g. if it is an Activity, until it is finished.
  **/
 @Suppress("unused")
-class RetainedStore @JvmOverloads constructor(
+class RetainedStore @JvmOverloads internal constructor(
     val application: Application,
     val savedStateHandle: SavedStateHandle,
     private val dataSet: RetainedMap = mutableMapOf()
