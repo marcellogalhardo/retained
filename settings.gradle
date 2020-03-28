@@ -1,1 +1,1 @@
-include ':sample', ':retained-instance', ':retained-instance-fragment'
+include ':sample', ':core', ':fragment'
