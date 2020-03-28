@@ -6,8 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
 import java.io.Closeable
 
-private const val TAG = "Delegate"
-
 class ComplexPresenter(
     private val application: Application,
     private val savedStateHandle: SavedStateHandle,
