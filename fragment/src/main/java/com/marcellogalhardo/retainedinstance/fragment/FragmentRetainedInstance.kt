@@ -7,12 +7,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateViewModelFactory
-import com.marcellogalhardo.retainedinstance.RetainedInstance
-import com.marcellogalhardo.retainedinstance.RetainedInstanceStore
-import com.marcellogalhardo.retainedinstance.RetainedInstanceProvider
+import com.marcellogalhardo.retainedinstance.InstanceProducer
+import com.marcellogalhardo.retainedinstance.RetainedMap
+import com.marcellogalhardo.retainedinstance.RetainedStore
 
 /**
- * Returns [RetainedInstanceStore] associated to this [Fragment].
+ * Returns [RetainedMap] associated to this [Fragment].
  *
  * Default scope may be overridden with parameter [ownerProducer]:
  *
@@ -31,14 +31,12 @@ import com.marcellogalhardo.retainedinstance.RetainedInstanceProvider
 fun Fragment.getRetainedInstanceStore(
     defaultArgs: Bundle? = null,
     targetFragment: Fragment = this
-): RetainedInstanceStore {
-    return viewModels<RetainedInstance>({ targetFragment }) {
-        SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
-    }.value
-}
+): RetainedStore = viewModels<RetainedStore>({ targetFragment }) {
+    SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
+}.value
 
 /**
- * Returns [RetainedInstanceStore] associated to this [Fragment].
+ * Returns [RetainedMap] associated to this [Fragment].
  *
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
@@ -46,16 +44,14 @@ fun Fragment.getRetainedInstanceStore(
 @[MainThread Throws(IllegalArgumentException::class)]
 fun Fragment.getActivityRetainedInstanceStore(
     defaultArgs: Bundle? = null
-): RetainedInstanceStore {
-    return activityViewModels<RetainedInstance> {
-        SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
-    }.value
-}
+): RetainedStore = activityViewModels<RetainedStore> {
+    SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
+}.value
 
 /**
  *
- * Returns a [Lazy] delegate to access the [Fragment]'s [RetainedInstance], if
- * [instanceProvider] is specified then [RetainedInstanceProvider] returned by it will be used
+ * Returns a [Lazy] delegate to access the [Fragment]'s [RetainedStore], if
+ * [instanceProducer] is specified then [InstanceProducer] returned by it will be used
  * to create value first time.
  *
  * ```
@@ -82,15 +78,15 @@ inline fun <reified T : Any> Fragment.retainedInstances(
     defaultArgs: Bundle? = null,
     noinline targetFragment: () -> Fragment = { this },
     key: Any = T::class,
-    noinline instanceProvider: RetainedInstanceProvider<T> = { T::class.java.newInstance() }
+    noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
     getRetainedInstanceStore(defaultArgs, targetFragment())
-        .getOrPut(key, instanceProvider) as T
+        .get(key, instanceProducer) as T
 }
 
 /**
- * Returns a property delegate to access parent [ComponentActivity]'s [RetainedInstance],
- * [instanceProvider] is specified then [RetainedInstanceProvider] returned by it will be used
+ * Returns a property delegate to access parent [ComponentActivity]'s [RetainedStore],
+ * [instanceProducer] is specified then [InstanceProducer] returned by it will be used
  * to create value first time.
  *
  * ```
@@ -106,8 +102,8 @@ inline fun <reified T : Any> Fragment.retainedInstances(
 inline fun <reified T : Any> Fragment.activityRetainedInstances(
     defaultArgs: Bundle? = null,
     key: Any = T::class,
-    noinline instanceProvider: RetainedInstanceProvider<T> = { T::class.java.newInstance() }
+    noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
     getActivityRetainedInstanceStore(defaultArgs)
-        .getOrPut(key, instanceProvider) as T
+        .get(key, instanceProducer)
 }

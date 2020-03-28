@@ -21,10 +21,10 @@ allprojects {
 ```gradle
 dependencies {
     // For Activity support.
-	implementation 'com.github.marcellogalhardo.android-retained-instance:retained-instance:{Tag}'
+	implementation 'com.github.marcellogalhardo.android-retained-instance:core:{Tag}'
 	
 	// For Fragments support. You don't need to add retained-instance - we included for you!
-	implementation 'com.github.marcellogalhardo.android-retained-instance:retained-instance-fragment:{Tag}'
+	implementation 'com.github.marcellogalhardo.android-retained-instance:fragment:{Tag}'
 }
 ```
 (Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/android-retained-instance/releases): [![](https://jitpack.io/v/marcellogalhardo/android-retained-instance.svg)](https://jitpack.io/#marcellogalhardo/android-retained-instance))
@@ -77,53 +77,33 @@ class SampleFragment : Fragment() {
 }
 ```
 
-### Delegates
+### Advanced usage
 
-Delegate is an interface that allows you to communicate your instance with the Android Framework - you plug a "Delegate interface" to your instance and we will delegate the given from the UI Controller to yours instance.
+#### Closing your instance
 
-The `init(vararg args: Any)` method allows you to receive a callback when an instance is created for the first time with an array of parameters from the Android system.
-
-The following args are available today:
-- application: Application
-- savedStateHandle: SavedStateHandle
-- coroutineScope: CoroutineScope
-
-The `deinit()` method allows you to receive a callback `deinitialize()` when the instance is terminated - we use [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) for this callback.
+If your retained instance implements `Closeable`, the `close` will be invoked when the bounded UI Controller gets terminated - in other words, when [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
 
 ```kotlin
-class ViewModel : RetainedInstance.Delegate {
-    private lateinit var application: Application
-    private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var coroutineScope: CoroutineScope
+class ViewModel(
+    private val coroutineScope: CoroutineScope
+) : Closeable {
 
-    override fun init(vararg args: Any) {
-        for (arg in args) {
-            when (arg) {
-                is Application -> application = arg
-                is SavedStateHandle -> savedStateHandle = arg
-                is CoroutineScope -> coroutineScope = arg
-            }
-        }
-    }
-
-    override fun deinit() {
+    override fun close() {
         coroutineScope.coroutineContext.cancelChildren()
     }
 }
 ```
 
-## Dependency Injection integration
+#### Custom parameters from Android's ViewModel
 
-Integrate with a good dependency injection framework is as simple as asking an instance to be retained.
-For matter of simplicity, the following example will use a generic [javax.inject](https://docs.oracle.com/javaee/6/api/javax/inject) API.
+When creating an object you can access the internal `RetainedStore` to get parameters like `application`, `savedStateHandle` or `viewModelScope` to your retained instance.
 
 ```kotlin
-class InjectedActivity : AppCompatActivity() {
+class MyFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelProvider: Provider<ViewModel>
-     
-    private val viewModel: ViewModel by retainedInstances(instanceProvider = viewModelProvider::get)
+    private val viewModel: ViewModel by retainedInstances { store ->
+        ViewModel(store.viewModelScope)
+    }
 }
 ```
 
