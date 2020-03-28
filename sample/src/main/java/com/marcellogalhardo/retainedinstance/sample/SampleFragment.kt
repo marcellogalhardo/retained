@@ -6,11 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewModelScope
 import com.marcellogalhardo.retainedinstance.fragment.retainedInstances
 
 class SampleFragment : Fragment() {
 
-    private val presenter by retainedInstances { ComplexPresenter(5) }
+    private val presenter by retainedInstances { store ->
+        ComplexPresenter(
+            store.application,
+            store.savedStateHandle,
+            store.viewModelScope,
+            5
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
