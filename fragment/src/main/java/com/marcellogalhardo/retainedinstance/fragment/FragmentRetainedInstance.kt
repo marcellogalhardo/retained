@@ -28,7 +28,7 @@ import com.marcellogalhardo.retainedinstance.RetainedStore
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  */
 @[MainThread Throws(IllegalArgumentException::class)]
-fun Fragment.getRetainedInstanceStore(
+fun Fragment.getRetainedStore(
     defaultArgs: Bundle? = null,
     targetFragment: Fragment = this
 ): RetainedStore = viewModels<RetainedStore>({ targetFragment }) {
@@ -42,7 +42,7 @@ fun Fragment.getRetainedInstanceStore(
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  */
 @[MainThread Throws(IllegalArgumentException::class)]
-fun Fragment.getActivityRetainedInstanceStore(
+fun Fragment.getActivityRetainedStore(
     defaultArgs: Bundle? = null
 ): RetainedStore = activityViewModels<RetainedStore> {
     SavedStateViewModelFactory(requireActivity().application, this, defaultArgs)
@@ -74,14 +74,13 @@ fun Fragment.getActivityRetainedInstanceStore(
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  */
 @[MainThread Throws(IllegalArgumentException::class)]
-inline fun <reified T : Any> Fragment.retainedInstances(
+inline fun <reified T : Any> Fragment.retainInstance(
     defaultArgs: Bundle? = null,
     noinline targetFragment: () -> Fragment = { this },
     key: Any = T::class,
     noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    getRetainedInstanceStore(defaultArgs, targetFragment())
-        .get(key, instanceProducer) as T
+    getRetainedStore(defaultArgs, targetFragment()).get(key, instanceProducer) as T
 }
 
 /**
@@ -99,11 +98,10 @@ inline fun <reified T : Any> Fragment.retainedInstances(
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  */
 @[MainThread Throws(IllegalArgumentException::class)]
-inline fun <reified T : Any> Fragment.activityRetainedInstances(
+inline fun <reified T : Any> Fragment.activityRetainInstance(
     defaultArgs: Bundle? = null,
     key: Any = T::class,
     noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    getActivityRetainedInstanceStore(defaultArgs)
-        .get(key, instanceProducer)
+    getActivityRetainedStore(defaultArgs).get(key, instanceProducer)
 }

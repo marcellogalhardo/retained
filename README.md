@@ -4,7 +4,7 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 
 Retained Instance was created to leverage ViewModels in a consistent, reliable and composable way - no inheritances, no factories and no parameters like application or saved state handle.
 
-The Public API is considered stable and won't change except by providing support to the latest features of Android's ViewModel.
+The Public API is stable and won't change except by providing support to the latest features of Android's ViewModel.
 
 ## Download
 
@@ -46,7 +46,7 @@ Then on your UI Controller ask it to retain the instance.
 ```kotlin
 class SampleActivity : AppCompatActivity() {
 
-    private val viewModel: ViewModel by retainedInstances { ViewModel(counter = 5) }
+    private val viewModel: ViewModel by retainInstance { ViewModel(counter = 5) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +66,7 @@ We also provide support for Fragments - same API:
 ```kotlin
 class SampleFragment : Fragment() {
 
-    private val viewModel: ViewModel by retainedInstances() // No-args constructor used.
+    private val viewModel: ViewModel by retainInstance() // No-args constructor used.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -101,8 +101,8 @@ When creating an object you can access the internal `RetainedStore` to get param
 ```kotlin
 class MyFragment : Fragment() {
 
-    private val viewModel: ViewModel by retainedInstances { store ->
-        ViewModel(store.viewModelScope)
+    private val viewModel: ViewModel by retainInstance { retainedStore ->
+        ViewModel(retainedStore.viewModelScope)
     }
 }
 ```

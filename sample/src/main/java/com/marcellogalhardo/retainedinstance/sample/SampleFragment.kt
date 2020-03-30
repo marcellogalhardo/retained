@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
-import com.marcellogalhardo.retainedinstance.fragment.retainedInstances
+import com.marcellogalhardo.retainedinstance.fragment.retainInstance
 
 class SampleFragment : Fragment() {
 
-    private val presenter by retainedInstances { store ->
+    private val presenter by retainInstance { store ->
         ComplexPresenter(
             store.application,
             store.savedStateHandle,

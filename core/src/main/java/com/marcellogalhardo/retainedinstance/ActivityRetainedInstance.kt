@@ -34,11 +34,10 @@ fun ComponentActivity.getRetainedStore(
  * and access prior to that will result in [IllegalArgumentException].
  */
 @[MainThread Throws(IllegalArgumentException::class)]
-inline fun <reified T : Any> ComponentActivity.retainedInstances(
+inline fun <reified T : Any> ComponentActivity.retainInstance(
     defaultArgs: Bundle? = intent?.extras,
     key: Any = T::class,
     noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    val store = getRetainedStore(defaultArgs)
-    store.get(key, instanceProducer)
+    getRetainedStore(defaultArgs).get(key, instanceProducer)
 }

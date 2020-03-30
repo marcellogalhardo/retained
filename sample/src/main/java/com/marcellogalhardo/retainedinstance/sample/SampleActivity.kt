@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.marcellogalhardo.retainedinstance.retainedInstances
+import com.marcellogalhardo.retainedinstance.retainInstance
 
 class SampleActivity : AppCompatActivity() {
 
-    private val presenter: SimplePresenter by retainedInstances()
+    private val presenter: SimplePresenter by retainInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
