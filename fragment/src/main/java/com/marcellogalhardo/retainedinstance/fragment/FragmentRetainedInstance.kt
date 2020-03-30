@@ -64,7 +64,7 @@ fun Fragment.getActivityRetainedStore(
  *
  * ```
  * class Fragment2 : Fragment() {
- *     val viewModel: FragmentViewModel1 by retainedInstances(
+ *     val viewModel: FragmentViewModel1 by retainInstance(
  *         ownerProducer = { requireParentFragment() }
  *     )
  * }
@@ -73,6 +73,7 @@ fun Fragment.getActivityRetainedStore(
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  */
+@Suppress("RemoveExplicitTypeArguments")
 @[MainThread Throws(IllegalArgumentException::class)]
 inline fun <reified T : Any> Fragment.retainInstance(
     defaultArgs: Bundle? = null,
@@ -90,18 +91,19 @@ inline fun <reified T : Any> Fragment.retainInstance(
  *
  * ```
  * class MyFragment : Fragment() {
- *     val viewModel: ActivityViewModel by activityViewModels()
+ *     val viewModel: ActivityViewModel by activityRetainInstance()
  * }
  * ```
  *
  * This property can be accessed only after this Fragment is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  */
+@Suppress("RemoveExplicitTypeArguments")
 @[MainThread Throws(IllegalArgumentException::class)]
 inline fun <reified T : Any> Fragment.activityRetainInstance(
     defaultArgs: Bundle? = null,
     key: Any = T::class,
     noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    getActivityRetainedStore(defaultArgs).get(key, instanceProducer)
+    getActivityRetainedStore(defaultArgs).get<T>(key, instanceProducer)
 }

@@ -26,18 +26,19 @@ fun ComponentActivity.getRetainedStore(
  *
  * ```
  * class MyComponentActivity : ComponentActivity() {
- *     val viewModel: ActivityViewModel by retainedInstances()
+ *     val viewModel: ActivityViewModel by retainInstance()
  * }
  * ```
  *
  * This property can be accessed only after the Activity is attached to the Application,
  * and access prior to that will result in [IllegalArgumentException].
  */
+@Suppress("RemoveExplicitTypeArguments")
 @[MainThread Throws(IllegalArgumentException::class)]
 inline fun <reified T : Any> ComponentActivity.retainInstance(
     defaultArgs: Bundle? = intent?.extras,
     key: Any = T::class,
     noinline instanceProducer: InstanceProducer<T> = { T::class.java.newInstance() }
 ): Lazy<T> = lazy {
-    getRetainedStore(defaultArgs).get(key, instanceProducer)
+    getRetainedStore(defaultArgs).get<T>(key, instanceProducer)
 }
