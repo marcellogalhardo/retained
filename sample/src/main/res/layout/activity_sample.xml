@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SampleActivity">
+    tools:context="dev.marcellogalhardo.retained.sample.SampleActivity">
 
     <TextView
         android:id="@+id/activityTextView"
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/sampleFragment"
-        android:name="com.marcellogalhardo.retained.sample.SampleFragment"
+        android:name="dev.marcellogalhardo.retained.sample.SampleFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
