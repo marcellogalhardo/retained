@@ -1,10 +1,8 @@
 # Retained Instance
 
-A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity or Fragment) retain instances.
+A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity, Fragment & Composable) retain instances.
 
-Retained Instance was created to leverage ViewModels in a consistent, reliable and composable way - no inheritances, no factories and no parameters like application or saved state handle.
-
-The Public API is stable and won't change except by providing support to the latest features of Android's ViewModel.
+Retained was a single file that I started to copy into all little apps I make with Kotlin Multiplatform with the intention to abstract away Android Jetpack's ViewModel - now it's a library.
 
 ## Download
 
@@ -21,32 +19,31 @@ allprojects {
 ```gradle
 dependencies {
     // For Activity support.
-	implementation 'com.github.marcellogalhardo.android-retained-instance:core:{Tag}'
+	implementation 'com.github.marcellogalhardo.retained:core:{Tag}'
+
+    // For Fragment support. You don't need to add retained-instance - it is included as `api` by default.
+    implementation 'com.github.marcellogalhardo.retained:fragment:{Tag}'
 	
-	// For Fragments support. You don't need to add retained-instance - we included for you!
-	implementation 'com.github.marcellogalhardo.android-retained-instance:fragment:{Tag}'
+	// For Compose support. You don't need to add retained-instance - it is included as `api` by default.
+	implementation 'com.github.marcellogalhardo.retained:compose:{Tag}'
 }
 ```
-(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/android-retained-instance/releases): [![](https://jitpack.io/v/marcellogalhardo/android-retained-instance.svg)](https://jitpack.io/#marcellogalhardo/android-retained-instance))
-
-That's it!
+(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases): [![](https://jitpack.io/v/marcellogalhardo/android-retained-instance.svg)](https://jitpack.io/#marcellogalhardo/android-retained-instance))
 
 ## Usage
 
-First, create the object that you want to retain instances.
+Create the object that you want to retain instances.
 
 ```kotlin
-data class ViewModel(
-    var counter: Int = 0
-)
+data class ViewModel(var counter: Int = 0)
 ```
 
-Then on your UI Controller ask it to retain the instance.
+Now retain it on any UIController:
 
 ```kotlin
 class SampleActivity : AppCompatActivity() {
 
-    private val viewModel: ViewModel by retainInstance { ViewModel(counter = 5) }
+    private val viewModel: ViewModel by retain { ViewModel(counter = 5) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,16 +54,16 @@ class SampleActivity : AppCompatActivity() {
 }
 ```
 
-Rotate the screen and check the instance will be preserved.
+Rotate the screen and check the instance will be retained across configuration changes.
 
 ### Fragments
 
-We also provide support for Fragments - same API:
+We support Fragments with same API:
 
 ```kotlin
 class SampleFragment : Fragment() {
 
-    private val viewModel: ViewModel by retainInstance() // No-args constructor used.
+    private val viewModel: ViewModel by retain { ViewModel() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,32 +74,46 @@ class SampleFragment : Fragment() {
 }
 ```
 
+### Jetpack Compose
+
+Again, same API:
+
+```kotlin
+@Composable
+fun SampleView() {
+    val viewModel = retain { ViewModel() }
+    // ...
+    Log.v("ViewModel.Counter", viewModel.counter.toString())
+    viewModel.counter++
+}
+```
+
 ### Advanced usage
 
-#### Closing your instance
+#### Disposing your instance
 
-If your retained instance implements `Closeable`, the `close` will be invoked when the bounded UI Controller gets terminated - in other words, when [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
+If your retained instance implements `DisposableHandle`, the `dispose` will be invoked when the bounded UI Controller gets terminated - in other words, when [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
 
 ```kotlin
 class ViewModel(
     private val coroutineScope: CoroutineScope
-) : Closeable {
+) : DisposableHandle {
 
-    override fun close() {
-        coroutineScope.coroutineContext.cancelChildren()
+    override fun dispose() {
+        coroutineScope.cancel()
     }
 }
 ```
 
-#### Custom parameters from Android's ViewModel
+#### Custom parameters from Jetpack's ViewModel
 
-When creating an object you can access the internal `RetainedStore` to get parameters like `application`, `savedStateHandle` or `viewModelScope` to your retained instance.
+When creating an object you can access the internal `RetainedContext` to get runtime parameters like `retainedHandle: SavedStateHandle` or `retainedScope: CoroutineScope` (`viewModelScope`) to your retained instance.
 
 ```kotlin
 class MyFragment : Fragment() {
 
-    private val viewModel: ViewModel by retainInstance { retainedStore ->
-        ViewModel(retainedStore.viewModelScope)
+    private val viewModel: ViewModel by retain {
+        ViewModel(retainedScope)
     }
 }
 ```

@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/sampleFragment"
-        android:name="com.marcellogalhardo.retainedinstance.sample.SampleFragment"
+        android:name="com.marcellogalhardo.retained.sample.SampleFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

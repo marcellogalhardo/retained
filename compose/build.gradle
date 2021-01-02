@@ -32,6 +32,16 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        useIR = true
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion kotlin_version
+        kotlinCompilerExtensionVersion compose_version
     }
 }
 
@@ -44,12 +54,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0'
 
-    implementation 'androidx.activity:activity-ktx:1.1.0'
-    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha04"
 
     // Unit Testing
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13'
 
     // Android Testing
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

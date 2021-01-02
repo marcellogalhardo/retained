@@ -1,1 +1,4 @@
-include ':sample', ':core', ':fragment'
+include ':sample'
+include ':core'
+include ':fragment'
+include ':compose'
