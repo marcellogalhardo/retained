@@ -2,7 +2,7 @@
 
 A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity, Fragment & Composable) retain instances on Android.
 
-**Motivation:** Retained was a single file that I was copying into all side-projects I make with Kotlin Multiplatform to abstract Android Jetpack's ViewModel. Now it is a library.
+**Motivation:** Retained was a single file that I was copying into all side-projects I make with Kotlin Multiplatform to abstract Android Jetpack's ViewModel. Now it is a library to avoid copy and paste. (:
 
 ## Download
 
