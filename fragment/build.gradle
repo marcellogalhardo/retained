@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 
-group = 'com.github.marcellogalhardo'
+group = 'dev.marcellogalhardo'
 
 android {
     compileSdkVersion 30
