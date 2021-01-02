@@ -95,12 +95,9 @@ fun SampleView() {
 If your retained instance implements `DisposableHandle`, the `dispose` will be invoked when the bounded UI Controller gets terminated - in other words, when [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
 
 ```kotlin
-class ViewModel(
-    private val coroutineScope: CoroutineScope
-) : DisposableHandle {
-
+class ViewModel(val scope: CoroutineScope) : DisposableHandle {
     override fun dispose() {
-        coroutineScope.cancel()
+        scope.cancel()
     }
 }
 ```
@@ -110,11 +107,10 @@ class ViewModel(
 When creating an object you can access the internal `RetainedContext` to get runtime parameters like `retainedHandle: SavedStateHandle` or `retainedScope: CoroutineScope` (`viewModelScope`) to your retained instance.
 
 ```kotlin
-class MyFragment : Fragment() {
-
-    private val viewModel: ViewModel by retain {
-        ViewModel(retainedScope)
-    }
+@Composable
+fun SampleView() {
+    val viewModel = retain { ViewModel(retainedScope) }
+    // ...
 }
 ```
 
