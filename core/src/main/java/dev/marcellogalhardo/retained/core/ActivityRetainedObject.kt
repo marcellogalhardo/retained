@@ -20,6 +20,7 @@ import androidx.activity.ComponentActivity
  *
  * @see createRetainedObjectLazy
  */
+@OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
     defaultArgs: Bundle? = intent?.extras,

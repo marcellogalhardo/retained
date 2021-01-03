@@ -29,10 +29,11 @@ import kotlinx.coroutines.DisposableHandle
  * [ViewModel], and access prior to that will result in [IllegalArgumentException].
  *
  * @param key A String that will be used to identify the retained instance in this scope.
- * @param owner The [LifecycleOwner] used to scope the retained instance.
+ * @param getOwner The [LifecycleOwner] used to scope the retained instance.
  * @param defaultArgs The [Bundle] used to create the [RetainedContext].
  * @param createRetainedObject The factory function that will be used to create the retained object.
  */
+@InternalRetainedApi
 fun <T : Any> createRetainedObjectLazy(
     key: String,
     getOwner: () -> LifecycleOwner,

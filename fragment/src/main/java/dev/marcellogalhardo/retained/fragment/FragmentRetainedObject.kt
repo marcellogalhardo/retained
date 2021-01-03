@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedContext
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 
@@ -29,6 +30,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  *
  * @see createRetainedObjectLazy
  */
+@OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
     defaultArgs: Bundle? = null,
@@ -52,11 +54,12 @@ inline fun <reified T : Any> Fragment.retain(
  *
  * @see createRetainedObjectLazy
  */
+@OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
     defaultArgs: Bundle? = null,
     noinline createRetainedObject: RetainedContext.() -> T
-): Lazy<T> = createRetainedObjectLazy(key, { requireActivity() }, defaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, ::requireActivity, defaultArgs, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the parent
@@ -75,6 +78,7 @@ inline fun <reified T : Any> Fragment.retainInActivity(
  *
  * @see createRetainedObjectLazy
  */
+@OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInParent(
     key: String = T::class.java.name,
     defaultArgs: Bundle? = null,

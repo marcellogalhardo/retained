@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedContext
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 
@@ -30,6 +31,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  *
  * @see createRetainedObjectLazy
  */
+@OptIn(InternalRetainedApi::class)
 @Composable
 inline fun <reified T : Any> retain(
     key: String = T::class.java.name,

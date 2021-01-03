@@ -81,7 +81,7 @@ Again, same API:
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel = retain { ViewModel() }
+    val viewModel by retain { ViewModel() }
     // ...
     Log.v("ViewModel.Counter", viewModel.counter.toString())
     viewModel.counter++
@@ -109,7 +109,7 @@ When creating an object you can access the internal `RetainedContext` to get run
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel = retain { ViewModel(retainedScope) }
+    val viewModel by retain { ViewModel(retainedScope) }
     // ...
 }
 ```
