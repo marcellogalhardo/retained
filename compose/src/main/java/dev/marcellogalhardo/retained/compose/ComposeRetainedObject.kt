@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
-import dev.marcellogalhardo.retained.core.RetainedContext
+import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 
 /**
@@ -40,16 +40,16 @@ inline fun <reified T : Any> retain(
     key: String = T::class.java.name,
     viewModelStoreOwner: ViewModelStoreOwner = AmbientViewModelStoreOwner.current,
     savedStateRegistryOwner: SavedStateRegistryOwner = AmbientSavedStateRegistryOwner.current,
-    noinline getDefaultArgs: () -> Bundle? = { getDefaultArgs(AmbientLifecycleOwner.current) },
-    noinline createRetainedObject: RetainedContext.() -> T
+    noinline getDefaultArgs: () -> Bundle = { getDefaultArgs(AmbientLifecycleOwner.current) },
+    noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, { viewModelStoreOwner }, { savedStateRegistryOwner }, getDefaultArgs, createRetainedObject)
 
 @PublishedApi
-internal fun getDefaultArgs(owner: LifecycleOwner): Bundle? {
+internal fun getDefaultArgs(owner: LifecycleOwner): Bundle {
     return when (owner) {
         is ComponentActivity -> owner.intent?.extras
         is Fragment -> owner.arguments
         is NavBackStackEntry -> owner.arguments
         else -> bundleOf()
-    }
+    } ?: bundleOf()
 }

@@ -24,6 +24,6 @@ import androidx.core.os.bundleOf
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
-    noinline getDefaultArgs: () -> Bundle? = { intent?.extras ?: bundleOf() },
-    noinline createRetainedObject: RetainedContext.() -> T
+    noinline getDefaultArgs: () -> Bundle = { intent?.extras ?: bundleOf() },
+    noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, { this }, { this }, getDefaultArgs, createRetainedObject)

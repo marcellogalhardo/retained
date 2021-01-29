@@ -32,7 +32,7 @@ import kotlinx.coroutines.DisposableHandle
  * @param key A String that will be used to identify the retained instance in this scope.
  * @param getViewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
  * @param getSavedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
- * @param getDefaultArgs The [Bundle] used to create the [RetainedContext].
+ * @param getDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
  * @param createRetainedObject The factory function that will be used to create the retained object.
  */
 @InternalRetainedApi
@@ -40,8 +40,8 @@ fun <T : Any> createRetainedObjectLazy(
     key: String,
     getViewModelStoreOwner: () -> ViewModelStoreOwner,
     getSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
-    getDefaultArgs: () -> Bundle? = { bundleOf() },
-    createRetainedObject: RetainedContext.() -> T
+    getDefaultArgs: () -> Bundle = { bundleOf() },
+    createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = lazy {
     val viewModelStoreOwner = getViewModelStoreOwner()
     val savedStateRegistryOwner = getSavedStateRegistryOwner()
@@ -57,13 +57,13 @@ fun <T : Any> createRetainedObjectLazy(
 }
 
 private class RetainedViewModel(
-    override val retainedHandle: SavedStateHandle,
-    createRetainedObject: RetainedContext.() -> Any,
-) : ViewModel(), RetainedContext {
+    override val savedStateHandle: SavedStateHandle,
+    createRetainedObject: (RetainedEntry) -> Any,
+) : ViewModel(), RetainedEntry {
 
-    override val retainedScope: CoroutineScope get() = viewModelScope
+    override val scope: CoroutineScope get() = viewModelScope
 
-    val retainedObject: Any = createRetainedObject()
+    val retainedObject: Any = createRetainedObject(this)
 
     override fun onCleared() {
         super.onCleared()
@@ -73,8 +73,8 @@ private class RetainedViewModel(
 
 private class RetainedViewModelFactory(
     owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle?,
-    val createRetainedObject: RetainedContext.() -> Any
+    defaultArgs: Bundle,
+    val createRetainedObject: (RetainedEntry) -> Any
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
     @Suppress("UNCHECKED_CAST")
@@ -87,7 +87,7 @@ private class RetainedViewModelFactory(
     }
 }
 
-interface RetainedContext {
-    val retainedScope: CoroutineScope
-    val retainedHandle: SavedStateHandle
+interface RetainedEntry {
+    val scope: CoroutineScope
+    val savedStateHandle: SavedStateHandle
 }

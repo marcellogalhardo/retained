@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
-import dev.marcellogalhardo.retained.core.RetainedContext
+import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 
 /**
@@ -36,9 +36,9 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
-    noinline getDefaultArgs: () -> Bundle? = { arguments ?: bundleOf() },
+    noinline getDefaultArgs: () -> Bundle = { arguments ?: bundleOf() },
     noinline getFragment: () -> Fragment = { this },
-    noinline createRetainedObject: RetainedContext.() -> T
+    noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, getFragment, getFragment, getDefaultArgs, createRetainedObject)
 
 /**
@@ -60,8 +60,8 @@ inline fun <reified T : Any> Fragment.retain(
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
-    noinline getDefaultArgs: () -> Bundle? = { activity?.intent?.extras ?: bundleOf() },
-    noinline createRetainedObject: RetainedContext.() -> T
+    noinline getDefaultArgs: () -> Bundle = { activity?.intent?.extras ?: bundleOf() },
+    noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, ::requireActivity, ::requireActivity, getDefaultArgs, createRetainedObject)
 
 /**
@@ -84,8 +84,8 @@ inline fun <reified T : Any> Fragment.retainInActivity(
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInParent(
     key: String = T::class.java.name,
-    noinline getDefaultArgs: () -> Bundle? = ::parentDefaultArgs,
-    noinline createRetainedObject: RetainedContext.() -> T
+    noinline getDefaultArgs: () -> Bundle = ::parentDefaultArgs,
+    noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, ::parentViewModelStoreOwner, ::parentSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
 
 @PublishedApi

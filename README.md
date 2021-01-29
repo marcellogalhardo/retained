@@ -109,7 +109,7 @@ When creating an object you can access the internal `RetainedContext` to get run
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel by retain { ViewModel(retainedScope) }
+    val viewModel by retain { entry -> ViewModel(entry.scope) }
     // ...
 }
 ```
