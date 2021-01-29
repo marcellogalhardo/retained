@@ -1,9 +1,12 @@
 package dev.marcellogalhardo.retained.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedContext
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
@@ -33,10 +36,10 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
-    defaultArgs: Bundle? = null,
+    noinline getDefaultArgs: () -> Bundle? = { arguments ?: bundleOf() },
     noinline getFragment: () -> Fragment = { this },
     noinline createRetainedObject: RetainedContext.() -> T
-): Lazy<T> = createRetainedObjectLazy(key, getFragment, defaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, getFragment, getFragment, getDefaultArgs, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -57,9 +60,9 @@ inline fun <reified T : Any> Fragment.retain(
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
-    defaultArgs: Bundle? = null,
+    noinline getDefaultArgs: () -> Bundle? = { activity?.intent?.extras ?: bundleOf() },
     noinline createRetainedObject: RetainedContext.() -> T
-): Lazy<T> = createRetainedObjectLazy(key, ::requireActivity, defaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, ::requireActivity, ::requireActivity, getDefaultArgs, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the parent
@@ -81,10 +84,18 @@ inline fun <reified T : Any> Fragment.retainInActivity(
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInParent(
     key: String = T::class.java.name,
-    defaultArgs: Bundle? = null,
+    noinline getDefaultArgs: () -> Bundle? = ::parentDefaultArgs,
     noinline createRetainedObject: RetainedContext.() -> T
-): Lazy<T> = createRetainedObjectLazy(key, ::parentLifecycleOwner, defaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, ::parentViewModelStoreOwner, ::parentSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
 
 @PublishedApi
-internal val Fragment.parentLifecycleOwner: LifecycleOwner
+internal val Fragment.parentDefaultArgs: Bundle
+    get() = parentFragment?.arguments ?: activity?.intent?.extras ?: bundleOf()
+
+@PublishedApi
+internal val Fragment.parentSavedStateRegistryOwner: SavedStateRegistryOwner
+    get() = parentFragment ?: requireActivity()
+
+@PublishedApi
+internal val Fragment.parentViewModelStoreOwner: ViewModelStoreOwner
     get() = parentFragment ?: requireActivity()

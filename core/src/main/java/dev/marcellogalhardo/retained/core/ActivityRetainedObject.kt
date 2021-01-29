@@ -3,6 +3,7 @@ package dev.marcellogalhardo.retained.core
 import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.core.os.bundleOf
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -23,6 +24,6 @@ import androidx.activity.ComponentActivity
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
-    defaultArgs: Bundle? = intent?.extras,
+    noinline getDefaultArgs: () -> Bundle? = { intent?.extras ?: bundleOf() },
     noinline createRetainedObject: RetainedContext.() -> T
-): Lazy<T> = createRetainedObjectLazy(key, { this }, defaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, { this }, { this }, getDefaultArgs, createRetainedObject)

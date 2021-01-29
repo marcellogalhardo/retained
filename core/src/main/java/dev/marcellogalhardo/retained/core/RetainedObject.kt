@@ -1,6 +1,7 @@
 package dev.marcellogalhardo.retained.core
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.CoroutineScope
@@ -29,23 +30,24 @@ import kotlinx.coroutines.DisposableHandle
  * [ViewModel], and access prior to that will result in [IllegalArgumentException].
  *
  * @param key A String that will be used to identify the retained instance in this scope.
- * @param getOwner The [LifecycleOwner] used to scope the retained instance.
- * @param defaultArgs The [Bundle] used to create the [RetainedContext].
+ * @param getViewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
+ * @param getSavedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
+ * @param getDefaultArgs The [Bundle] used to create the [RetainedContext].
  * @param createRetainedObject The factory function that will be used to create the retained object.
  */
 @InternalRetainedApi
 fun <T : Any> createRetainedObjectLazy(
     key: String,
-    getOwner: () -> LifecycleOwner,
-    defaultArgs: Bundle? = null,
+    getViewModelStoreOwner: () -> ViewModelStoreOwner,
+    getSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
+    getDefaultArgs: () -> Bundle? = { bundleOf() },
     createRetainedObject: RetainedContext.() -> T
 ): Lazy<T> = lazy {
-    val lifecycleOwner = getOwner()
-    val viewModelStoreOwner = lifecycleOwner as ViewModelStoreOwner
-    val savedStateRegistryOwner = lifecycleOwner as SavedStateRegistryOwner
+    val viewModelStoreOwner = getViewModelStoreOwner()
+    val savedStateRegistryOwner = getSavedStateRegistryOwner()
     val factory = RetainedViewModelFactory(
         owner = savedStateRegistryOwner,
-        defaultArgs = defaultArgs,
+        defaultArgs = getDefaultArgs(),
         createRetainedObject = createRetainedObject
     )
     val provider = ViewModelProvider(viewModelStoreOwner, factory)
@@ -71,7 +73,7 @@ private class RetainedViewModel(
 
 private class RetainedViewModelFactory(
     owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null,
+    defaultArgs: Bundle?,
     val createRetainedObject: RetainedContext.() -> Any
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
