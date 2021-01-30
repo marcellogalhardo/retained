@@ -1,7 +1,7 @@
 package dev.marcellogalhardo.retained.compose
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.AmbientLifecycleOwner
 import androidx.compose.ui.platform.AmbientSavedStateRegistryOwner
@@ -19,7 +19,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObject
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
- * [Composable] (e.g., [NavBackStackEntry], [Fragment] or [ComponentActivity]).
+ * [Composable] (e.g., [NavBackStackEntry], [Fragment] or [Activity]).
  *
  * ```
  * @Composable
@@ -42,14 +42,12 @@ inline fun <reified T : Any> retain(
     savedStateRegistryOwner: SavedStateRegistryOwner = AmbientSavedStateRegistryOwner.current,
     defaultArgs: Bundle = AmbientLifecycleOwner.current.defaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = lazy {
-    createRetainedObject(key, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
-}
+): T = createRetainedObject(key, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
 
 @PublishedApi
 internal val LifecycleOwner.defaultArgs: Bundle
     get() = when (this) {
-        is ComponentActivity -> intent?.extras
+        is Activity -> intent?.extras
         is Fragment -> arguments
         is NavBackStackEntry -> arguments
         else -> bundleOf()
