@@ -104,12 +104,12 @@ class ViewModel(val scope: CoroutineScope) : DisposableHandle {
 
 #### Custom parameters from Jetpack's ViewModel
 
-When creating an object you can access the internal `RetainedContext` to get runtime parameters like `retainedHandle: SavedStateHandle` or `retainedScope: CoroutineScope` (`viewModelScope`) to your retained instance.
+When creating an object you might want to access the `RetainedEntry` to get runtime parameters like `savedStateHandle: SavedStateHandle` or `scope: CoroutineScope` (`viewModelScope`) to assisted inject your retained instance.
 
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel by retain { entry -> ViewModel(entry.scope) }
+    val viewModel = retain { entry -> ViewModel(entry.scope) }
     // ...
 }
 ```
