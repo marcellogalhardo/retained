@@ -8,8 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 
 /**
- * Returns a [Lazy] delegate to access a single retained instance in a [LifecycleOwner].
- * [createRetainedObject] is used to create the instance on the first time.
+ * Creates an retained instance scoped by a [LifecycleOwner] - [createRetainedObject] is used to
+ * create the instance on the first time.
  *
  * A retained object is always created in association with a [LifecycleOwner] (`Fragment`,
  * `Activity`, or a `@Composable`) and will be retained as long as the scope is alive.
@@ -30,10 +30,34 @@ import kotlinx.coroutines.DisposableHandle
  * [ViewModel], and access prior to that will result in [IllegalArgumentException].
  *
  * @param key A String that will be used to identify the retained instance in this scope.
- * @param getViewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
- * @param getSavedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
+ * @param viewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
+ * @param savedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
  * @param getDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
  * @param createRetainedObject The factory function that will be used to create the retained object.
+ */
+@InternalRetainedApi
+fun <T : Any> createRetainedObject(
+    key: String,
+    viewModelStoreOwner: ViewModelStoreOwner,
+    savedStateRegistryOwner: SavedStateRegistryOwner,
+    defaultArgs: Bundle = bundleOf(),
+    createRetainedObject: (RetainedEntry) -> T
+): T {
+    val factory = RetainedViewModelFactory(
+        owner = savedStateRegistryOwner,
+        defaultArgs = defaultArgs,
+        createRetainedObject = createRetainedObject
+    )
+    val provider = ViewModelProvider(viewModelStoreOwner, factory)
+
+    @Suppress("UNCHECKED_CAST")
+    return provider.get(key, RetainedViewModel::class.java).retainedObject as T
+}
+
+/**
+ * Returns a [Lazy] delegate to access a single retained instance in a [LifecycleOwner].
+ *
+ * @see createRetainedObject
  */
 @InternalRetainedApi
 fun <T : Any> createRetainedObjectLazy(
@@ -43,17 +67,7 @@ fun <T : Any> createRetainedObjectLazy(
     getDefaultArgs: () -> Bundle = { bundleOf() },
     createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = lazy {
-    val viewModelStoreOwner = getViewModelStoreOwner()
-    val savedStateRegistryOwner = getSavedStateRegistryOwner()
-    val factory = RetainedViewModelFactory(
-        owner = savedStateRegistryOwner,
-        defaultArgs = getDefaultArgs(),
-        createRetainedObject = createRetainedObject
-    )
-    val provider = ViewModelProvider(viewModelStoreOwner, factory)
-
-    @Suppress("UNCHECKED_CAST")
-    provider.get(key, RetainedViewModel::class.java).retainedObject as T
+    createRetainedObject(key, getViewModelStoreOwner(), getSavedStateRegistryOwner(), getDefaultArgs(), createRetainedObject)
 }
 
 private class RetainedViewModel(

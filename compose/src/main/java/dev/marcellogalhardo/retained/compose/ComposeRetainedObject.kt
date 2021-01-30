@@ -15,7 +15,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedEntry
-import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
+import dev.marcellogalhardo.retained.core.createRetainedObject
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -32,7 +32,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * This property can be accessed only after the [LifecycleOwner] is ready to use Jetpack
  * [ViewModel], and access prior to that will result in [IllegalArgumentException].
  *
- * @see createRetainedObjectLazy
+ * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 @Composable
@@ -40,16 +40,17 @@ inline fun <reified T : Any> retain(
     key: String = T::class.java.name,
     viewModelStoreOwner: ViewModelStoreOwner = AmbientViewModelStoreOwner.current,
     savedStateRegistryOwner: SavedStateRegistryOwner = AmbientSavedStateRegistryOwner.current,
-    noinline getDefaultArgs: () -> Bundle = { getDefaultArgs(AmbientLifecycleOwner.current) },
+    defaultArgs: Bundle = AmbientLifecycleOwner.current.defaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, { viewModelStoreOwner }, { savedStateRegistryOwner }, getDefaultArgs, createRetainedObject)
+): Lazy<T> = lazy {
+    createRetainedObject(key, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
+}
 
 @PublishedApi
-internal fun getDefaultArgs(owner: LifecycleOwner): Bundle {
-    return when (owner) {
-        is ComponentActivity -> owner.intent?.extras
-        is Fragment -> owner.arguments
-        is NavBackStackEntry -> owner.arguments
+internal val LifecycleOwner.defaultArgs: Bundle
+    get() = when (this) {
+        is ComponentActivity -> intent?.extras
+        is Fragment -> arguments
+        is NavBackStackEntry -> arguments
         else -> bundleOf()
     } ?: bundleOf()
-}

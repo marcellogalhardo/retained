@@ -19,7 +19,7 @@ import androidx.core.os.bundleOf
  * This property can be accessed only after the [ComponentActivity] is attached to the [Application],
  * and access prior to that will result in [IllegalArgumentException].
  *
- * @see createRetainedObjectLazy
+ * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> ComponentActivity.retain(

@@ -31,7 +31,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  *
- * @see createRetainedObjectLazy
+ * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retain(
@@ -55,7 +55,7 @@ inline fun <reified T : Any> Fragment.retain(
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  *
- * @see createRetainedObjectLazy
+ * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInActivity(
@@ -79,7 +79,7 @@ inline fun <reified T : Any> Fragment.retainInActivity(
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalArgumentException].
  *
- * @see createRetainedObjectLazy
+ * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retainInParent(
