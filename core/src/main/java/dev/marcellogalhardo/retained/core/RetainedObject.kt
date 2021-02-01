@@ -66,7 +66,7 @@ fun <T : Any> createRetainedObjectLazy(
     getSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
     getDefaultArgs: () -> Bundle = { bundleOf() },
     createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = lazy {
+): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
     createRetainedObject(key, getViewModelStoreOwner(), getSavedStateRegistryOwner(), getDefaultArgs(), createRetainedObject)
 }
 
