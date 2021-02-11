@@ -53,8 +53,12 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
 
-    implementation "androidx.navigation:navigation-compose:1.0.0-alpha06"
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha07"
+
+    implementation "androidx.activity:activity-ktx:$activity_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // Unit Testing
     testImplementation 'junit:junit:4.13.1'
