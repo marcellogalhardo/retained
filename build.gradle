@@ -13,9 +13,13 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.0-beta04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath("org.jmailen.gradle:kotlinter-gradle:3.3.0")
+        classpath("name.remal:gradle-plugins:1.1.6")
     }
+}
+
+plugins {
+    id("com.autonomousapps.dependency-analysis") version "0.56.0"
 }
 
 allprojects {
@@ -24,6 +28,11 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
     }
+}
+
+subprojects {
+    // KTLint plugin: https://github.com/jeremymailen/kotlinter-gradle
+    plugins.apply("org.jmailen.kotlinter")
 }
 
 task clean(type: Delete) {
