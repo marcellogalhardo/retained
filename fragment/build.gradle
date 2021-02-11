@@ -51,5 +51,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
 
     // Android Testing
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 }
