@@ -34,7 +34,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  */
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> View.retain(
-    key: String = T::class.java.name,
+    key: String = id.toString(),
     noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewTreeViewModelStoreOwner()!! },
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline getDefaultArgs: () -> Bundle = { findViewTreeLifecycleOwner()!!.defaultArgs },
