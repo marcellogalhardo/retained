@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'maven'
-
-group = 'dev.marcellogalhardo'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 30
@@ -33,6 +31,20 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'dev.marcellogalhardo'
+                artifactId = 'retained-core'
+                version = '1.0'
+            }
+        }
     }
 }
 
