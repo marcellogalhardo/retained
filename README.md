@@ -19,13 +19,13 @@ allprojects {
 ```gradle
 dependencies {
     // For Activity support.
-    implementation 'com.github.marcellogalhardo.retained:core:{Tag}'
+    implementation 'com.github.marcellogalhardo.retained:retained-core:{Tag}'
 
-    // For Fragment support. You don't need to add retained-instance - it is included as `api` by default.
-    implementation 'com.github.marcellogalhardo.retained:fragment:{Tag}'
+    // For Fragment support. You don't need to add retained-core - it is included as `api` by default.
+    implementation 'com.github.marcellogalhardo.retained:retained-fragment:{Tag}'
 
-    // For Compose support. You don't need to add retained-instance - it is included as `api` by default.
-    implementation 'com.github.marcellogalhardo.retained:compose:{Tag}'
+    // For Compose support. You don't need to add retained-core - it is included as `api` by default.
+    implementation 'com.github.marcellogalhardo.retained:retained-compose:{Tag}'
 }
 ```
 (Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases): [![](https://jitpack.io/v/marcellogalhardo/retained.svg)](https://jitpack.io/#marcellogalhardo/retained))
@@ -81,7 +81,7 @@ Again, same API:
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel by retain { ViewModel() }
+    val viewModel = retain { ViewModel() }
     // ...
     Log.v("ViewModel.Counter", viewModel.counter.toString())
     viewModel.counter++
