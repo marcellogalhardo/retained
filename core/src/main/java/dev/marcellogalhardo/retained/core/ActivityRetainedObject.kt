@@ -17,7 +17,7 @@ import androidx.core.os.bundleOf
  * ```
  *
  * This property can be accessed only after the [ComponentActivity] is attached to the [Application],
- * and access prior to that will result in [IllegalArgumentException].
+ * and access prior to that will result in [IllegalStateException].
  *
  * @see createRetainedObject
  */

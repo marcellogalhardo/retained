@@ -32,7 +32,7 @@ import kotlinx.coroutines.DisposableHandle
  * ```
  *
  * This property can be accessed only after the [LifecycleOwner] is ready to use Jetpack
- * [ViewModel], and access prior to that will result in [IllegalArgumentException].
+ * [ViewModel], and access prior to that will result in [IllegalStateException].
  *
  * @param key A String that will be used to identify the retained instance in this scope.
  * @param viewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
