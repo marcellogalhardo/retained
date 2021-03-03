@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context="dev.marcellogalhardo.retained.sample.SampleActivity">
 
-    <dev.marcellogalhardo.retained.sample.SampleView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/activityTextView"
         android:layout_width="wrap_content"
@@ -22,6 +15,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <dev.marcellogalhardo.retained.sample.SampleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityTextView" />
 
     <fragment
         android:id="@+id/sampleFragment"
