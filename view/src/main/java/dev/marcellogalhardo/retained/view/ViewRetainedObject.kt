@@ -27,19 +27,23 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * class ViewModel(val name: String = "")
  * ```
  *
- * This property can be accessed only after the [LifecycleOwner] is ready to use Jetpack
- * [ViewModel], and access prior to that will result in [IllegalArgumentException]. TODO: right now it actually throws a NPE
+ * This property can be accessed only after this [View] is attached, i.e. after
+ * [View.onAttachedToWindow], and access prior to that will result in [IllegalStateException].
  *
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> View.retain(
     key: String = id.toString(),
-    noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewTreeViewModelStoreOwner()!! },
+    noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { viewModelStoreOwnerOrThrow() },
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline getDefaultArgs: () -> Bundle = { findViewTreeLifecycleOwner()!!.defaultArgs },
     noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
+
+@PublishedApi
+internal fun View.viewModelStoreOwnerOrThrow() = findViewTreeViewModelStoreOwner()
+    ?: throw IllegalStateException("Your view is not yet attached, and thus its ViewModelStoreOwner is null.")
 
 // TODO: move this to core or a new common module to avoid the repetition
 @PublishedApi
