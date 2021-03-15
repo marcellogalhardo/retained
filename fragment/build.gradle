@@ -60,7 +60,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // Unit Testing
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation "junit:junit:$junit_version"
 
     // Android Testing
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"

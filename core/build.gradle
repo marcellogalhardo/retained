@@ -57,7 +57,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$activity_version"
 
     // Unit Testing
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation "junit:junit:$junit_version"
 
     // Android Testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
