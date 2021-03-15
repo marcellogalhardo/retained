@@ -38,7 +38,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObject
 @Composable
 inline fun <reified T : Any> retain(
     key: String = T::class.java.name,
-    viewModelStoreOwner: ViewModelStoreOwner = LocalViewModelStoreOwner.current,
+    viewModelStoreOwner: ViewModelStoreOwner = requireNotNull(LocalViewModelStoreOwner.current),
     savedStateRegistryOwner: SavedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
     defaultArgs: Bundle = LocalLifecycleOwner.current.defaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T

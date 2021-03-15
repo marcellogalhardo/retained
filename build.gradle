@@ -7,7 +7,7 @@ buildscript {
     ext.fragment_version = '1.3.0'
     ext.compose_version = '1.0.0-beta02'
     ext.navigation_version = '1.0.0-alpha08'
-    ext.viewmodel_version = '1.0.0-alpha02'
+    ext.viewmodel_version = '1.0.0-alpha03'
     ext.junit_version = '4.13.2'
     repositories {
         google()
