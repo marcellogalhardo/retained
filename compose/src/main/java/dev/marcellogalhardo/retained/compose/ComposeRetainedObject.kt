@@ -30,7 +30,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObject
  * ```
  *
  * This property can be accessed only after the [LifecycleOwner] is ready to use Jetpack
- * [ViewModel], and access prior to that will result in [IllegalArgumentException].
+ * [ViewModel], and access prior to that will result in [IllegalStateException].
  *
  * @see createRetainedObject
  */
