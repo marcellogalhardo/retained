@@ -27,7 +27,8 @@ jobs:
         with:
           java-version: 1.8
       - name: Run BuildHealth
-        run: bash ./gradlew buildHealth
+#        run: bash ./gradlew buildHealth
+        run: bash ./gradlew adviceDebug
 
   test:
     name: Run Unit Tests
@@ -40,7 +41,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Unit Tests
-        run: bash ./gradlew test --stacktrace
+        run: bash ./gradlew testDebug --stacktrace
 
   buildApk:
     name: Build Sample APK
