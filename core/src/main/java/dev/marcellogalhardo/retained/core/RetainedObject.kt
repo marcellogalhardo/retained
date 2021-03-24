@@ -37,7 +37,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param key A String that will be used to identify the retained instance in this scope.
  * @param viewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
  * @param savedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
- * @param getDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
+ * @param defaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
  * @param createRetainedObject The factory function that will be used to create the retained object.
  */
 @InternalRetainedApi
