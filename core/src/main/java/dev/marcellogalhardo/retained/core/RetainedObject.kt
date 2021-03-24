@@ -3,6 +3,7 @@ package dev.marcellogalhardo.retained.core
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +11,6 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DisposableHandle
 
 /**
  * Creates an retained instance scoped by a [LifecycleOwner] - [createRetainedObject] is used to
@@ -37,7 +37,7 @@ import kotlinx.coroutines.DisposableHandle
  * @param key A String that will be used to identify the retained instance in this scope.
  * @param viewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
  * @param savedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
- * @param getDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
+ * @param defaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
  * @param createRetainedObject The factory function that will be used to create the retained object.
  */
 @InternalRetainedApi
@@ -82,11 +82,13 @@ private class RetainedViewModel(
 
     override val scope: CoroutineScope get() = viewModelScope
 
+    override val onClearedListeners: MutableList<OnClearedListener> = mutableListOf()
+
     val retainedObject: Any = createRetainedObject(this)
 
     override fun onCleared() {
         super.onCleared()
-        if (retainedObject is DisposableHandle) retainedObject.dispose()
+        onClearedListeners.forEach { listener -> listener.onCleared() }
     }
 }
 
@@ -104,9 +106,4 @@ private class RetainedViewModelFactory(
     ): T {
         return RetainedViewModel(handle, createRetainedObject) as T
     }
-}
-
-interface RetainedEntry {
-    val scope: CoroutineScope
-    val savedStateHandle: SavedStateHandle
 }

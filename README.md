@@ -90,18 +90,6 @@ fun SampleView() {
 
 ### Advanced usage
 
-#### Disposing your instance
-
-If your retained instance implements `DisposableHandle`, the `dispose` will be invoked when the bounded UI Controller gets terminated - in other words, when [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
-
-```kotlin
-class ViewModel(val scope: CoroutineScope) : DisposableHandle {
-    override fun dispose() {
-        scope.cancel()
-    }
-}
-```
-
 #### Custom parameters from Jetpack's ViewModel
 
 When creating an object you might want to access the `RetainedEntry` to get runtime parameters like `savedStateHandle: SavedStateHandle` or `scope: CoroutineScope` (`viewModelScope`) to assisted inject your retained instance.
@@ -110,6 +98,21 @@ When creating an object you might want to access the `RetainedEntry` to get runt
 @Composable
 fun SampleView() {
     val viewModel = retain { entry -> ViewModel(entry.scope) }
+    // ...
+}
+```
+
+#### Listening onCleared calls
+
+When creating an object you might be interest to know when it will be cleared by the Android system. For that, you can set a listener to `entry.onClearedListeners` and any listener will be invoked when the host [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
+
+```kotlin
+@Composable
+fun SampleView() {
+    val viewModel = retain { entry -> 
+        entry.onClearedListeners += { println("Invoked when the host 'ViewModel.onCleared' is called") }
+        // ...
+    }
     // ...
 }
 ```
