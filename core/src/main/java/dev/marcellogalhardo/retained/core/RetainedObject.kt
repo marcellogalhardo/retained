@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
+import kotlin.jvm.internal.Reflection
+import kotlin.reflect.KClass
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -76,6 +78,8 @@ fun <T : Any> createRetainedObjectLazy(
 }
 
 private class RetainedViewModel(
+    override val key: String,
+    override val classRef: KClass<Any>,
     override val savedStateHandle: SavedStateHandle,
     createRetainedObject: (RetainedEntry) -> Any,
 ) : ViewModel(), RetainedEntry {
@@ -105,11 +109,12 @@ private class RetainedViewModelFactory(
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(
+    override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return RetainedViewModel(handle, createRetainedObject) as T
+        val classRef = modelClass.kotlin as KClass<Any>
+        return RetainedViewModel(key, classRef, handle, createRetainedObject) as T
     }
 }
