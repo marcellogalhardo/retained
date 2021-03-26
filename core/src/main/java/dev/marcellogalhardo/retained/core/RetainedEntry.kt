@@ -1,8 +1,8 @@
 package dev.marcellogalhardo.retained.core
 
 import androidx.lifecycle.SavedStateHandle
-import kotlin.reflect.KClass
 import kotlinx.coroutines.CoroutineScope
+import kotlin.reflect.KClass
 
 /**
  * Representation of an retained object entry in a [androidx.lifecycle.LifecycleOwner] and hosted
@@ -20,7 +20,7 @@ interface RetainedEntry {
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */
-    val classRef: KClass<Any>
+    val classRef: KClass<out Any>
 
     /**
      * @see [androidx.lifecycle.viewModelScope]

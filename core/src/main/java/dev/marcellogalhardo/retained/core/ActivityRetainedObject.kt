@@ -26,4 +26,4 @@ inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = { intent?.extras ?: bundleOf() },
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, { this }, { this }, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, { this }, { this }, getDefaultArgs, createRetainedObject)

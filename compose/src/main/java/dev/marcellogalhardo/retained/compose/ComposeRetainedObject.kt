@@ -42,7 +42,7 @@ inline fun <reified T : Any> retain(
     savedStateRegistryOwner: SavedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
     defaultArgs: Bundle = LocalLifecycleOwner.current.defaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T
-): T = createRetainedObject(key, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
+): T = createRetainedObject(key, T::class, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
 
 @PublishedApi
 internal val LifecycleOwner.defaultArgs: Bundle
