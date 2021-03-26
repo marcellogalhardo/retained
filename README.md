@@ -117,6 +117,8 @@ fun SampleView() {
 }
 ```
 
+As a convenience, if your retained object implements `OnClearedListener` we will auto register it to the `onClearedListeners`.
+
 License
 -------
 
