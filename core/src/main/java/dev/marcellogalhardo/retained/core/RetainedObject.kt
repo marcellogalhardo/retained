@@ -82,7 +82,7 @@ private class RetainedViewModel(
 
     override val scope: CoroutineScope get() = viewModelScope
 
-    override val onClearedListeners: MutableCollection<OnClearedListener> = mutableListOf()
+    override val onClearedListeners: MutableCollection<OnClearedListener> = mutableSetOf()
 
     val retainedObject: Any = createRetainedObject(this)
 
