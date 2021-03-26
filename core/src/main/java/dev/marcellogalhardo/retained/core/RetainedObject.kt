@@ -86,6 +86,12 @@ private class RetainedViewModel(
 
     val retainedObject: Any = createRetainedObject(this)
 
+    init {
+        if (retainedObject is OnClearedListener) {
+            onClearedListeners += retainedObject
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         onClearedListeners.forEach { listener -> listener.onCleared() }
