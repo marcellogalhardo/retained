@@ -1,1 +1,7 @@
-<manifest package="dev.marcellogalhardo.retained.core" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.marcellogalhardo.retained.core">
+
+    <application>
+        <activity android:name="dev.marcellogalhardo.retained.core.test.EmptyActivity" />
+    </application>
+</manifest>
