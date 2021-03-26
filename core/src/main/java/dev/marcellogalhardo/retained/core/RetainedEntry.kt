@@ -24,5 +24,5 @@ interface RetainedEntry {
     /**
      * @see [androidx.lifecycle.ViewModel.onCleared]
      */
-    val onClearedListeners: MutableList<OnClearedListener>
+    val onClearedListeners: MutableCollection<OnClearedListener>
 }
