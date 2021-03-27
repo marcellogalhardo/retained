@@ -80,7 +80,6 @@ internal fun View.findActivity(): FragmentActivity {
     throw IllegalStateException("Your view is not attached to an activity.")
 }
 
-// TODO: move this to core or a new common module to avoid the repetition
 @PublishedApi
 internal val LifecycleOwner.defaultArgs: Bundle
     get() = when (this) {
