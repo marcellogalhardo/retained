@@ -47,7 +47,7 @@ afterEvaluate {
                 from components.release
 
                 groupId = 'dev.marcellogalhardo'
-                artifactId = 'retained-fragment'
+                artifactId = 'retained-navigation-fragment'
                 version = '1.0'
             }
         }
