@@ -31,16 +31,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
-        useIR = true
     }
 
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerVersion kotlin_version
-        kotlinCompilerExtensionVersion compose_version
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -51,7 +47,7 @@ afterEvaluate {
                 from components.release
 
                 groupId = 'dev.marcellogalhardo'
-                artifactId = 'retained-compose'
+                artifactId = 'retained-fragment'
                 version = '1.0'
             }
         }
@@ -65,17 +61,21 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_version"
 
-    implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
-
-    implementation "androidx.activity:activity-ktx:$activity_version"
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
 
     // Unit Testing
     testImplementation "junit:junit:$junit_version"
+    testImplementation "org.robolectric:robolectric:4.5.1"
+    testImplementation 'androidx.test:core:1.3.0'
+    testImplementation 'androidx.test:runner:1.3.0'
+    testImplementation 'androidx.test:rules:1.3.0'
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'androidx.test.ext:truth:1.3.0'
+    testImplementation "com.google.truth:truth:1.1.2"
 
     // Android Testing
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
