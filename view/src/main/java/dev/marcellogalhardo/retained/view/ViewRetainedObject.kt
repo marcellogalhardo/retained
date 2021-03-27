@@ -61,12 +61,10 @@ inline fun <reified T : Any> View.retain(
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> View.retainInActivity(
     key: String = id.toString(),
+    activity: FragmentActivity = findActivity(),
     noinline getDefaultArgs: (() -> Bundle)? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> {
-    val activity = findActivity()
-    return createRetainedObjectLazy(key, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
-}
+): Lazy<T> = createRetainedObjectLazy(key, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow() = findViewTreeViewModelStoreOwner()
