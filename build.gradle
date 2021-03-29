@@ -18,7 +18,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.0-beta06'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath("org.jmailen.gradle:kotlinter-gradle:3.3.0")
+        classpath("org.jmailen.gradle:kotlinter-gradle:3.4.0")
         classpath("name.remal:gradle-plugins:1.1.6")
     }
 }
@@ -39,6 +39,10 @@ allprojects {
 subprojects {
     // KTLint plugin: https://github.com/jeremymailen/kotlinter-gradle
     plugins.apply("org.jmailen.kotlinter")
+}
+
+task check {
+    dependsOn "installKotlinterPrePushHook"
 }
 
 task clean(type: Delete) {

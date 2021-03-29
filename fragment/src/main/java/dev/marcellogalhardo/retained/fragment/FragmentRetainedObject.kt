@@ -39,7 +39,7 @@ inline fun <reified T : Any> Fragment.retain(
     noinline getDefaultArgs: () -> Bundle = { arguments ?: bundleOf() },
     noinline getFragment: () -> Fragment = { this },
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, getFragment, getFragment, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, getFragment, getFragment, getDefaultArgs, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -62,7 +62,7 @@ inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = { activity?.intent?.extras ?: bundleOf() },
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, ::requireActivity, ::requireActivity, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, ::requireActivity, ::requireActivity, getDefaultArgs, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the parent
@@ -86,7 +86,7 @@ inline fun <reified T : Any> Fragment.retainInParent(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = ::parentDefaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, ::parentViewModelStoreOwner, ::parentSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, ::parentViewModelStoreOwner, ::parentSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
 
 @PublishedApi
 internal val Fragment.parentDefaultArgs: Bundle
