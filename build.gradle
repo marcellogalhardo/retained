@@ -41,6 +41,10 @@ subprojects {
     plugins.apply("org.jmailen.kotlinter")
 }
 
+task check {
+    dependsOn "installKotlinterPrePushHook"
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
