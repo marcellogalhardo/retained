@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
+import dev.marcellogalhardo.retained.core.GetDefaultArgs
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
@@ -36,10 +37,10 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
-    noinline getDefaultArgs: () -> Bundle = { arguments ?: bundleOf() },
+    noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline getFragment: () -> Fragment = { this },
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, getFragment, getFragment, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, getFragment, getFragment, getDefaultArgs ?: { arguments ?: bundleOf() }, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
