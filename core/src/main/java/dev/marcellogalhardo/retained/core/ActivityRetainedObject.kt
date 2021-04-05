@@ -1,7 +1,6 @@
 package dev.marcellogalhardo.retained.core
 
 import android.app.Application
-import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 
@@ -24,6 +23,6 @@ import androidx.core.os.bundleOf
 @OptIn(InternalRetainedApi::class)
 inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
-    noinline getDefaultArgs: () -> Bundle = { intent?.extras ?: bundleOf() },
+    noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, { this }, { this }, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, { this }, { this }, getDefaultArgs ?: { intent?.extras ?: bundleOf() }, createRetainedObject)

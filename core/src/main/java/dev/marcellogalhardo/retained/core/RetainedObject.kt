@@ -47,7 +47,7 @@ fun <T : Any> createRetainedObject(
     classRef: KClass<out T>,
     viewModelStoreOwner: ViewModelStoreOwner,
     savedStateRegistryOwner: SavedStateRegistryOwner,
-    defaultArgs: Bundle = bundleOf(),
+    defaultArgs: Bundle,
     createRetainedObject: (RetainedEntry) -> T
 ): T {
     val factory = RetainedViewModelFactory(
@@ -73,10 +73,10 @@ fun <T : Any> createRetainedObjectLazy(
     classRef: KClass<out T>,
     getViewModelStoreOwner: () -> ViewModelStoreOwner,
     getSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
-    getDefaultArgs: () -> Bundle = { bundleOf() },
+    getDefaultArgs: GetDefaultArgs? = null,
     createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
-    createRetainedObject(key, classRef, getViewModelStoreOwner(), getSavedStateRegistryOwner(), getDefaultArgs(), createRetainedObject)
+    createRetainedObject(key, classRef, getViewModelStoreOwner(), getSavedStateRegistryOwner(), getDefaultArgs?.invoke() ?: bundleOf(), createRetainedObject)
 }
 
 private class RetainedViewModel(
