@@ -41,7 +41,7 @@ inline fun <reified T : Any> View.retain(
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline getDefaultArgs: () -> Bundle = { findViewTreeLifecycleOwner()!!.defaultArgs },
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -64,7 +64,7 @@ inline fun <reified T : Any> View.retainInActivity(
     activity: FragmentActivity = findActivity(),
     noinline getDefaultArgs: (() -> Bundle)? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow() = findViewTreeViewModelStoreOwner()

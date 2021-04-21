@@ -33,5 +33,5 @@ inline fun <reified T : Any> View.retainInNavGraph(
     noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> {
     val backStackEntry by lazy(LazyThreadSafetyMode.NONE) { findNavController().getBackStackEntry(navGraphId) }
-    return createRetainedObjectLazy(key, { backStackEntry }, { backStackEntry }, getDefaultArgs ?: { backStackEntry.arguments ?: bundleOf() }, createRetainedObject)
+    return createRetainedObjectLazy(key, T::class, { backStackEntry }, { backStackEntry }, getDefaultArgs ?: { backStackEntry.arguments ?: bundleOf() }, createRetainedObject)
 }
