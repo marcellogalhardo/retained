@@ -2,13 +2,14 @@ package dev.marcellogalhardo.retained.compose
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
@@ -24,13 +25,10 @@ import dev.marcellogalhardo.retained.core.createRetainedObject
  * ```
  * @Composable
  * fun MyView() {
- *     val vm by retain { ViewModel() }
+ *     val vm = retain { ViewModel() }
  * }
  * class ViewModel(val name: String = "")
  * ```
- *
- * This property can be accessed only after the [LifecycleOwner] is ready to use Jetpack
- * [ViewModel], and access prior to that will result in [IllegalStateException].
  *
  * @see createRetainedObject
  */
@@ -42,7 +40,29 @@ inline fun <reified T : Any> retain(
     savedStateRegistryOwner: SavedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
     defaultArgs: Bundle = LocalLifecycleOwner.current.defaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T
-): T = createRetainedObject(key, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
+): T = createRetainedObject(key, T::class, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
+
+/**
+ * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
+ * [ComponentActivity]:
+ *
+ * ```
+ * @Composable
+ * fun MyView() {
+ *     val vm = retainInActivity { ViewModel() }
+ * }
+ * class ViewModel(val name: String = "")
+ * ```
+ *
+ * @see createRetainedObject
+ */
+@OptIn(InternalRetainedApi::class)
+@Composable
+inline fun <reified T : Any> retainInActivity(
+    key: String = T::class.java.name,
+    defaultArgs: Bundle = getActivity().intent?.extras ?: bundleOf(),
+    noinline createRetainedObject: (RetainedEntry) -> T
+): T = retain(key, getActivity(), getActivity(), defaultArgs, createRetainedObject)
 
 @PublishedApi
 internal val LifecycleOwner.defaultArgs: Bundle
@@ -52,3 +72,7 @@ internal val LifecycleOwner.defaultArgs: Bundle
         is NavBackStackEntry -> arguments
         else -> bundleOf()
     } ?: bundleOf()
+
+@PublishedApi
+@Composable
+internal fun getActivity(): ComponentActivity = LocalContext.current as ComponentActivity

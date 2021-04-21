@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.CoroutineScope
+import kotlin.reflect.KClass
 
 /**
  * Creates an retained instance scoped by a [LifecycleOwner] - [createRetainedObject] is used to
@@ -43,14 +44,16 @@ import kotlinx.coroutines.CoroutineScope
 @InternalRetainedApi
 fun <T : Any> createRetainedObject(
     key: String,
+    classRef: KClass<out T>,
     viewModelStoreOwner: ViewModelStoreOwner,
     savedStateRegistryOwner: SavedStateRegistryOwner,
-    defaultArgs: Bundle = bundleOf(),
+    defaultArgs: Bundle,
     createRetainedObject: (RetainedEntry) -> T
 ): T {
     val factory = RetainedViewModelFactory(
         owner = savedStateRegistryOwner,
         defaultArgs = defaultArgs,
+        classRef = classRef,
         createRetainedObject = createRetainedObject
     )
     val provider = ViewModelProvider(viewModelStoreOwner, factory)
@@ -67,15 +70,18 @@ fun <T : Any> createRetainedObject(
 @InternalRetainedApi
 fun <T : Any> createRetainedObjectLazy(
     key: String,
+    classRef: KClass<out T>,
     getViewModelStoreOwner: () -> ViewModelStoreOwner,
     getSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
-    getDefaultArgs: () -> Bundle = { bundleOf() },
+    getDefaultArgs: GetDefaultArgs? = null,
     createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
-    createRetainedObject(key, getViewModelStoreOwner(), getSavedStateRegistryOwner(), getDefaultArgs(), createRetainedObject)
+    createRetainedObject(key, classRef, getViewModelStoreOwner(), getSavedStateRegistryOwner(), getDefaultArgs?.invoke() ?: bundleOf(), createRetainedObject)
 }
 
 private class RetainedViewModel(
+    override val key: String,
+    override val classRef: KClass<out Any>,
     override val savedStateHandle: SavedStateHandle,
     createRetainedObject: (RetainedEntry) -> Any,
 ) : ViewModel(), RetainedEntry {
@@ -101,15 +107,16 @@ private class RetainedViewModel(
 private class RetainedViewModelFactory(
     owner: SavedStateRegistryOwner,
     defaultArgs: Bundle,
+    val classRef: KClass<out Any>,
     val createRetainedObject: (RetainedEntry) -> Any
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(
+    override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return RetainedViewModel(handle, createRetainedObject) as T
+        return RetainedViewModel(key, classRef, handle, createRetainedObject) as T
     }
 }
