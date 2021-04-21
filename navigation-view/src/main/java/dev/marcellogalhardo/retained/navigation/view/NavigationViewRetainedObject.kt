@@ -1,10 +1,10 @@
 package dev.marcellogalhardo.retained.navigation.view
 
-import android.os.Bundle
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import dev.marcellogalhardo.retained.core.GetDefaultArgs
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
@@ -29,7 +29,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
 inline fun <reified T : Any> View.retainInNavGraph(
     @IdRes navGraphId: Int,
     key: String = id.toString(),
-    noinline getDefaultArgs: (() -> Bundle)? = null,
+    noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> {
     val backStackEntry by lazy(LazyThreadSafetyMode.NONE) { findNavController().getBackStackEntry(navGraphId) }

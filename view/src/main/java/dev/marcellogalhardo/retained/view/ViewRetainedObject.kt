@@ -14,6 +14,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
+import dev.marcellogalhardo.retained.core.GetDefaultArgs
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
@@ -39,9 +40,9 @@ inline fun <reified T : Any> View.retain(
     key: String = id.toString(),
     noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
-    noinline getDefaultArgs: () -> Bundle = { findViewTreeLifecycleOwner()!!.defaultArgs },
+    noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
+): Lazy<T> = createRetainedObjectLazy(key, T::class, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs ?: { findViewTreeLifecycleOwner()!!.defaultArgs }, createRetainedObject)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -62,7 +63,7 @@ inline fun <reified T : Any> View.retain(
 inline fun <reified T : Any> View.retainInActivity(
     key: String = id.toString(),
     activity: FragmentActivity = findActivity(),
-    noinline getDefaultArgs: (() -> Bundle)? = null,
+    noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
 ): Lazy<T> = createRetainedObjectLazy(key, T::class, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
 
