@@ -1,3 +1,6 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+enableFeaturePreview("VERSION_CATALOGS")
+
 include ':sample'
 include ':core'
 include ':fragment'
