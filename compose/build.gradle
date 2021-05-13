@@ -39,8 +39,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion kotlin_version
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion libs.versions.kotlin.get()
+        kotlinCompilerExtensionVersion libs.versions.androidx.compose.get()
     }
 }
 
@@ -59,23 +59,22 @@ afterEvaluate {
 }
 
 dependencies {
-    api project(':core')
+    api projects.core
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation libs.kotlin.stdlib
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_version"
+    implementation libs.androidx.viewmodel.core
+    implementation libs.androidx.viewmodel.savedstate
+    implementation libs.androidx.viewmodel.compose
 
-    implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
-
-    implementation "androidx.activity:activity-ktx:$activity_version"
-    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation libs.androidx.navigation.compose
+    implementation libs.androidx.activity.core
+    implementation libs.androidx.fragment.core
 
     // Unit Testing
-    testImplementation "junit:junit:$junit_version"
+    implementation libs.junit.core
 
     // Android Testing
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 }

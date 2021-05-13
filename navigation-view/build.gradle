@@ -49,19 +49,19 @@ afterEvaluate {
 }
 
 dependencies {
-    api project(':core')
+    api projects.core
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation libs.kotlin.stdlib
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation libs.androidx.viewmodel.core
+    implementation libs.androidx.viewmodel.savedstate
 
-    implementation "androidx.navigation:navigation-runtime-ktx:$navigation_version"
+    implementation libs.androidx.navigation.runtime
 
     // Unit Testing
-    testImplementation "junit:junit:$junit_version"
+    testImplementation libs.junit.core
 
     // Android Testing
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 }
