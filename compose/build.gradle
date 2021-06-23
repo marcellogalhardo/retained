@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'maven-publish'
+
+ext {
+    PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
+    PUBLISH_VERSION = '0.11.0'
+    PUBLISH_ARTIFACT_ID = 'retained-compose'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     compileSdkVersion 30
@@ -41,20 +48,6 @@ android {
     composeOptions {
         kotlinCompilerVersion libs.versions.kotlin.get()
         kotlinCompilerExtensionVersion libs.versions.androidx.compose.get()
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-
-                groupId = 'dev.marcellogalhardo'
-                artifactId = 'retained-compose'
-                version = '1.0'
-            }
-        }
     }
 }
 

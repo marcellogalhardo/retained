@@ -14,7 +14,8 @@ buildscript {
 }
 
 plugins {
-    id 'com.autonomousapps.dependency-analysis' version "0.73.0"
+    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
+    id "com.autonomousapps.dependency-analysis" version "0.73.0"
 }
 
 allprojects {
@@ -29,6 +30,8 @@ subprojects {
     // KTLint plugin: https://github.com/jeremymailen/kotlinter-gradle
     plugins.apply("org.jmailen.kotlinter")
 }
+
+apply from: "$rootDir/scripts/publish-root.gradle"
 
 task check {
     dependsOn "installKotlinterPrePushHook"

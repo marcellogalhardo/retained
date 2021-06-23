@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'maven-publish'
+
+ext {
+    PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
+    PUBLISH_VERSION = '0.11.0'
+    PUBLISH_ARTIFACT_ID = 'retained-core'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     compileSdkVersion 30
@@ -36,20 +43,6 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
-        }
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-
-                groupId = 'dev.marcellogalhardo'
-                artifactId = 'retained-core'
-                version = '1.0'
-            }
         }
     }
 }
