@@ -3,7 +3,6 @@
 A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., `Activity`, `Fragment` & `NavBackStackEntry`) retain instances on Android.
 
 - Eliminate `ViewModel` inheritance.
-- Eliminate `SavedStateHandle` complexity.
 - Eliminate `ViewModelProvider.Factory` need.
 - Easy access to `ViewModel` scoped properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and many others.
 - Enable composition: callbacks can be listened with `OnClearedListener`.
@@ -15,9 +14,9 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 **Step 1.** Add it in your root *build.gradle* at the end of repositories:
 ```gradle
 allprojects {
-	repositories {
-		maven { url "https://jitpack.io" }
-	}
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
 }
 ```
 
@@ -42,61 +41,37 @@ dependencies {
 
 ## Usage
 
-The following sections demonstrate how to retain instances in activities and fragments.
-
-For simplicity, all examples will retain the following class:
+The following sections demonstrate how to retain instances in activities and fragments. For simplicity, all examples will retain the following class:
 
 ```kotlin
 data class ViewModel(var counter: Int = 0)
 ```
 
-### Use Retained in an Activity
-
-To retain an instance with an `Activity`, do:
+### Use Retained in Activities and Fragments
 
 ```kotlin
+// retain an instance in an Activity:
 class CounterActivity : AppCompatActivity() {
-
-    private val viewModel: ViewModel by retain { ViewModel(counter = 5) }
-}
-```
-
-### Use Retained in a Fragment
-
-To retain an instance with a `Fragment`, do:
-
-```kotlin
-class CounterFragment : Fragment() {
-
     private val viewModel: ViewModel by retain { ViewModel() }
 }
-```
 
-#### Share a Retained between fragments
-
-To share a Retained instance between one or more `Fragment`, do:
-
-```kotlin
+// retain an instance in a Fragment:
 class CounterFragment : Fragment() {
+    private val viewModel: ViewModel by retain { ViewModel() }
+}
 
+// share an instance between Fragments scoped to the Activity
+class CounterFragment : Fragment() {
     private val sharedViewModel: ViewModel by retainInActivity { ViewModel() }
 }
-```
 
-### Use Retained in a NavGraph
-
-To retain an instance with a `NavGraph`, do:
-
-```kotlin
+// share an instance between Fragments scoped to the NavGraph
 class CounterFragment : Fragment() {
-
-    private val viewModel: ViewModel by retainInNavGraph(R.navigation.child_graph) { ViewModel() }
+    private val viewModel: ViewModel by retainInNavGraph(R.navigation.nav_graph) { ViewModel() }
 }
 ```
 
 ### Use Retained in Compose
-
-To retain an instance in Compose, do:
 
 ```kotlin
 @Composable
@@ -117,8 +92,6 @@ fun SampleView() {
 
 ### Advanced usage
 
-Retained includes support for Kotlin coroutines, `SavedStateHandle`, and more.
-
 #### Custom parameters from Jetpack's ViewModel
 
 When retaining an instance, you have access to a `RetainedEntry` which contains all parameters you might need.
@@ -127,6 +100,30 @@ When retaining an instance, you have access to a `RetainedEntry` which contains 
 @Composable
 fun SampleView() {
     val viewModel = retain { entry -> ViewModel(entry.scope) }
+    // ...
+}
+```
+
+The entry exposes a `SavedStateHandle` that can be used to work with the saved state, just like in a regular Android `ViewModel`.
+
+```kotlin
+class CounterFragment : Fragment() {
+    private val viewModel: ViewModel by retain { entry -> 
+        ViewModel(counter = entry.savedStateHandle.get<Int>("count"))
+    }
+    // ...
+}
+```
+
+It also exposes a `CoroutineScope` that works just like `viewModelScope` from the Android `ViewModel`.
+
+```kotlin
+class Presenter(scope: CoroutineScope) { ... }
+
+fun SampleFragment() {
+    private val presenter: Presenter by retain { entry -> 
+        Presenter(scope = entry.scope)
+    }
     // ...
 }
 ```
@@ -150,6 +147,19 @@ fun SampleView() {
 ```
 
 As a convenience, if the retained instance implements the `OnClearedListener` interface, it will be automatically added to `onClearedListeners` and notified.
+
+#### View support
+
+Besides Activities and Fragments, it's also possible to retain instances in a view. There are a couple of extra modules for that:
+
+```gradle
+dependencies {
+    implementation 'com.github.marcellogalhardo.retained:retained-view:{Tag}'
+    implementation 'com.github.marcellogalhardo.retained:retained-view-navigation:{Tag}'
+}
+```
+
+The `retained-view` module exposes `retainInActivity` and `retain`, which will scope the instance to the parent being it an activity or a fragment. The `retained-view-navigation` module exposes `retainInNavGraph` to retain instances scoped to the `NavGraph`.
 
 License
 -------
