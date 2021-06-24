@@ -42,9 +42,9 @@ dependencies {
 
 ## Usage
 
-The following sections demonstrate the use of generated binding classes in activities and fragments.
+The following sections demonstrate how to retain instances in activities and fragments.
 
-First, declare the class you would like to retain. For simplicity, we will use the following one:
+For simplicity, all examples will retain the following class:
 
 ```kotlin
 data class ViewModel(var counter: Int = 0)
