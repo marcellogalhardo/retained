@@ -1,9 +1,7 @@
 package dev.marcellogalhardo.retained.navigation
 
-import androidx.annotation.IdRes
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import dev.marcellogalhardo.retained.core.InstantiateRetained
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
