@@ -1,8 +1,14 @@
 # Retained Instance
 
-A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., Activity, Fragment & Composable) retain instances on Android.
+A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., `Activity`, `Fragment` & `NavBackStackEntry`) retain instances on Android.
 
-**Motivation:** Retained was a single file that I was copying into all side-projects I make with Kotlin Multiplatform to abstract Android Jetpack's ViewModel. Now it is a library to avoid copy and paste. (:
+- Eliminate `ViewModel` inheritance.
+- Eliminate `SavedStateHandle` complexity.
+- Eliminate `ViewModelProvider.Factory` need.
+- Easy access to `ViewModel` scoped properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and many others.
+- Enable composition: callbacks can be listened with `OnClearedListener`.
+
+**Motivation:** Retained was originally created to share a `ViewModel` in Kotlin Multiplatform projects between Android & iOS with ease.
 
 ## Download
 
@@ -18,81 +24,104 @@ allprojects {
 **Step 2.** Add the dependency
 ```gradle
 dependencies {
-    // For Activity support.
-    implementation 'com.github.marcellogalhardo.retained:retained-core:{Tag}'
+    // `Activity` support
+    implementation 'com.github.marcellogalhardo.retained:retained-activity:{Tag}'
 
-    // For Fragment support. You don't need to add retained-core - it is included as `api` by default.
+    // `Fragment` support, includes `Activity` support
     implementation 'com.github.marcellogalhardo.retained:retained-fragment:{Tag}'
 
-    // For Compose support. You don't need to add retained-core - it is included as `api` by default.
-    implementation 'com.github.marcellogalhardo.retained:retained-compose:{Tag}'
+    // Navigation support
+    implementation 'com.github.marcellogalhardo.retained:retained-navigation:{Tag}'
+
+    // Navigation with Fragment support, includes `Navigation` support
+    implementation 'com.github.marcellogalhardo.retained:retained-navigation-fragment:{Tag}'
 }
 ```
+
 (Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases): [![](https://jitpack.io/v/marcellogalhardo/retained.svg)](https://jitpack.io/#marcellogalhardo/retained))
 
 ## Usage
 
-Create the object that you want to retain instances.
+The following sections demonstrate the use of generated binding classes in activities and fragments.
+
+First, declare the class you would like to retain. For simplicity, we will use the following one:
 
 ```kotlin
 data class ViewModel(var counter: Int = 0)
 ```
 
-Now retain it on any UIController:
+### Use Retained in an Activity
+
+To retain an instance with an `Activity`, do:
 
 ```kotlin
-class SampleActivity : AppCompatActivity() {
+class CounterActivity : AppCompatActivity() {
 
     private val viewModel: ViewModel by retain { ViewModel(counter = 5) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // ...
-        Log.v("ViewModel.Counter", viewModel.counter.toString())
-        viewModel.counter++
-    }
 }
 ```
 
-Rotate the screen and check the instance will be retained across configuration changes.
+### Use Retained in a Fragment
 
-### Fragments
-
-We support Fragments with same API:
+To retain an instance with a `Fragment`, do:
 
 ```kotlin
-class SampleFragment : Fragment() {
+class CounterFragment : Fragment() {
 
     private val viewModel: ViewModel by retain { ViewModel() }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // ...
-        Log.v("ViewModel.Counter", viewModel.counter.toString())
-        viewModel.counter++
-    }
 }
 ```
 
-### Jetpack Compose
+#### Share a Retained between fragments
 
-Again, same API:
+To share a Retained instance between one or more `Fragment`, do:
+
+```kotlin
+class CounterFragment : Fragment() {
+
+    private val sharedViewModel: ViewModel by retainInActivity { ViewModel() }
+}
+```
+
+### Use Retained in a NavGraph
+
+To retain an instance with a `NavGraph`, do:
+
+```kotlin
+class CounterFragment : Fragment() {
+
+    private val viewModel: ViewModel by retainInNavGraph(R.navigation.child_graph) { ViewModel() }
+}
+```
+
+### Use Retained in Compose
+
+To retain an instance in Compose, do:
 
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel = retain { ViewModel() }
-    // ...
-    Log.v("ViewModel.Counter", viewModel.counter.toString())
-    viewModel.counter++
+    // Using an Activity
+    val activity: ComponentActivity // find Activity
+    val viewModel by activity.retain { ViewModel() }
+
+    // Using an Activity
+    val fragment: Fragment // find Fragment
+    val viewModel by fragment.retain { ViewModel() }
+
+    // Using NavBackStackEntry
+    val navBackStackEntry: NavBackStackEntry // find NavBackStackEntry
+    val viewModel by navBackStackEntry.retain { ViewModel() }
 }
 ```
 
 ### Advanced usage
 
+Retained includes support for Kotlin coroutines, `SavedStateHandle`, and more.
+
 #### Custom parameters from Jetpack's ViewModel
 
-When creating an object you might want to access the `RetainedEntry` to get runtime parameters like `savedStateHandle: SavedStateHandle` or `scope: CoroutineScope` (`viewModelScope`) to assisted inject your retained instance.
+When retaining an instance, you have access to a `RetainedEntry` which contains all parameters you might need.
 
 ```kotlin
 @Composable
@@ -102,22 +131,25 @@ fun SampleView() {
 }
 ```
 
-#### Listening onCleared calls
+For more details, see `RetainedEntry`.
 
-When creating an object you might be interest to know when it will be cleared by the Android system. For that, you can set a listener to `entry.onClearedListeners` and any listener will be invoked when the host [ViewModel.onCleared](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html#onCleared()) is invoked.
+#### Listening `onCleared` calls
+
+When retaining an instance, you can use the `RetainedEntry` to be notified when a retained instance is cleared (`ViewModel.onCleared`).
 
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel = retain { entry -> 
-        entry.onClearedListeners += { println("Invoked when the host 'ViewModel.onCleared' is called") }
-        // ...
+    val viewModel by retain { entry ->
+        entry.onClearedListeners += {
+            println("Invoked when the host 'ViewModel.onCleared' is called")
+        }
     }
     // ...
 }
 ```
 
-As a convenience, if your retained object implements `OnClearedListener` we will auto register it to the `onClearedListeners`.
+As a convenience, if the retained instance implements the `OnClearedListener` interface, it will be automatically added to `onClearedListeners` and notified.
 
 License
 -------
