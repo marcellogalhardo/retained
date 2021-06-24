@@ -19,11 +19,11 @@ internal class RetainedViewModel(
 
     override val onClearedListeners: MutableCollection<OnClearedListener> = mutableSetOf()
 
-    val retainedObject: Any = createRetainedObject(this)
+    val retainedInstance: Any = createRetainedObject(this)
 
     init {
-        if (retainedObject is OnClearedListener) {
-            onClearedListeners += retainedObject
+        if (retainedInstance is OnClearedListener) {
+            onClearedListeners += retainedInstance
         }
     }
 

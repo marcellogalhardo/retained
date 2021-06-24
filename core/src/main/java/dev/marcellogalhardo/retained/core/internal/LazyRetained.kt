@@ -1,6 +1,5 @@
 package dev.marcellogalhardo.retained.core.internal
 
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.GetDefaultArgs
@@ -20,16 +19,15 @@ internal class LazyRetained<out T : Any>(
 ) : Retained<T> {
 
     override val value: T by lazy(LazyThreadSafetyMode.NONE) {
-        val factory = RetainedViewModelFactory(
-            owner = getSavedStateRegistryOwner(),
-            defaultArgs = getDefaultArgs?.invoke(),
+        val retained = EagerRetained(
+            key = key,
             retainedClass = retainedClass,
+            viewModelStoreOwner = getViewModelStoreOwner(),
+            savedStateRegistryOwner = getSavedStateRegistryOwner(),
+            defaultArgs = getDefaultArgs?.invoke(),
             initializer = initializer
         )
-        val provider = ViewModelProvider(getViewModelStoreOwner(), factory)
-
-        @Suppress("UNCHECKED_CAST")
-        return@lazy provider.get(key, RetainedViewModel::class.java).retainedObject as T
+        return@lazy retained.value
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
