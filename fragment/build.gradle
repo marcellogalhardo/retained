@@ -50,6 +50,7 @@ android {
 
 dependencies {
     api projects.core
+    api projects.activity
 
     implementation libs.kotlin.stdlib
 

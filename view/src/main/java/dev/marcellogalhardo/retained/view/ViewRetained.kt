@@ -14,7 +14,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
-import dev.marcellogalhardo.retained.core.GetDefaultArgs
+import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
@@ -34,16 +34,16 @@ import dev.marcellogalhardo.retained.core.retain
  * This property can be accessed only after this [View] is attached, i.e. after
  * [View.onAttachedToWindow], and access prior to that will result in [IllegalStateException].
  *
- * @see initializer
+ * @see retain
  */
 @OptIn(InternalRetainedApi::class)
+@ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retain(
     key: String = id.toString(),
     noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
-    noinline getDefaultArgs: GetDefaultArgs? = null,
-    noinline initializer: (RetainedEntry) -> T
-): Retained<T> = retain(key, T::class, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs ?: { findViewTreeLifecycleOwner()!!.defaultArgs }, initializer)
+    noinline instantiate: (RetainedEntry) -> T
+): Retained<T> = retain(key, getViewModelStoreOwner, getSavedStateRegistryOwner, { findViewTreeLifecycleOwner()!!.defaultArgs }, instantiate)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -58,15 +58,15 @@ public inline fun <reified T : Any> View.retain(
  *
  * This property can be accessed as soon as this [View] is instantiated.
  *
- * @see initializer
+ * @see retain
  */
 @OptIn(InternalRetainedApi::class)
+@ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retainInActivity(
     key: String = id.toString(),
     activity: FragmentActivity = findActivity(),
-    noinline getDefaultArgs: GetDefaultArgs? = null,
-    noinline initializer: (RetainedEntry) -> T
-): Retained<T> = retain(key, T::class, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, initializer)
+    noinline instantiate: (RetainedEntry) -> T
+): Retained<T> = retain(key, { activity }, { activity }, { activity.intent?.extras }, instantiate)
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner = findViewTreeViewModelStoreOwner()

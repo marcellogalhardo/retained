@@ -16,14 +16,14 @@ internal class EagerRetained<out T : Any>(
     viewModelStoreOwner: ViewModelStoreOwner,
     savedStateRegistryOwner: SavedStateRegistryOwner,
     defaultArgs: Bundle? = null,
-    initializer: (RetainedEntry) -> T,
+    instantiate: (RetainedEntry) -> T,
 ) : Retained<T> {
 
     private val factory = RetainedViewModelFactory(
         owner = savedStateRegistryOwner,
         defaultArgs = defaultArgs,
         retainedClass = retainedClass,
-        initializer = initializer,
+        instantiate = instantiate,
     )
 
     private val provider = ViewModelProvider(viewModelStoreOwner, factory)

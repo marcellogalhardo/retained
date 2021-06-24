@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.internal.LazyRetained
 import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KClass
 
 /**
  * Represents a value retained across configuration changes with lazy initialization.
@@ -24,7 +23,7 @@ public interface Retained<out T : Any> : ReadOnlyProperty<Any?, T> {
 }
 
 /**
- * Creates an retained instance scoped by a [LifecycleOwner] - [initializer] is used to
+ * Creates an retained instance scoped by a [LifecycleOwner] - [instantiate] is used to
  * create the instance on the first time.
  *
  * A retained object is always created in association with a [LifecycleOwner] (`Fragment`,
@@ -46,26 +45,46 @@ public interface Retained<out T : Any> : ReadOnlyProperty<Any?, T> {
  * [ViewModel], and access prior to that will result in [IllegalStateException].
  *
  * @param key A String that will be used to identify the retained instance in this scope.
- * @param retainedClass A [KClass] that will be used to identify the retained instance in this scope.
- * @param getViewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
- * @param getSavedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
- * @param getDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
- * @param initializer The factory function that will be used to create the retained object.
+ * @param findViewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
+ * @param findSavedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
+ * @param findDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
+ * @param instantiate The factory function that will be used to create the retained object.
  */
-public fun <T : Any> retain(
-    key: String,
-    retainedClass: KClass<T>,
-    getViewModelStoreOwner: () -> ViewModelStoreOwner,
-    getSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
-    getDefaultArgs: () -> Bundle,
-    initializer: (RetainedEntry) -> T,
+@InternalRetainedApi
+public inline fun <reified T : Any> retain(
+    key: String = T::class.java.name,
+    noinline findViewModelStoreOwner: () -> ViewModelStoreOwner,
+    noinline findSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
+    noinline findDefaultArgs: FindDefaultArgs?,
+    noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> {
     return LazyRetained(
         key,
-        retainedClass,
-        getViewModelStoreOwner,
-        getSavedStateRegistryOwner,
-        getDefaultArgs,
-        initializer
+        T::class,
+        findViewModelStoreOwner,
+        findSavedStateRegistryOwner,
+        findDefaultArgs,
+        instantiate
+    )
+}
+
+/**
+ * @see retain
+ */
+@InternalRetainedApi
+public inline fun <reified T : Any, Owner> retain(
+    key: String = T::class.java.name,
+    noinline findOwner: () -> Owner,
+    noinline findDefaultArgs: FindParametrizedDefaultArgs<Owner>?,
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> where Owner : ViewModelStoreOwner,
+                     Owner : SavedStateRegistryOwner {
+    return LazyRetained(
+        key,
+        T::class,
+        findOwner,
+        findOwner,
+        { findDefaultArgs?.invoke(findOwner()) },
+        instantiate
     )
 }

@@ -3,7 +3,7 @@ package dev.marcellogalhardo.retained.sample
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import dev.marcellogalhardo.retained.core.retain
+import dev.marcellogalhardo.retained.activity.retain
 
 class SampleActivity : AppCompatActivity() {
 
