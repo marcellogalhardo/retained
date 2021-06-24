@@ -4,7 +4,11 @@ import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import dev.marcellogalhardo.retained.core.*
+import dev.marcellogalhardo.retained.core.GetDefaultArgs
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
+import dev.marcellogalhardo.retained.core.Retained
+import dev.marcellogalhardo.retained.core.RetainedEntry
+import dev.marcellogalhardo.retained.core.retain
 
 /**
  * Returns a [Lazy] delegate to access a retained object scoped to a navigation graph present on the

@@ -7,7 +7,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import dev.marcellogalhardo.retained.core.*
+import dev.marcellogalhardo.retained.core.GetDefaultArgs
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
+import dev.marcellogalhardo.retained.core.Retained
+import dev.marcellogalhardo.retained.core.RetainedEntry
+import dev.marcellogalhardo.retained.core.retain
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this [Fragment]:
