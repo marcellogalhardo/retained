@@ -20,4 +20,4 @@ package dev.marcellogalhardo.retained.core
         "Retained on [GitHub](https://github.com/marcellogalhardo/retained) so stable API could" +
         " be provided instead."
 )
-annotation class InternalRetainedApi
+public annotation class InternalRetainedApi

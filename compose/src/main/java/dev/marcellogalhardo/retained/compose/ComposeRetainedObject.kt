@@ -34,7 +34,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
 @Composable
-inline fun <reified T : Any> retain(
+public inline fun <reified T : Any> retain(
     key: String = T::class.java.name,
     viewModelStoreOwner: ViewModelStoreOwner = requireNotNull(LocalViewModelStoreOwner.current),
     savedStateRegistryOwner: SavedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
@@ -58,7 +58,7 @@ inline fun <reified T : Any> retain(
  */
 @OptIn(InternalRetainedApi::class)
 @Composable
-inline fun <reified T : Any> retainInActivity(
+public inline fun <reified T : Any> retainInActivity(
     key: String = T::class.java.name,
     defaultArgs: Bundle = getActivity().intent?.extras ?: bundleOf(),
     noinline createRetainedObject: (RetainedEntry) -> T

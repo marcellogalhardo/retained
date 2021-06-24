@@ -36,7 +36,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> View.retain(
+public inline fun <reified T : Any> View.retain(
     key: String = id.toString(),
     noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
@@ -60,7 +60,7 @@ inline fun <reified T : Any> View.retain(
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> View.retainInActivity(
+public inline fun <reified T : Any> View.retainInActivity(
     key: String = id.toString(),
     activity: FragmentActivity = findActivity(),
     noinline getDefaultArgs: GetDefaultArgs? = null,
@@ -68,7 +68,7 @@ inline fun <reified T : Any> View.retainInActivity(
 ): Lazy<T> = createRetainedObjectLazy(key, T::class, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
 
 @PublishedApi
-internal fun View.findViewModelStoreOwnerOrThrow() = findViewTreeViewModelStoreOwner()
+internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner = findViewTreeViewModelStoreOwner()
     ?: throw IllegalStateException("Your view is not yet attached, and thus its ViewModelStoreOwner is null.")
 
 @PublishedApi

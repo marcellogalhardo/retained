@@ -42,7 +42,7 @@ import kotlin.reflect.KClass
  * @param createRetainedObject The factory function that will be used to create the retained object.
  */
 @InternalRetainedApi
-fun <T : Any> createRetainedObject(
+public fun <T : Any> createRetainedObject(
     key: String,
     classRef: KClass<out T>,
     viewModelStoreOwner: ViewModelStoreOwner,
@@ -68,7 +68,7 @@ fun <T : Any> createRetainedObject(
  * @see createRetainedObject
  */
 @InternalRetainedApi
-fun <T : Any> createRetainedObjectLazy(
+public fun <T : Any> createRetainedObjectLazy(
     key: String,
     classRef: KClass<out T>,
     getViewModelStoreOwner: () -> ViewModelStoreOwner,
