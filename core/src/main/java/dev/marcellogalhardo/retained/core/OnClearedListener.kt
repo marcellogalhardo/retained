@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 /**
  * Listener added to [RetainedEntry.onClearedListeners].
  */
-fun interface OnClearedListener {
+public fun interface OnClearedListener {
 
     /**
      * Called when [ViewModel.onCleared] is called.
      */
-    fun onCleared()
+    public fun onCleared()
 }

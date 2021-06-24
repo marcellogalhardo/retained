@@ -2,4 +2,4 @@ package dev.marcellogalhardo.retained.core
 
 import android.os.Bundle
 
-typealias GetDefaultArgs = () -> Bundle
+public typealias GetDefaultArgs = () -> Bundle
