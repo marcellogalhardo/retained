@@ -1,8 +1,7 @@
-package dev.marcellogalhardo.retained.fragment
+package dev.marcellogalhardo.retained.activity
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dev.marcellogalhardo.retained.core.OnClearedListener
@@ -12,33 +11,27 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class FragmentRetainedObjectTest {
+internal class ActivityRetainedObjectTest {
 
     @Test
-    fun `should retain object when owner is recreated`() {
-        launchFragmentInContainer { CounterFragment() }.apply {
-            onFragment { sut ->
+    fun `should retain object when Activity is recreated`() {
+        launchActivity<dev.marcellogalhardo.retained.activity.test.EmptyActivity>().apply {
+            onActivity { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
-                val vmInActivity by sut.retainInActivity { entry -> CounterViewModel(entry) }
-
                 vm.count += 1
-                vmInActivity.count += 3
             }
             recreate()
-            onFragment { sut ->
+            onActivity { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
-                val vmInActivity by sut.retainInActivity { entry -> CounterViewModel(entry) }
-
                 assertThat(vm.count).isEqualTo(1)
-                assertThat(vmInActivity.count).isEqualTo(3)
             }
         }
     }
 
     @Test
     fun `should request correct 'key' when creating a retained object`() {
-        launchFragmentInContainer { CounterFragment() }.apply {
-            onFragment { sut ->
+        launchActivity<dev.marcellogalhardo.retained.activity.test.EmptyActivity>().apply {
+            onActivity { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
 
                 assertThat(vm.entry.key).isEqualTo(CounterViewModel::class.java.name)
@@ -48,8 +41,8 @@ internal class FragmentRetainedObjectTest {
 
     @Test
     fun `should request correct 'classRef' when creating a retained object`() {
-        launchFragmentInContainer { CounterFragment() }.apply {
-            onFragment { sut ->
+        launchActivity<dev.marcellogalhardo.retained.activity.test.EmptyActivity>().apply {
+            onActivity { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
 
                 assertThat(vm.entry.retainedClass).isEqualTo(CounterViewModel::class)
@@ -59,9 +52,9 @@ internal class FragmentRetainedObjectTest {
 
     @Test
     fun `should call 'onClearedListeners' when scope is destroyed`() {
-        launchFragmentInContainer { CounterFragment() }.apply {
+        launchActivity<dev.marcellogalhardo.retained.activity.test.EmptyActivity>().apply {
             var vm: Retained<CounterViewModel>? = null
-            onFragment { sut ->
+            onActivity { sut ->
                 vm = sut.retain { entry -> CounterViewModel(entry) }
             }
             assertThat(vm?.value?.isCleared).isFalse()
@@ -85,5 +78,3 @@ internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
         isCleared = true
     }
 }
-
-internal class CounterFragment : Fragment()

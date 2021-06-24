@@ -1,6 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
+    PUBLISH_VERSION = '0.11.0'
+    PUBLISH_ARTIFACT_ID = 'retained-activity'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -31,6 +39,12 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn", "-Xexplicit-api=strict"]
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -42,13 +56,17 @@ dependencies {
     implementation libs.androidx.viewmodel.savedstate
 
     implementation libs.androidx.activity.core
-    implementation libs.androidx.fragment.core
-    implementation libs.androidx.navigation.runtime
 
     // Unit Testing
     testImplementation libs.junit.core
+    testImplementation libs.robolectric.core
+    testImplementation libs.androidx.test.core
+    testImplementation libs.androidx.test.runner
+    testImplementation libs.androidx.test.rules
+    testImplementation libs.androidx.test.junit
+    testImplementation libs.androidx.test.truth
+    testImplementation libs.google.truth
 
     // Android Testing
     androidTestImplementation libs.androidx.test.junit
-    androidTestImplementation libs.androidx.test.espresso
 }

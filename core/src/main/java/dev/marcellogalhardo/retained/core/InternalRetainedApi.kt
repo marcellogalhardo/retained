@@ -12,12 +12,5 @@ package dev.marcellogalhardo.retained.core
     AnnotationTarget.TYPEALIAS,
     AnnotationTarget.PROPERTY
 )
-@RequiresOptIn(
-    level = RequiresOptIn.Level.ERROR,
-    message = "This is an internal `dev.marcellogalhardo.retained` API that should not be used from " +
-        "outside of `dev.marcellogalhardo.retained`. No compatibility guarantees are provided." +
-        " It is recommended to report your use-case of internal API to the maintainers of " +
-        "Retained on [GitHub](https://github.com/marcellogalhardo/retained) so stable API could" +
-        " be provided instead."
-)
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
 public annotation class InternalRetainedApi

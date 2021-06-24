@@ -2,6 +2,6 @@
     package="dev.marcellogalhardo.retained.core">
 
     <application>
-        <activity android:name="dev.marcellogalhardo.retained.core.test.EmptyActivity" />
+        <activity android:name="dev.marcellogalhardo.retained.core.dev.marcellogalhardo.retained.activity.test.EmptyActivity" />
     </application>
 </manifest>

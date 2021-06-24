@@ -49,6 +49,7 @@ android {
 
 dependencies {
     api projects.core
+    api projects.navigation
 
     implementation libs.kotlin.stdlib
 

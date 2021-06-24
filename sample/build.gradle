@@ -34,8 +34,8 @@ android {
 
 dependencies {
     implementation projects.core
+    implementation projects.activity
     implementation projects.fragment
-    implementation projects.compose
     implementation projects.view
 
     implementation libs.kotlin.stdlib

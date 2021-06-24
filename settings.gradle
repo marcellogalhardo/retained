@@ -3,8 +3,11 @@ enableFeaturePreview("VERSION_CATALOGS")
 
 include ':sample'
 include ':core'
+include ':activity'
 include ':fragment'
-include ':compose'
-include ':view'
+include ':navigation'
 include ':navigation-fragment'
+
+// Experimental
 include ':navigation-view'
+include ':view'

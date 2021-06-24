@@ -12,7 +12,7 @@ internal class RetainedViewModelFactory(
     owner: SavedStateRegistryOwner,
     defaultArgs: Bundle?,
     val retainedClass: KClass<out Any>,
-    val initializer: (RetainedEntry) -> Any
+    val instantiate: (RetainedEntry) -> Any
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
     @Suppress("UNCHECKED_CAST")
@@ -21,6 +21,6 @@ internal class RetainedViewModelFactory(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return RetainedViewModel(key, retainedClass, handle, initializer) as T
+        return RetainedViewModel(key, retainedClass, handle, instantiate) as T
     }
 }
