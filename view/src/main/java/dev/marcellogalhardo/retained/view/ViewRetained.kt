@@ -16,8 +16,9 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.GetDefaultArgs
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
+import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
-import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
+import dev.marcellogalhardo.retained.core.retain
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -33,16 +34,16 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * This property can be accessed only after this [View] is attached, i.e. after
  * [View.onAttachedToWindow], and access prior to that will result in [IllegalStateException].
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> View.retain(
+public inline fun <reified T : Any> View.retain(
     key: String = id.toString(),
     noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
     noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline getDefaultArgs: GetDefaultArgs? = null,
-    noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs ?: { findViewTreeLifecycleOwner()!!.defaultArgs }, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, T::class, getViewModelStoreOwner, getSavedStateRegistryOwner, getDefaultArgs ?: { findViewTreeLifecycleOwner()!!.defaultArgs }, initializer)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -57,18 +58,18 @@ inline fun <reified T : Any> View.retain(
  *
  * This property can be accessed as soon as this [View] is instantiated.
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> View.retainInActivity(
+public inline fun <reified T : Any> View.retainInActivity(
     key: String = id.toString(),
     activity: FragmentActivity = findActivity(),
     noinline getDefaultArgs: GetDefaultArgs? = null,
-    noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, T::class, { activity }, { activity }, getDefaultArgs ?: { activity.intent?.extras ?: bundleOf() }, initializer)
 
 @PublishedApi
-internal fun View.findViewModelStoreOwnerOrThrow() = findViewTreeViewModelStoreOwner()
+internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner = findViewTreeViewModelStoreOwner()
     ?: throw IllegalStateException("Your view is not yet attached, and thus its ViewModelStoreOwner is null.")
 
 @PublishedApi

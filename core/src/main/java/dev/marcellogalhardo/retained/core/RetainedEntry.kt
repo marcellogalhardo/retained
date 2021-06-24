@@ -10,30 +10,30 @@ import kotlin.reflect.KClass
  *
  * If the host is terminated (e.g., pop back stack) [onClearedListeners] will be called.
  */
-interface RetainedEntry {
+public interface RetainedEntry {
 
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */
-    val key: String
+    public val key: String
 
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */
-    val classRef: KClass<out Any>
+    public val retainedClass: KClass<out Any>
 
     /**
      * @see [androidx.lifecycle.viewModelScope]
      */
-    val scope: CoroutineScope
+    public val scope: CoroutineScope
 
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory]
      */
-    val savedStateHandle: SavedStateHandle
+    public val savedStateHandle: SavedStateHandle
 
     /**
      * @see [androidx.lifecycle.ViewModel.onCleared]
      */
-    val onClearedListeners: MutableCollection<OnClearedListener>
+    public val onClearedListeners: MutableCollection<OnClearedListener>
 }

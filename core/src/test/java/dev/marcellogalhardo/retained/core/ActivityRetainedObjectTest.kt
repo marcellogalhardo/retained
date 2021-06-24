@@ -43,7 +43,7 @@ internal class ActivityRetainedObjectTest {
             onActivity { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
 
-                assertThat(vm.entry.classRef).isEqualTo(CounterViewModel::class)
+                assertThat(vm.entry.retainedClass).isEqualTo(CounterViewModel::class)
             }
         }
     }
@@ -51,7 +51,7 @@ internal class ActivityRetainedObjectTest {
     @Test
     fun `should call 'onClearedListeners' when scope is destroyed`() {
         launchActivity<EmptyActivity>().apply {
-            var vm: Lazy<CounterViewModel>? = null
+            var vm: Retained<CounterViewModel>? = null
             onActivity { sut ->
                 vm = sut.retain { entry -> CounterViewModel(entry) }
             }
