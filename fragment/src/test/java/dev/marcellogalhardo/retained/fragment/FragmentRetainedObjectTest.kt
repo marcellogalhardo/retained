@@ -28,12 +28,9 @@ internal class FragmentRetainedObjectTest {
             onFragment { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
                 val vmInActivity by sut.retainInActivity { entry -> CounterViewModel(entry) }
-                val vmInParent by sut.retainInParent { entry -> CounterViewModel(entry) }
 
                 assertThat(vm.count).isEqualTo(1)
                 assertThat(vmInActivity.count).isEqualTo(3)
-                // As this fragment does not contain a 'parentFragment', the parent is the Activity
-                assertThat(vmInParent.count).isEqualTo(vmInActivity.count)
             }
         }
     }
