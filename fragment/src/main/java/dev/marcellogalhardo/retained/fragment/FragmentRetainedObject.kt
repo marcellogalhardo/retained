@@ -35,7 +35,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> Fragment.retain(
+public inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
     noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline getFragment: () -> Fragment = { this },
@@ -59,7 +59,7 @@ inline fun <reified T : Any> Fragment.retain(
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> Fragment.retainInActivity(
+public inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = { activity?.intent?.extras ?: bundleOf() },
     noinline createRetainedObject: (RetainedEntry) -> T
@@ -83,7 +83,7 @@ inline fun <reified T : Any> Fragment.retainInActivity(
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> Fragment.retainInParent(
+public inline fun <reified T : Any> Fragment.retainInParent(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = ::parentDefaultArgs,
     noinline createRetainedObject: (RetainedEntry) -> T

@@ -26,7 +26,7 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> Fragment.retainInNavGraph(
+public inline fun <reified T : Any> Fragment.retainInNavGraph(
     @IdRes navGraphId: Int,
     key: String = T::class.java.name,
     noinline getDefaultArgs: GetDefaultArgs? = null,

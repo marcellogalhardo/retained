@@ -21,7 +21,7 @@ import androidx.core.os.bundleOf
  * @see createRetainedObject
  */
 @OptIn(InternalRetainedApi::class)
-inline fun <reified T : Any> ComponentActivity.retain(
+public inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
     noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline createRetainedObject: (RetainedEntry) -> T
