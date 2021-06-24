@@ -20,7 +20,7 @@ public interface RetainedEntry {
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */
-    public val classRef: KClass<out Any>
+    public val retainedClass: KClass<out Any>
 
     /**
      * @see [androidx.lifecycle.viewModelScope]

@@ -7,10 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import dev.marcellogalhardo.retained.core.GetDefaultArgs
-import dev.marcellogalhardo.retained.core.InternalRetainedApi
-import dev.marcellogalhardo.retained.core.RetainedEntry
-import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
+import dev.marcellogalhardo.retained.core.*
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this [Fragment]:
@@ -32,15 +29,15 @@ import dev.marcellogalhardo.retained.core.createRetainedObjectLazy
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalStateException].
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
 public inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
     noinline getDefaultArgs: GetDefaultArgs? = null,
     noinline getFragment: () -> Fragment = { this },
-    noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, getFragment, getFragment, getDefaultArgs ?: { arguments ?: bundleOf() }, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, T::class, getFragment, getFragment, getDefaultArgs ?: { arguments ?: bundleOf() }, initializer)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -56,14 +53,14 @@ public inline fun <reified T : Any> Fragment.retain(
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalStateException].
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
 public inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = { activity?.intent?.extras ?: bundleOf() },
-    noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, ::requireActivity, ::requireActivity, getDefaultArgs, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, T::class, ::requireActivity, ::requireActivity, getDefaultArgs, initializer)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the parent
@@ -80,14 +77,14 @@ public inline fun <reified T : Any> Fragment.retainInActivity(
  * This property can be accessed only after this [Fragment] is attached i.e., after
  * [Fragment.onAttach], and access prior to that will result in [IllegalStateException].
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
 public inline fun <reified T : Any> Fragment.retainInParent(
     key: String = T::class.java.name,
     noinline getDefaultArgs: () -> Bundle = ::parentDefaultArgs,
-    noinline createRetainedObject: (RetainedEntry) -> T
-): Lazy<T> = createRetainedObjectLazy(key, T::class, ::parentViewModelStoreOwner, ::parentSavedStateRegistryOwner, getDefaultArgs, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, T::class, ::parentViewModelStoreOwner, ::parentSavedStateRegistryOwner, getDefaultArgs, initializer)
 
 @PublishedApi
 internal val Fragment.parentDefaultArgs: Bundle

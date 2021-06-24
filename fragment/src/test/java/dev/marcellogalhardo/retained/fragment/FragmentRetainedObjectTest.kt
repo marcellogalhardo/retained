@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dev.marcellogalhardo.retained.core.OnClearedListener
+import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,7 +55,7 @@ internal class FragmentRetainedObjectTest {
             onFragment { sut ->
                 val vm by sut.retain { entry -> CounterViewModel(entry) }
 
-                assertThat(vm.entry.classRef).isEqualTo(CounterViewModel::class)
+                assertThat(vm.entry.retainedClass).isEqualTo(CounterViewModel::class)
             }
         }
     }
@@ -62,7 +63,7 @@ internal class FragmentRetainedObjectTest {
     @Test
     fun `should call 'onClearedListeners' when scope is destroyed`() {
         launchFragmentInContainer { CounterFragment() }.apply {
-            var vm: Lazy<CounterViewModel>? = null
+            var vm: Retained<CounterViewModel>? = null
             onFragment { sut ->
                 vm = sut.retain { entry -> CounterViewModel(entry) }
             }

@@ -15,8 +15,9 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
+import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
-import dev.marcellogalhardo.retained.core.createRetainedObject
+import dev.marcellogalhardo.retained.core.retain
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -25,12 +26,12 @@ import dev.marcellogalhardo.retained.core.createRetainedObject
  * ```
  * @Composable
  * fun MyView() {
- *     val vm = retain { ViewModel() }
+ *     val vm by retain { ViewModel() }
  * }
  * class ViewModel(val name: String = "")
  * ```
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
 @Composable
@@ -39,8 +40,8 @@ public inline fun <reified T : Any> retain(
     viewModelStoreOwner: ViewModelStoreOwner = requireNotNull(LocalViewModelStoreOwner.current),
     savedStateRegistryOwner: SavedStateRegistryOwner = LocalSavedStateRegistryOwner.current,
     defaultArgs: Bundle = LocalLifecycleOwner.current.defaultArgs,
-    noinline createRetainedObject: (RetainedEntry) -> T
-): T = createRetainedObject(key, T::class, viewModelStoreOwner, savedStateRegistryOwner, defaultArgs, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, T::class, { viewModelStoreOwner }, { savedStateRegistryOwner }, { defaultArgs }, initializer)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -54,15 +55,15 @@ public inline fun <reified T : Any> retain(
  * class ViewModel(val name: String = "")
  * ```
  *
- * @see createRetainedObject
+ * @see initializer
  */
 @OptIn(InternalRetainedApi::class)
 @Composable
 public inline fun <reified T : Any> retainInActivity(
     key: String = T::class.java.name,
     defaultArgs: Bundle = getActivity().intent?.extras ?: bundleOf(),
-    noinline createRetainedObject: (RetainedEntry) -> T
-): T = retain(key, getActivity(), getActivity(), defaultArgs, createRetainedObject)
+    noinline initializer: (RetainedEntry) -> T
+): Retained<T> = retain(key, getActivity(), getActivity(), defaultArgs, initializer)
 
 @PublishedApi
 internal val LifecycleOwner.defaultArgs: Bundle
