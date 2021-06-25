@@ -1,6 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
+    PUBLISH_VERSION = '0.12.0'
+    PUBLISH_ARTIFACT_ID = 'retained-navigation-view'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
