@@ -11,16 +11,6 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 
 ## Download
 
-**Step 1.** Add it in your root *build.gradle* at the end of repositories:
-```gradle
-allprojects {
-	repositories {
-		mavenCentral()
-	}
-}
-```
-
-**Step 2.** Add the dependency
 ```gradle
 dependencies {
     // `Activity` support
@@ -37,7 +27,7 @@ dependencies {
 }
 ```
 
-(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases): [![](https://jitpack.io/v/marcellogalhardo/retained.svg)](https://jitpack.io/#marcellogalhardo/retained))
+(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases).
 
 ## Usage
 
