@@ -16,7 +16,7 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 ```gradle
 allprojects {
 	repositories {
-		maven { url "https://jitpack.io" }
+		mavenCentral()
 	}
 }
 ```
@@ -25,16 +25,16 @@ allprojects {
 ```gradle
 dependencies {
     // `Activity` support
-    implementation 'com.github.marcellogalhardo.retained:retained-activity:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-activity:{Tag}'
 
     // `Fragment` support, includes `Activity` support
-    implementation 'com.github.marcellogalhardo.retained:retained-fragment:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-fragment:{Tag}'
 
     // Navigation support
-    implementation 'com.github.marcellogalhardo.retained:retained-navigation:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-navigation:{Tag}'
 
     // Navigation with Fragment support, includes `Navigation` support
-    implementation 'com.github.marcellogalhardo.retained:retained-navigation-fragment:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-navigation-fragment:{Tag}'
 }
 ```
 
