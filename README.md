@@ -148,7 +148,7 @@ fun SampleView() {
 
 As a convenience, if the retained instance implements the `OnClearedListener` interface, it will be automatically added to `onClearedListeners` and notified.
 
-#### View support
+#### View support (Experimental)
 
 Besides Activities and Fragments, it's also possible to retain instances in a view. There are a couple of extra modules for that:
 
