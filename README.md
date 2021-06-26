@@ -34,7 +34,7 @@ dependencies {
 The following sections demonstrate how to retain instances in activities and fragments. For simplicity, all examples will retain the following class:
 
 ```kotlin
-data class ViewModel(var counter: Int = 0)
+class ViewModel(var counter: Int = 0)
 ```
 
 ### Use Retained in Activities and Fragments
@@ -70,7 +70,7 @@ fun SampleView() {
     val activity: ComponentActivity // find Activity
     val viewModel by activity.retain { ViewModel() }
 
-    // Using an Activity
+    // Using a Fragment
     val fragment: Fragment // find Fragment
     val viewModel by fragment.retain { ViewModel() }
 
@@ -89,7 +89,9 @@ When retaining an instance, you have access to a `RetainedEntry` which contains 
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel = retain { entry -> ViewModel(entry.scope) }
+    val viewModel = retain { entry: RetainedEntry ->
+        ViewModel()
+    }
     // ...
 }
 ```
@@ -108,7 +110,7 @@ class CounterFragment : Fragment() {
 It also exposes a `CoroutineScope` that works just like `viewModelScope` from the Android `ViewModel`.
 
 ```kotlin
-class Presenter(scope: CoroutineScope) { ... }
+class Presenter(scope: CoroutineScope) { /* ... */ }
 
 fun SampleFragment() {
     private val presenter: Presenter by retain { entry -> 
@@ -144,8 +146,8 @@ Besides Activities and Fragments, it's also possible to retain instances in a vi
 
 ```gradle
 dependencies {
-    implementation 'com.github.marcellogalhardo.retained:retained-view:{Tag}'
-    implementation 'com.github.marcellogalhardo.retained:retained-view-navigation:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-view:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-view-navigation:{Tag}'
 }
 ```
 
