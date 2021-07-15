@@ -46,8 +46,8 @@ afterEvaluate {
                     url = 'https://github.com/getstream/stream-chat-android'
                     licenses {
                         license {
-                            name = 'Retained'
-                            url = 'https://github.com/marcellogalhardo/retained/blob/main/LICENSE'
+                            name = 'Apache License 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0'
                         }
                     }
                     developers {
