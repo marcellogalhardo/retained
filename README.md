@@ -27,7 +27,7 @@ dependencies {
 }
 ```
 
-(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases).
+(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases))
 
 ## Usage
 
@@ -147,7 +147,7 @@ Besides Activities and Fragments, it's also possible to retain instances in a vi
 ```gradle
 dependencies {
     implementation 'dev.marcellogalhardo:retained-view:{Tag}'
-    implementation 'dev.marcellogalhardo:retained-view-navigation:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-navigation-view:{Tag}'
 }
 ```
 
