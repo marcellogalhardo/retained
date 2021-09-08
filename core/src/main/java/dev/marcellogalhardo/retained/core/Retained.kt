@@ -60,7 +60,7 @@ public inline fun <reified T : Any> retain(
 ): Retained<T> {
     return LazyRetained(
         key,
-        T::class,
+        retainedClass = T::class,
         findViewModelStoreOwner,
         findSavedStateRegistryOwner,
         findDefaultArgs,
@@ -81,10 +81,10 @@ public inline fun <reified T : Any, Owner> retain(
                      Owner : SavedStateRegistryOwner {
     return LazyRetained(
         key,
-        T::class,
+        retainedClass = T::class,
         findOwner,
         findOwner,
-        { findDefaultArgs?.invoke(findOwner()) },
+        findDefaultArgs = { findDefaultArgs?.invoke(findOwner()) },
         instantiate
     )
 }

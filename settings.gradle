@@ -8,6 +8,9 @@ include ':fragment'
 include ':navigation'
 include ':navigation-fragment'
 
+// Test module, not used by the library consumers.
+include ':integration-tests'
+
 // Experimental
 include ':navigation-view'
 include ':view'

@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.marcellogalhardo.retained.integration.tests">
+
+    <application>
+        <activity android:name="dev.marcellogalhardo.retained.activity.EmptyActivity" />
+    </application>
+</manifest>
