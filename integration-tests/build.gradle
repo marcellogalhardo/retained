@@ -63,6 +63,6 @@ dependencies {
     testImplementation libs.google.truth
 
     // Android Testing
-    debugImplementation libs.androidx.fragment.testing
+    implementation libs.androidx.fragment.testing
     androidTestImplementation libs.androidx.test.junit
 }

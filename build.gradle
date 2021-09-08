@@ -17,6 +17,15 @@ plugins {
     id "com.autonomousapps.dependency-analysis" version "0.73.0"
 }
 
+dependencyAnalysis {
+    strictMode(false)
+    issues {
+        all {
+            ignoreKtx(true)
+        }
+    }
+}
+
 allprojects {
     repositories {
         google()
