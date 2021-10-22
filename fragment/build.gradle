@@ -3,8 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'maven-publish'
 
 ext {
-    PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
-    PUBLISH_VERSION = '0.13.0'
     PUBLISH_ARTIFACT_ID = 'retained-fragment'
 }
 
