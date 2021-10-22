@@ -47,8 +47,8 @@ afterEvaluate {
 
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'Stream Chat official Android SDK'
-                    url = 'https://github.com/getstream/stream-chat-android'
+                    description = 'A lightweight alternative to Android\'s ViewModels. The easiest way to retain instances in Activities, Fragments or Composables.'
+                    url = 'https://github.com/marcellogalhardo/retained'
                     licenses {
                         license {
                             name = 'Apache License 2.0'
@@ -79,5 +79,10 @@ ext["signing.password"] = rootProject.ext["signing.password"]
 ext["signing.secretKeyRingFile"] = rootProject.ext["signing.secretKeyRingFile"]
 
 signing {
+    useInMemoryPgpKeys(
+            rootProject.ext["signing.keyId"],
+            rootProject.ext["signing.key"],
+            rootProject.ext["signing.password"],
+    )
     sign publishing.publications
 }
