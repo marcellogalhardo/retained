@@ -27,6 +27,10 @@ dependencyAnalysis {
     }
 }
 
+apiValidation {
+    ignoredProjects += ["sample", "integration-tests"]
+}
+
 allprojects {
     repositories {
         google()
