@@ -39,11 +39,11 @@ import dev.marcellogalhardo.retained.core.retain
 @OptIn(InternalRetainedApi::class)
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retain(
-    key: String = id.toString(),
+    key: String = T::class.java.name,
     noinline findViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
     noinline findSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline instantiate: (RetainedEntry) -> T
-): Retained<T> = retain(key, findViewModelStoreOwner, findSavedStateRegistryOwner, { findViewTreeLifecycleOwner()!!.defaultArgs }, instantiate)
+): Retained<T> = retain("$id:$key", findViewModelStoreOwner, findSavedStateRegistryOwner, { findViewTreeLifecycleOwner()!!.defaultArgs }, instantiate)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -63,7 +63,7 @@ public inline fun <reified T : Any> View.retain(
 @OptIn(InternalRetainedApi::class)
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retainInActivity(
-    key: String = id.toString(),
+    key: String = T::class.java.name,
     activity: FragmentActivity = findActivity(),
     noinline instantiate: (RetainedEntry) -> T
 ): Retained<T> = retain(key, { activity }, { activity }, { activity.intent?.extras }, instantiate)
