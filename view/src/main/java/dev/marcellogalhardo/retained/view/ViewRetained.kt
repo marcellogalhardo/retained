@@ -40,10 +40,10 @@ import dev.marcellogalhardo.retained.core.retain
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retain(
     key: String = id.toString(),
-    noinline getViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
-    noinline getSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
+    noinline findViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
+    noinline findSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline instantiate: (RetainedEntry) -> T
-): Retained<T> = retain(key, getViewModelStoreOwner, getSavedStateRegistryOwner, { findViewTreeLifecycleOwner()!!.defaultArgs }, instantiate)
+): Retained<T> = retain(key, findViewModelStoreOwner, findSavedStateRegistryOwner, { findViewTreeLifecycleOwner()!!.defaultArgs }, instantiate)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -69,8 +69,10 @@ public inline fun <reified T : Any> View.retainInActivity(
 ): Retained<T> = retain(key, { activity }, { activity }, { activity.intent?.extras }, instantiate)
 
 @PublishedApi
-internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner = findViewTreeViewModelStoreOwner()
-    ?: throw IllegalStateException("Your view is not yet attached, and thus its ViewModelStoreOwner is null.")
+internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner {
+    return findViewTreeViewModelStoreOwner()
+        ?: error("Your view is not yet attached, and thus its ViewModelStoreOwner is null.")
+}
 
 @PublishedApi
 internal fun View.findActivity(): FragmentActivity {
@@ -79,7 +81,7 @@ internal fun View.findActivity(): FragmentActivity {
         if (currentContext is FragmentActivity) return currentContext
         currentContext = (context as ContextWrapper).baseContext
     }
-    throw IllegalStateException("Your view is not attached to an activity.")
+    error("Your view is not attached to an activity.")
 }
 
 @PublishedApi
