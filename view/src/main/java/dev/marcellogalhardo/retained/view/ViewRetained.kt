@@ -7,18 +7,46 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.core.retain
+
+/**
+ * Returns a [Lazy] delegate to access a retained object by **default** scoped to this [View]:
+ *
+ * ```
+ * class MyView(context: Context) : View(context) {
+ *     val vm by retainInView(findInView = { this }) { ViewModel() }
+ * }
+ * class ViewModel(val name: String = "")
+ * ```
+ *
+ * This property can be accessed only after this [View] is attached i.e., after
+ * [View.isAttachedToWindow], and access prior to that will result in [IllegalStateException].
+ *
+ * @see retain
+ */
+@OptIn(InternalRetainedApi::class)
+public inline fun <reified T : Any> retainInView(
+    noinline findView: () -> View,
+    key: String = "${findView().id}:${T::class.java.name}",
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> {
+    val owner = lazy { checkNotNull(findView().findViewTreeViewModelStoreOwner()) }
+    return retain(
+        key = key,
+        findViewModelStoreOwner = { owner.value },
+        findSavedStateRegistryOwner = { owner.value as SavedStateRegistryOwner },
+        findDefaultArgs = { owner.value.defaultArgs },
+        instantiate = instantiate,
+    )
+}
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -40,10 +68,14 @@ import dev.marcellogalhardo.retained.core.retain
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retain(
     key: String = T::class.java.name,
-    noinline findViewModelStoreOwner: () -> ViewModelStoreOwner = { findViewModelStoreOwnerOrThrow() },
-    noinline findSavedStateRegistryOwner: () -> SavedStateRegistryOwner = { findViewTreeSavedStateRegistryOwner()!! },
     noinline instantiate: (RetainedEntry) -> T
-): Retained<T> = retain("$id:$key", findViewModelStoreOwner, findSavedStateRegistryOwner, { findViewTreeLifecycleOwner()!!.defaultArgs }, instantiate)
+): Retained<T> {
+    return retainInView(
+        findView = { this },
+        key = key,
+        instantiate = instantiate,
+    )
+}
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -64,9 +96,17 @@ public inline fun <reified T : Any> View.retain(
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retainInActivity(
     key: String = T::class.java.name,
-    activity: FragmentActivity = findActivity(),
     noinline instantiate: (RetainedEntry) -> T
-): Retained<T> = retain(key, { activity }, { activity }, { activity.intent?.extras }, instantiate)
+): Retained<T> {
+    val activity = findActivity()
+    return retain(
+        key = key,
+        findViewModelStoreOwner = { activity },
+        findSavedStateRegistryOwner = { activity },
+        findDefaultArgs = { activity.intent?.extras },
+        instantiate = instantiate,
+    )
+}
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner {
@@ -85,7 +125,7 @@ internal fun View.findActivity(): FragmentActivity {
 }
 
 @PublishedApi
-internal val LifecycleOwner.defaultArgs: Bundle
+internal val ViewModelStoreOwner.defaultArgs: Bundle
     get() = when (this) {
         is Activity -> intent?.extras
         is Fragment -> arguments

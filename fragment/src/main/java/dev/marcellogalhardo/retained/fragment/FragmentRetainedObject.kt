@@ -13,7 +13,7 @@ import dev.marcellogalhardo.retained.core.retain
  *
  * ```
  * class MyFragment : Fragment() {
- *     val vm by retainInFragment(getFragment = { this }) { ViewModel() }
+ *     val vm by findFragment(getFragment = { this }) { ViewModel() }
  * }
  * class ViewModel(val name: String = "")
  * ```
@@ -27,8 +27,8 @@ import dev.marcellogalhardo.retained.core.retain
 public inline fun <reified T : Any> retainInFragment(
     noinline findFragment: () -> Fragment,
     key: String = T::class.java.name,
-    noinline initializer: (RetainedEntry) -> T,
-): Retained<T> = retain(key, findFragment, { owner -> owner.arguments }, initializer)
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> = retain(key, findFragment, { owner -> owner.arguments }, instantiate)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this [Fragment]:
