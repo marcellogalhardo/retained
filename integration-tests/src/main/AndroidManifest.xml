@@ -2,6 +2,8 @@
     package="dev.marcellogalhardo.retained.integration.tests">
 
     <application>
-        <activity android:name="dev.marcellogalhardo.retained.activity.EmptyActivity" />
+        <activity
+            android:name="dev.marcellogalhardo.retained.activity.EmptyActivity"
+            android:exported="false" />
     </application>
 </manifest>

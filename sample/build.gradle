@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.marcellogalhardo.retainedinstance.sample"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
