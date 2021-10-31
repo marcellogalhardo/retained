@@ -13,7 +13,7 @@ import dev.marcellogalhardo.retained.core.retain
  *
  * ```
  * class MyFragment : Fragment() {
- *     val vm by findFragment(getFragment = { this }) { ViewModel() }
+ *     val vm by retainInFragment(getFragment = { this }) { ViewModel() }
  * }
  * class ViewModel(val name: String = "")
  * ```
