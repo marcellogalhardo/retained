@@ -4,6 +4,11 @@ on:
   release:
     # We'll run this workflow when a new GitHub release is created
     types: [prereleased, released]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   publish:
