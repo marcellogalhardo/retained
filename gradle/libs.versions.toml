@@ -1,14 +1,14 @@
 [versions]
-androidx-compose = '1.0.0'
-androidx-fragment = "1.3.6"
-androidx-lifecycle = "2.4.0"
-androidx-test = "1.3.0"
-kotlin = "1.5.20"
-navigation = "2.3.5"
+androidx-compose = '1.1.1'
+androidx-fragment = "1.4.1"
+androidx-lifecycle = "2.4.1"
+androidx-test = "1.4.0"
+kotlin = "1.6.20"
+navigation = "2.4.2"
 
 [libraries]
 androidx-activity-core = { group = "androidx.activity", name = "activity-ktx", version = "1.4.0" }
-androidx-appcompat-core = { group = "androidx.appcompat", name = "appcompat", version = "1.3.1" }
+androidx-appcompat-core = { group = "androidx.appcompat", name = "appcompat", version = "1.4.1" }
 androidx-constraintlayout-core = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.1" }
 androidx-core = { group = "androidx.core", name = "core", version = "1.7.0" }
 androidx-fragment-core = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment" }
@@ -16,17 +16,17 @@ androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-test
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 androidx-navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
 androidx-test-core = { group = "androidx.test", name = "core-ktx", version.ref = "androidx-test" }
-androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.3.0" }
-androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.1.2" }
+androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.4.0" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.1.3" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test" }
-androidx-test-truth = { group = "androidx.test.ext", name = "truth", version = "1.3.0" }
+androidx-test-truth = { group = "androidx.test.ext", name = "truth", version = "1.4.0" }
 androidx-viewmodel-core = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle" }
-google-truth = { group = "com.google.truth", name = "truth", version = "1.1.2" }
+google-truth = { group = "com.google.truth", name = "truth", version = "1.1.3" }
 gradle-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-gradle-kotlinter = { group = "org.jmailen.gradle", name = "kotlinter-gradle", version = "3.4.0" }
-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version = "4.2.0" }
+gradle-kotlinter = { group = "org.jmailen.gradle", name = "kotlinter-gradle", version = "3.10.0" }
+gradle-plugin = { group = "com.android.tools.build", name = "gradle", version = "7.1.3" }
 junit-core = { group = "junit", name = "junit", version = "4.13.2" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
-robolectric-core = { group = "org.robolectric", name = "robolectric", version = "4.5.1" }
+robolectric-core = { group = "org.robolectric", name = "robolectric", version = "4.7.3" }
