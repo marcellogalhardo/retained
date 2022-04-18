@@ -14,12 +14,11 @@ buildscript {
 
 plugins {
     id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
-    id "com.autonomousapps.dependency-analysis" version "0.73.0"
-    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.8.0-RC'
+    id "com.autonomousapps.dependency-analysis" version "1.1.0"
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.8.0'
 }
 
 dependencyAnalysis {
-    strictMode(true)
     issues {
         all {
             ignoreKtx(true)
