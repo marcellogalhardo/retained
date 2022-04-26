@@ -3,7 +3,7 @@ apply plugin: 'signing'
 
 ext {
     PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
-    PUBLISH_VERSION = '0.15.2'
+    PUBLISH_VERSION = '0.15.3'
 }
 
 task androidSourcesJar(type: Jar) {
