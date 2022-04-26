@@ -37,10 +37,6 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn", "-Xexplicit-api=strict"]
     }
-
-    packagingOptions {
-        resources.excludes.add("META-INF/*")
-    }
 }
 
 dependencies {
