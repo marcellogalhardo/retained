@@ -1,5 +1,6 @@
 public final class dev/marcellogalhardo/retained/view/ViewRetainedKt {
 	public static final fun findActivity (Landroid/view/View;)Landroidx/fragment/app/FragmentActivity;
 	public static final fun findViewModelStoreOwnerOrThrow (Landroid/view/View;)Landroidx/lifecycle/ViewModelStoreOwner;
+	public static final fun getDefaultArgs (Landroidx/lifecycle/ViewModelStoreOwner;)Landroid/os/Bundle;
 }
 
