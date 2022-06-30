@@ -34,3 +34,13 @@ public final class dev/marcellogalhardo/retained/core/internal/LazyRetained : de
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 }
 
+public final class dev/marcellogalhardo/retained/core/internal/RetainedViewModel : androidx/lifecycle/ViewModel, dev/marcellogalhardo/retained/core/RetainedEntry {
+	public fun <init> (Ljava/lang/String;Lkotlin/reflect/KClass;Landroidx/lifecycle/SavedStateHandle;Lkotlin/jvm/functions/Function1;)V
+	public fun getKey ()Ljava/lang/String;
+	public fun getOnClearedListeners ()Ljava/util/Collection;
+	public fun getRetainedClass ()Lkotlin/reflect/KClass;
+	public final fun getRetainedInstance ()Ljava/lang/Object;
+	public fun getSavedStateHandle ()Landroidx/lifecycle/SavedStateHandle;
+	public fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+}
+

@@ -1,18 +1,24 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+
+ext {
+    PUBLISH_ARTIFACT_ID = 'retained-compose'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.marcellogalhardo.retainedinstance.sample"
         minSdkVersion 21
         targetSdkVersion 32
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -27,29 +33,33 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.androidx.compose.compiler.get()
+    }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn", "-Xexplicit-api=strict"]
     }
 }
 
 dependencies {
-    implementation projects.core
-    implementation projects.activity
-    implementation projects.fragment
-    implementation projects.view
-    implementation projects.compose
+    api projects.core
 
     implementation libs.kotlin.stdlib
 
     implementation libs.androidx.viewmodel.core
+    implementation libs.androidx.viewmodel.compose
     implementation libs.androidx.viewmodel.savedstate
 
     implementation libs.androidx.activity.core
-    implementation libs.androidx.fragment.core
 
-    implementation libs.androidx.appcompat.core
-    implementation libs.androidx.core
-    implementation libs.androidx.constraintlayout.core
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.tooling
 
     // Unit Testing
     testImplementation libs.junit.core

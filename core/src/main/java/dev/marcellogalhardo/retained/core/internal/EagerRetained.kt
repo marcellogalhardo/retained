@@ -1,9 +1,12 @@
+@file:OptIn(InternalRetainedApi::class)
+
 package dev.marcellogalhardo.retained.core.internal
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistryOwner
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass

@@ -7,6 +7,7 @@ include ':activity'
 include ':fragment'
 include ':navigation'
 include ':navigation-fragment'
+include ':compose'
 
 // Test module, not used by the library consumers.
 include ':integration-tests'

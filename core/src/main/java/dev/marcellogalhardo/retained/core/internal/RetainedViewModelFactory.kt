@@ -5,9 +5,11 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass
 
+@OptIn(InternalRetainedApi::class)
 internal class RetainedViewModelFactory(
     owner: SavedStateRegistryOwner,
     defaultArgs: Bundle?,

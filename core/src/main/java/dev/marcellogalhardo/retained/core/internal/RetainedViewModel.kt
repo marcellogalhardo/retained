@@ -3,12 +3,14 @@ package dev.marcellogalhardo.retained.core.internal
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
-internal class RetainedViewModel(
+@InternalRetainedApi
+public class RetainedViewModel(
     override val key: String,
     override val retainedClass: KClass<out Any>,
     override val savedStateHandle: SavedStateHandle,
@@ -19,7 +21,7 @@ internal class RetainedViewModel(
 
     override val onClearedListeners: MutableCollection<OnClearedListener> = mutableSetOf()
 
-    val retainedInstance: Any = createRetainedObject(this)
+    public val retainedInstance: Any = createRetainedObject(this)
 
     init {
         if (retainedInstance is OnClearedListener) {
