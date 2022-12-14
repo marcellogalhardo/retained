@@ -20,10 +20,17 @@ dependencies {
     implementation 'dev.marcellogalhardo:retained-fragment:{Tag}'
 
     // Navigation support
-    implementation 'dev.marcellogalhardo:retained-navigation:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-navigation:{Tag}'    
 
     // Navigation with Fragment support, includes `Navigation` support
     implementation 'dev.marcellogalhardo:retained-navigation-fragment:{Tag}'
+    
+    // Compose support (experimental)
+    implementation 'dev.marcellogalhardo:retained-compose:{Tag}'
+    
+    // View support (experimental)
+    implementation 'dev.marcellogalhardo:retained-view:{Tag}'
+    implementation 'dev.marcellogalhardo:retained-navigation-view:{Tag}'
 }
 ```
 
@@ -61,22 +68,17 @@ class CounterFragment : Fragment() {
 }
 ```
 
-### Use Retained in Compose
+### Compose Support (Experimental)
 
 ```kotlin
 @Composable
 fun SampleView() {
-    // Using an Activity
-    val activity: ComponentActivity // find Activity
-    val viewModel by activity.retain { ViewModel() }
-
-    // Using a Fragment
-    val fragment: Fragment // find Fragment
-    val viewModel by fragment.retain { ViewModel() }
-
-    // Using NavBackStackEntry
-    val navBackStackEntry: NavBackStackEntry // find NavBackStackEntry
-    val viewModel by navBackStackEntry.retain { ViewModel() }
+    val viewModel = retain { ViewModel() }
+    
+    // Or using delegates (stable):
+    val viewModelInActivity by activity.retain { ViewModel() }
+    val viewModelInFragment by fragment.retain { ViewModel() }
+    val viewModelInNavGraph by navBackStackEntry.retain { ViewModel() }
 }
 ```
 
