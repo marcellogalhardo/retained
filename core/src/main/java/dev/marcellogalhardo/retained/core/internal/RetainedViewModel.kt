@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.RetainedEntry
-import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
 internal class RetainedViewModel(
