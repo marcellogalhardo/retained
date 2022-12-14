@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
