@@ -1,5 +1,6 @@
 package dev.marcellogalhardo.retained.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ class SampleFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_sample, container)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<TextView>(R.id.fragmentTextView).apply {
