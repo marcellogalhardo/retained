@@ -43,7 +43,6 @@ public inline fun <reified T : Any> retain(
     ).value
 }
 
-
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
  * [ComponentActivity]:
