@@ -1,15 +1,16 @@
 package dev.marcellogalhardo.retained.compose
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.RetainedEntry
-import dev.marcellogalhardo.retained.core.internal.RetainedViewModel
 import dev.marcellogalhardo.retained.core.retain
 
 /**
@@ -34,18 +35,49 @@ public inline fun <reified T : Any> retain(
     },
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): T {
-    val viewModel = viewModel(
-        viewModelStoreOwner = viewModelStoreOwner,
+): T = remember(key1 = key) {
+    retain(
         key = key,
-        initializer = {
-            RetainedViewModel(
-                key = key,
-                retainedClass = T::class,
-                savedStateHandle = createSavedStateHandle(),
-                createRetainedObject = instantiate,
-            )
-        },
-    )
-    return viewModel.retainedInstance as T
+        findViewModelStoreOwner = { viewModelStoreOwner },
+        instantiate = instantiate,
+    ).value
+}
+
+
+/**
+ * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
+ * [ComponentActivity]:
+ *
+ * ```
+ * @Composable
+ * fun MyComposable() {
+ *     val vm = retainInActivity { ViewModel() }
+ * }
+ * class ViewModel(val name: String = "")
+ * ```
+ *
+ * @see retain
+ */
+@ExperimentalRetainedApi
+@Composable
+public inline fun <reified T : Any> retainInActivity(
+    viewModelStoreOwner: ViewModelStoreOwner?,
+    key: String = T::class.java.name,
+    noinline instantiate: (RetainedEntry) -> T,
+): T = retain(
+    key = key,
+    viewModelStoreOwner = if (viewModelStoreOwner != null) {
+        viewModelStoreOwner
+    } else {
+        val context = LocalContext.current
+        remember { context.findActivity() }
+    },
+    instantiate = instantiate,
+)
+
+@PublishedApi
+internal tailrec fun Context.findActivity(): ComponentActivity = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> error("Your view is not attached to an activity.")
 }

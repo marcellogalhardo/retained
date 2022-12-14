@@ -8,12 +8,12 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -50,6 +50,7 @@ dependencies {
 
     implementation libs.androidx.viewmodel.core
     implementation libs.androidx.viewmodel.savedstate
+    implementation libs.androidx.savedstate
 
     implementation libs.androidx.activity.core
 

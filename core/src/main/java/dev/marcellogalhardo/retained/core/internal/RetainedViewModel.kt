@@ -1,27 +1,27 @@
 package dev.marcellogalhardo.retained.core.internal
 
+import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
-@InternalRetainedApi
-public class RetainedViewModel(
+internal class RetainedViewModel(
     override val key: String,
+    override val application: Application,
     override val retainedClass: KClass<out Any>,
     override val savedStateHandle: SavedStateHandle,
     createRetainedObject: (RetainedEntry) -> Any,
 ) : ViewModel(), RetainedEntry {
 
-    override val scope: CoroutineScope get() = viewModelScope
+    override val scope get() = viewModelScope
 
-    override val onClearedListeners: MutableCollection<OnClearedListener> = mutableSetOf()
+    override val onClearedListeners = mutableSetOf<OnClearedListener>()
 
-    public val retainedInstance: Any = createRetainedObject(this)
+    val retainedInstance = createRetainedObject(this)
 
     init {
         if (retainedInstance is OnClearedListener) {

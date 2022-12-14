@@ -27,10 +27,12 @@ import dev.marcellogalhardo.retained.core.retain
 public inline fun <reified T : Any> retainInActivity(
     noinline findActivity: () -> ComponentActivity,
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T
-): Retained<T> {
-    return retain(key, findActivity, { owner -> owner.intent?.extras }, instantiate)
-}
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> = retain(
+    key = key,
+    findViewModelStoreOwner = findActivity,
+    instantiate = instantiate,
+)
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -48,8 +50,11 @@ public inline fun <reified T : Any> retainInActivity(
  *
  * @see retainInActivity
  */
-@OptIn(InternalRetainedApi::class)
 public inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T
-): Retained<T> = retainInActivity({ this }, key, instantiate)
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> = retainInActivity(
+    findActivity = { this },
+    key = key,
+    instantiate = instantiate,
+)

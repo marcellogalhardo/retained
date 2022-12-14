@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.navigation.findNavController
 import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
-import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import dev.marcellogalhardo.retained.navigation.retainInNavGraph
@@ -25,13 +24,13 @@ import dev.marcellogalhardo.retained.navigation.retainInNavGraph
  * @param navGraphId ID of a navigation graph that exists on the [NavController] back stack.
  * @see retain
  */
-@OptIn(InternalRetainedApi::class)
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retainInNavGraph(
     @IdRes navGraphId: Int,
     key: String = id.toString(),
-    noinline instantiate: (RetainedEntry) -> T
-): Retained<T> {
-    val backStackEntry by lazy(LazyThreadSafetyMode.NONE) { findNavController().getBackStackEntry(navGraphId) }
-    return retainInNavGraph(key, { backStackEntry }, instantiate)
-}
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> = retainInNavGraph(
+    findNavGraph = { findNavController().getBackStackEntry(navGraphId) },
+    key = key,
+    instantiate = instantiate,
+)

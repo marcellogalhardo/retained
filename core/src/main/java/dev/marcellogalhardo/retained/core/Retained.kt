@@ -1,10 +1,8 @@
 package dev.marcellogalhardo.retained.core
 
-import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.internal.LazyRetained
 import kotlin.properties.ReadOnlyProperty
 
@@ -46,45 +44,16 @@ public interface Retained<out T : Any> : ReadOnlyProperty<Any?, T> {
  *
  * @param key A String that will be used to identify the retained instance in this scope.
  * @param findViewModelStoreOwner The [ViewModelStoreOwner] used to scope the retained instance.
- * @param findSavedStateRegistryOwner The [SavedStateRegistryOwner] used to restore the retained instance.
- * @param findDefaultArgs The [Bundle] used to create the [RetainedEntry.savedStateHandle].
  * @param instantiate The factory function that will be used to create the retained object.
  */
 @InternalRetainedApi
 public inline fun <reified T : Any> retain(
     key: String = T::class.java.name,
     noinline findViewModelStoreOwner: () -> ViewModelStoreOwner,
-    noinline findSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
-    noinline findDefaultArgs: FindDefaultArgs?,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> {
-    return LazyRetained(
-        key,
-        retainedClass = T::class,
-        findViewModelStoreOwner,
-        findSavedStateRegistryOwner,
-        findDefaultArgs,
-        instantiate
-    )
-}
-
-/**
- * @see retain
- */
-@InternalRetainedApi
-public inline fun <reified T : Any, Owner> retain(
-    key: String = T::class.java.name,
-    noinline findOwner: () -> Owner,
-    noinline findDefaultArgs: FindParametrizedDefaultArgs<Owner>?,
-    noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> where Owner : ViewModelStoreOwner,
-                     Owner : SavedStateRegistryOwner {
-    return LazyRetained(
-        key,
-        retainedClass = T::class,
-        findOwner,
-        findOwner,
-        findDefaultArgs = { findDefaultArgs?.invoke(findOwner()) },
-        instantiate
-    )
-}
+): Retained<T> = LazyRetained(
+    key = key,
+    retainedClass = T::class,
+    findViewModelStoreOwner = findViewModelStoreOwner,
+    instantiate = instantiate
+)

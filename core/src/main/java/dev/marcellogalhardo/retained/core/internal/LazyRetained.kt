@@ -1,8 +1,6 @@
 package dev.marcellogalhardo.retained.core.internal
 
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.savedstate.SavedStateRegistryOwner
-import dev.marcellogalhardo.retained.core.FindDefaultArgs
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass
@@ -13,8 +11,6 @@ internal class LazyRetained<out T : Any>(
     key: String,
     retainedClass: KClass<T>,
     findViewModelStoreOwner: () -> ViewModelStoreOwner,
-    findSavedStateRegistryOwner: () -> SavedStateRegistryOwner,
-    findDefaultArgs: FindDefaultArgs? = null,
     instantiate: (RetainedEntry) -> T,
 ) : Retained<T> {
 
@@ -23,8 +19,6 @@ internal class LazyRetained<out T : Any>(
             key = key,
             retainedClass = retainedClass,
             viewModelStoreOwner = findViewModelStoreOwner(),
-            savedStateRegistryOwner = findSavedStateRegistryOwner(),
-            defaultArgs = findDefaultArgs?.invoke(),
             instantiate = instantiate
         )
         return@lazy retained.value
