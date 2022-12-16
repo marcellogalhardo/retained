@@ -8,7 +8,7 @@ import java.io.Closeable
 class ComplexPresenter(
     private val savedStateHandle: SavedStateHandle,
     private val coroutineScope: CoroutineScope,
-    var counter: Int
+    var counter: Int,
 ) : Closeable {
 
     override fun close() {

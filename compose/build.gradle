@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'maven-publish'
 
 ext {
-    PUBLISH_ARTIFACT_ID = 'retained-fragment'
+    PUBLISH_ARTIFACT_ID = 'retained-compose'
 }
 
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
@@ -34,41 +33,38 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.androidx.compose.compiler.get()
+    }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn", "-Xexplicit-api=strict"]
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
     }
 }
 
 dependencies {
     api projects.core
-    api projects.activity
 
     implementation libs.kotlin.stdlib
 
     implementation libs.androidx.viewmodel.core
+    implementation libs.androidx.viewmodel.compose
     implementation libs.androidx.viewmodel.savedstate
 
     implementation libs.androidx.activity.core
-    implementation libs.androidx.fragment.core
+
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.tooling
 
     // Unit Testing
     testImplementation libs.junit.core
-    testImplementation libs.robolectric.core
-    testImplementation libs.androidx.test.core
-    testImplementation libs.androidx.test.runner
-    testImplementation libs.androidx.test.rules
-    testImplementation libs.androidx.test.junit
-    testImplementation libs.androidx.test.truth
-    testImplementation libs.google.truth
 
     // Android Testing
-    debugImplementation libs.androidx.fragment.testing
     androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 }

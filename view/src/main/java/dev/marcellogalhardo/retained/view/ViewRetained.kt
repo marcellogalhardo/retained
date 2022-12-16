@@ -1,16 +1,15 @@
 package dev.marcellogalhardo.retained.view
 
 import android.app.Activity
+import android.content.Context
 import android.content.ContextWrapper
-import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
+import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
-import androidx.savedstate.SavedStateRegistryOwner
 import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
@@ -38,12 +37,9 @@ public inline fun <reified T : Any> retainInView(
     key: String = "${findView().id}:${T::class.java.name}",
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> {
-    val owner = lazy { checkNotNull(findView().findViewTreeViewModelStoreOwner()) }
     return retain(
         key = key,
-        findViewModelStoreOwner = { owner.value },
-        findSavedStateRegistryOwner = { owner.value as SavedStateRegistryOwner },
-        findDefaultArgs = { owner.value.defaultArgs },
+        findViewModelStoreOwner = { findView().findViewModelStoreOwnerOrThrow() },
         instantiate = instantiate,
     )
 }
@@ -68,7 +64,7 @@ public inline fun <reified T : Any> retainInView(
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retain(
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T
+    noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> {
     return retainInView(
         findView = { this },
@@ -96,39 +92,25 @@ public inline fun <reified T : Any> View.retain(
 @ExperimentalRetainedApi
 public inline fun <reified T : Any> View.retainInActivity(
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T
-): Retained<T> {
-    val activity = findActivity()
-    return retain(
-        key = key,
-        findViewModelStoreOwner = { activity },
-        findSavedStateRegistryOwner = { activity },
-        findDefaultArgs = { activity.intent?.extras },
-        instantiate = instantiate,
-    )
-}
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> = retain(
+    key = key,
+    findViewModelStoreOwner = { context.findActivity() },
+    instantiate = instantiate,
+)
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner {
-    return findViewTreeViewModelStoreOwner()
-        ?: error("Your view is not yet attached, and thus its ViewModelStoreOwner is null.")
-}
-
-@PublishedApi
-internal fun View.findActivity(): FragmentActivity {
-    var currentContext = context
-    while (currentContext is ContextWrapper) {
-        if (currentContext is FragmentActivity) return currentContext
-        currentContext = (context as ContextWrapper).baseContext
+    val owner = checkNotNull(ViewTreeViewModelStoreOwner.get(this)) {
+        "Your view is not yet attached, and thus its ViewModelStoreOwner is null."
     }
-    error("Your view is not attached to an activity.")
+    ViewTreeViewModelStoreOwner.set(this, owner)
+    return owner
 }
 
 @PublishedApi
-internal val ViewModelStoreOwner.defaultArgs: Bundle
-    get() = when (this) {
-        is Activity -> intent?.extras
-        is Fragment -> arguments
-        is NavBackStackEntry -> arguments
-        else -> bundleOf()
-    } ?: bundleOf()
+internal tailrec fun Context.findActivity(): ComponentActivity = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> error("Your view is not attached to an activity.")
+}

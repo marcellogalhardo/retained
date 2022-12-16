@@ -1,5 +1,5 @@
 package dev.marcellogalhardo.retained.sample
 
 class SimplePresenter(
-    var counter: Int = 0
+    var counter: Int = 0,
 )

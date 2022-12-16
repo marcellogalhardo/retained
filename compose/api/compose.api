@@ -1,0 +1,4 @@
+public final class dev/marcellogalhardo/retained/compose/ComposeRetainedKt {
+	public static final fun findActivity (Landroid/content/Context;)Landroidx/activity/ComponentActivity;
+}
+

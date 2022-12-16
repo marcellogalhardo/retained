@@ -3,7 +3,7 @@ name: Publish
 on:
   release:
     # We'll run this workflow when a new GitHub release is created
-    types: [prereleased, released]
+    types: [ prereleased, released ]
   workflow_dispatch:
 
 concurrency:

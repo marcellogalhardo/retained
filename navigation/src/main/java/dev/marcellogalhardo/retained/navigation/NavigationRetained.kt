@@ -19,12 +19,14 @@ import dev.marcellogalhardo.retained.core.retain
  */
 @OptIn(InternalRetainedApi::class)
 public inline fun <reified T : Any> retainInNavGraph(
-    key: String = T::class.java.name,
     crossinline findNavGraph: () -> NavBackStackEntry,
+    key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> {
-    return retain(key, { findNavGraph() }, { owner -> owner.arguments }, instantiate)
-}
+): Retained<T> = retain(
+    key = key,
+    findViewModelStoreOwner = { findNavGraph() },
+    instantiate = instantiate,
+)
 
 /**
  * Returns a [Retained] delegate to access a retained object scoped to a navigation graph present on the
@@ -40,6 +42,8 @@ public inline fun <reified T : Any> retainInNavGraph(
 public inline fun <reified T : Any> NavBackStackEntry.retain(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> {
-    return retain(key, { this }, { owner -> owner.arguments }, instantiate)
-}
+): Retained<T> = retain(
+    key = key,
+    findViewModelStoreOwner = { this },
+    instantiate = instantiate,
+)

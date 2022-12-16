@@ -2,10 +2,11 @@ package dev.marcellogalhardo.retained.navigation.fragment
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import dev.marcellogalhardo.retained.core.InternalRetainedApi
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
+import dev.marcellogalhardo.retained.core.retain
 import dev.marcellogalhardo.retained.navigation.retainInNavGraph
 
 /**
@@ -24,14 +25,12 @@ import dev.marcellogalhardo.retained.navigation.retainInNavGraph
  * @param navGraphId ID of a navigation graph that exists on the [NavController] back stack.
  * @see retain
  */
-@OptIn(InternalRetainedApi::class)
 public inline fun <reified T : Any> Fragment.retainInNavGraph(
     @IdRes navGraphId: Int,
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T
-): Retained<T> {
-    val backStackEntry by lazy(LazyThreadSafetyMode.NONE) {
-        findNavController().getBackStackEntry(navGraphId)
-    }
-    return retainInNavGraph(key, { backStackEntry }, instantiate)
-}
+    noinline instantiate: (RetainedEntry) -> T,
+): Retained<T> = retainInNavGraph(
+    findNavGraph = { findNavController().getBackStackEntry(navGraphId) },
+    key = key,
+    instantiate = instantiate,
+)

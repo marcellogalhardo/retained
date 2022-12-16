@@ -1,26 +1,25 @@
 package dev.marcellogalhardo.retained.core.internal
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass
 
 internal class RetainedViewModelFactory(
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle?,
-    val retainedClass: KClass<out Any>,
-    val instantiate: (RetainedEntry) -> Any
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    private val retainedClass: KClass<out Any>,
+    private val instantiate: (RetainedEntry) -> Any,
+) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: SavedStateHandle
-    ): T {
-        return RetainedViewModel(key, retainedClass, handle, instantiate) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+        return RetainedViewModel(
+            key = requireNotNull(extras[ViewModelProvider.NewInstanceFactory.VIEW_MODEL_KEY]),
+            application = requireNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]),
+            retainedClass = retainedClass,
+            savedStateHandle = extras.createSavedStateHandle(),
+            createRetainedObject = instantiate,
+        ) as T
     }
 }
