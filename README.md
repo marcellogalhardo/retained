@@ -68,17 +68,25 @@ class CounterFragment : Fragment() {
 }
 ```
 
-### Compose Support (Experimental)
+### Compose Support (stable delegates & experimental API)
 
 ```kotlin
 @Composable
 fun SampleView() {
+    // Experimental API
     val viewModel = retain { ViewModel() }
     
-    // Or using delegates (stable):
-    val viewModelInActivity by activity.retain { ViewModel() }
-    val viewModelInFragment by fragment.retain { ViewModel() }
-    val viewModelInNavGraph by navBackStackEntry.retain { ViewModel() }
+    // Using an Activity delegates (stable)
+    val activity: ComponentActivity // find Activity
+    val viewModel by activity.retain { ViewModel() }
+    
+    // Using a Fragment delegates (stable)
+    val fragment: Fragment // find Fragment
+    val viewModel by fragment.retain { ViewModel() }
+    
+    // Using NavBackStackEntry delegates (stable)
+    val navBackStackEntry: NavBackStackEntry // find NavBackStackEntry
+    val viewModel by navBackStackEntry.retain { ViewModel() }
 }
 ```
 
@@ -142,7 +150,7 @@ fun SampleView() {
 
 As a convenience, if the retained instance implements the `OnClearedListener` interface, it will be automatically added to `onClearedListeners` and notified.
 
-#### View support (Experimental)
+#### View support (experimental)
 
 Besides Activities and Fragments, it's also possible to retain instances in a view. There are a couple of extra modules for that:
 
