@@ -24,7 +24,7 @@ public inline fun <reified T : Any> retainInNavGraph(
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> = retain(
     key = key,
-    findViewModelStoreOwner = { findNavGraph() },
+    findOwner = { findNavGraph() },
     instantiate = instantiate,
 )
 
@@ -44,6 +44,6 @@ public inline fun <reified T : Any> NavBackStackEntry.retain(
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> = retain(
     key = key,
-    findViewModelStoreOwner = { this },
+    findOwner = { this },
     instantiate = instantiate,
 )

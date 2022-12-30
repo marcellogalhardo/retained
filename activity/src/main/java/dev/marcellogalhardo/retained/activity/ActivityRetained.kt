@@ -30,7 +30,7 @@ public inline fun <reified T : Any> retainInActivity(
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> = retain(
     key = key,
-    findViewModelStoreOwner = findActivity,
+    findOwner = findActivity,
     instantiate = instantiate,
 )
 
