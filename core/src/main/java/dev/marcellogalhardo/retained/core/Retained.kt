@@ -49,11 +49,11 @@ public interface Retained<out T : Any> : ReadOnlyProperty<Any?, T> {
 @InternalRetainedApi
 public inline fun <reified T : Any> retain(
     key: String = T::class.java.name,
-    noinline findViewModelStoreOwner: () -> ViewModelStoreOwner,
+    noinline findOwner: () -> ViewModelStoreOwner,
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> = LazyRetained(
     key = key,
     retainedClass = T::class,
-    findViewModelStoreOwner = findViewModelStoreOwner,
+    findOwner = findOwner,
     instantiate = instantiate
 )

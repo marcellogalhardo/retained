@@ -78,7 +78,7 @@ fun SampleView() {
     
     // Using an Activity delegates (stable)
     val activity: ComponentActivity // find Activity
-    val viewModel by activity.retain { ViewModel() }
+    val viewModel by retain(activity) { ViewModel() }
     
     // Using a Fragment delegates (stable)
     val fragment: Fragment // find Fragment

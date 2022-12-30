@@ -14,13 +14,13 @@ import kotlin.reflect.KProperty
 internal class EagerRetained<out T : Any>(
     key: String,
     retainedClass: KClass<T>,
-    viewModelStoreOwner: ViewModelStoreOwner,
+    owner: ViewModelStoreOwner,
     instantiate: (RetainedEntry) -> T,
 ) : Retained<T> {
 
     private val factory = RetainedViewModelFactory(retainedClass, instantiate)
 
-    private val provider = ViewModelProvider(viewModelStoreOwner, factory)
+    private val provider = ViewModelProvider(owner, factory)
 
     @Suppress("UNCHECKED_CAST")
     override val value: T = provider[key, RetainedViewModel::class.java].retainedInstance as T

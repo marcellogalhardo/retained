@@ -39,7 +39,7 @@ public inline fun <reified T : Any> retainInView(
 ): Retained<T> {
     return retain(
         key = key,
-        findViewModelStoreOwner = { findView().findViewModelStoreOwnerOrThrow() },
+        findOwner = { findView().findViewModelStoreOwnerOrThrow() },
         instantiate = instantiate,
     )
 }
@@ -95,7 +95,7 @@ public inline fun <reified T : Any> View.retainInActivity(
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> = retain(
     key = key,
-    findViewModelStoreOwner = { context.findActivity() },
+    findOwner = { context.findActivity() },
     instantiate = instantiate,
 )
 

@@ -30,7 +30,7 @@ public inline fun <reified T : Any> retainInFragment(
     noinline instantiate: (RetainedEntry) -> T,
 ): Retained<T> = retain(
     key = key,
-    findViewModelStoreOwner = findFragment,
+    findOwner = findFragment,
     instantiate = instantiate,
 )
 

@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 internal class LazyRetained<out T : Any>(
     key: String,
     retainedClass: KClass<T>,
-    findViewModelStoreOwner: () -> ViewModelStoreOwner,
+    findOwner: () -> ViewModelStoreOwner,
     instantiate: (RetainedEntry) -> T,
 ) : Retained<T> {
 
@@ -18,7 +18,7 @@ internal class LazyRetained<out T : Any>(
         val retained = EagerRetained(
             key = key,
             retainedClass = retainedClass,
-            viewModelStoreOwner = findViewModelStoreOwner(),
+            owner = findOwner(),
             instantiate = instantiate
         )
         return@lazy retained.value

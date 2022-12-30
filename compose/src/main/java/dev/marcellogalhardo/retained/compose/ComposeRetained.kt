@@ -27,10 +27,9 @@ import dev.marcellogalhardo.retained.core.retain
  * @see retain
  */
 @OptIn(InternalRetainedApi::class)
-@ExperimentalRetainedApi
 @Composable
 public inline fun <reified T : Any> retain(
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
+    owner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
     },
     key: String = T::class.java.name,
@@ -38,14 +37,13 @@ public inline fun <reified T : Any> retain(
 ): T = remember(key1 = key) {
     retain(
         key = key,
-        findViewModelStoreOwner = { viewModelStoreOwner },
+        findOwner = { owner },
         instantiate = instantiate,
     ).value
 }
 
 /**
- * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
- * [ComponentActivity]:
+ * Returns an existing retained instance of [T] scoped to this [ComponentActivity]:
  *
  * ```
  * @Composable
@@ -60,13 +58,13 @@ public inline fun <reified T : Any> retain(
 @ExperimentalRetainedApi
 @Composable
 public inline fun <reified T : Any> retainInActivity(
-    viewModelStoreOwner: ViewModelStoreOwner?,
+    owner: ViewModelStoreOwner?,
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
 ): T = retain(
     key = key,
-    viewModelStoreOwner = if (viewModelStoreOwner != null) {
-        viewModelStoreOwner
+    owner = if (owner != null) {
+        owner
     } else {
         val context = LocalContext.current
         remember { context.findActivity() }
