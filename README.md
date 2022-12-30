@@ -68,25 +68,21 @@ class CounterFragment : Fragment() {
 }
 ```
 
-### Compose Support (stable delegates & experimental API)
+### Compose Support
 
 ```kotlin
 @Composable
 fun SampleView() {
-    // Experimental API
     val viewModel = retain { ViewModel() }
     
-    // Using an Activity delegates (stable)
     val activity: ComponentActivity // find Activity
-    val viewModel by retain(activity) { ViewModel() }
+    val viewModel by retain(owner = activity) { ViewModel() }
     
-    // Using a Fragment delegates (stable)
     val fragment: Fragment // find Fragment
-    val viewModel by fragment.retain { ViewModel() }
+    val viewModel by retain(owner = fragment) { ViewModel() }
     
-    // Using NavBackStackEntry delegates (stable)
     val navBackStackEntry: NavBackStackEntry // find NavBackStackEntry
-    val viewModel by navBackStackEntry.retain { ViewModel() }
+    val viewModel by retain(owner = navBackStackEntry) { ViewModel() }
 }
 ```
 
