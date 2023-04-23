@@ -135,10 +135,11 @@ When retaining an instance, you can use the `RetainedEntry` to be notified when 
 ```kotlin
 @Composable
 fun SampleView() {
-    val viewModel by retain { entry ->
+    val viewModel = retain { entry ->
         entry.onClearedListeners += {
             println("Invoked when the host 'ViewModel.onCleared' is called")
         }
+        // ...
     }
     // ...
 }
