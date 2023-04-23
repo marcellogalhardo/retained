@@ -35,3 +35,8 @@ gradle-plugin = { group = "com.android.tools.build", name = "gradle", version = 
 junit-core = { group = "junit", name = "junit", version = "4.13.2" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 robolectric-core = { group = "org.robolectric", name = "robolectric", version = "4.9.2" }
+
+[plugins]
+publish-plugin = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }
+dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version = "1.20.0" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.12.1" }

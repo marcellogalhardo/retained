@@ -13,9 +13,9 @@ buildscript {
 }
 
 plugins {
-    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
-    id "com.autonomousapps.dependency-analysis" version "1.18.0"
-    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.12.1'
+    alias(libs.plugins.publish.plugin)
+    alias(libs.plugins.dependency.analysis)
+    alias(libs.plugins.binary.compatibility.validator)
 }
 
 dependencyAnalysis {
