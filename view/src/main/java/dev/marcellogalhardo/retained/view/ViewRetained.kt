@@ -8,7 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
@@ -101,10 +102,10 @@ public inline fun <reified T : Any> View.retainInActivity(
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner {
-    val owner = checkNotNull(ViewTreeViewModelStoreOwner.get(this)) {
+    val owner = checkNotNull(findViewTreeViewModelStoreOwner()) {
         "Your view is not yet attached, and thus its ViewModelStoreOwner is null."
     }
-    ViewTreeViewModelStoreOwner.set(this, owner)
+    setViewTreeViewModelStoreOwner(owner)
     return owner
 }
 
