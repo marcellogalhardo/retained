@@ -76,13 +76,13 @@ fun SampleView() {
     val viewModel = retain { ViewModel() }
     
     val activity: ComponentActivity // find Activity
-    val viewModel by retain(owner = activity) { ViewModel() }
+    val viewModel = retain(owner = activity) { ViewModel() }
     
     val fragment: Fragment // find Fragment
-    val viewModel by retain(owner = fragment) { ViewModel() }
+    val viewModel = retain(owner = fragment) { ViewModel() }
     
     val navBackStackEntry: NavBackStackEntry // find NavBackStackEntry
-    val viewModel by retain(owner = navBackStackEntry) { ViewModel() }
+    val viewModel = retain(owner = navBackStackEntry) { ViewModel() }
 }
 ```
 
