@@ -25,7 +25,7 @@ dependencies {
     // Navigation with Fragment support, includes `Navigation` support
     implementation 'dev.marcellogalhardo:retained-navigation-fragment:{Tag}'
     
-    // Compose support (experimental)
+    // Compose support
     implementation 'dev.marcellogalhardo:retained-compose:{Tag}'
     
     // View support (experimental)
