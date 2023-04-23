@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
@@ -33,7 +34,7 @@ public inline fun <reified T : Any> retain(
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
     },
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T,
+    noinline instantiate: @DisallowComposableCalls (RetainedEntry) -> T,
 ): T = remember(key1 = key) {
     retain(
         key = key,
@@ -60,7 +61,7 @@ public inline fun <reified T : Any> retain(
 public inline fun <reified T : Any> retainInActivity(
     owner: ViewModelStoreOwner?,
     key: String = T::class.java.name,
-    noinline instantiate: (RetainedEntry) -> T,
+    noinline instantiate: @DisallowComposableCalls (RetainedEntry) -> T,
 ): T = retain(
     key = key,
     owner = if (owner != null) {
