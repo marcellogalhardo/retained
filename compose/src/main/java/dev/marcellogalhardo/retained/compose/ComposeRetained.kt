@@ -59,19 +59,16 @@ public inline fun <reified T : Any> retain(
 @ExperimentalRetainedApi
 @Composable
 public inline fun <reified T : Any> retainInActivity(
-    owner: ViewModelStoreOwner?,
     key: String = T::class.java.name,
     noinline instantiate: @DisallowComposableCalls (RetainedEntry) -> T,
-): T = retain(
-    key = key,
-    owner = if (owner != null) {
-        owner
-    } else {
-        val context = LocalContext.current
-        remember { context.findActivity() }
-    },
-    instantiate = instantiate,
-)
+): T {
+    val context = LocalContext.current
+    return retain(
+        key = key,
+        owner = remember { context.findActivity() },
+        instantiate = instantiate,
+    )
+}
 
 @PublishedApi
 internal tailrec fun Context.findActivity(): ComponentActivity = when (this) {
