@@ -12,7 +12,7 @@ package dev.marcellogalhardo.retained.core
     AnnotationTarget.CLASS,
     AnnotationTarget.FUNCTION,
     AnnotationTarget.TYPEALIAS,
-    AnnotationTarget.PROPERTY
+    AnnotationTarget.PROPERTY,
 )
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 public annotation class ExperimentalRetainedApi

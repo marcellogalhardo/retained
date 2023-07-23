@@ -55,5 +55,5 @@ public inline fun <reified T : Any> retain(
     key = key,
     retainedClass = T::class,
     findOwner = findOwner,
-    instantiate = instantiate
+    instantiate = instantiate,
 )
