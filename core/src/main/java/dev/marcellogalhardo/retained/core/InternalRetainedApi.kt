@@ -10,7 +10,7 @@ package dev.marcellogalhardo.retained.core
     AnnotationTarget.CLASS,
     AnnotationTarget.FUNCTION,
     AnnotationTarget.TYPEALIAS,
-    AnnotationTarget.PROPERTY
+    AnnotationTarget.PROPERTY,
 )
 @RequiresOptIn(level = RequiresOptIn.Level.ERROR)
 public annotation class InternalRetainedApi

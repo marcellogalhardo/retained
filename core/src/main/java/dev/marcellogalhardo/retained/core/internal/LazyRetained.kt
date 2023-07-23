@@ -19,7 +19,7 @@ internal class LazyRetained<out T : Any>(
             key = key,
             retainedClass = retainedClass,
             owner = findOwner(),
-            instantiate = instantiate
+            instantiate = instantiate,
         )
         return@lazy retained.value
     }

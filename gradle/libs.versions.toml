@@ -1,16 +1,16 @@
 [versions]
-androidx-compose-compiler = '1.4.6'
-androidx-compose-ui = '1.4.2'
-androidx-fragment = "1.5.7"
+androidx-compose-compiler = '1.5.0'
+androidx-compose-ui = '1.4.3'
+androidx-fragment = "1.6.0"
 androidx-lifecycle = "2.6.1"
-kotlin = "1.8.20"
-navigation = "2.5.3"
+kotlin = "1.9.0"
+navigation = "2.6.0"
 
 [libraries]
-androidx-activity-core = { group = "androidx.activity", name = "activity-ktx", version = "1.7.1" }
+androidx-activity-core = { group = "androidx.activity", name = "activity-ktx", version = "1.7.2" }
 androidx-appcompat-core = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 androidx-constraintlayout-core = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
-androidx-core = { group = "androidx.core", name = "core", version = "1.10.0" }
+androidx-core = { group = "androidx.core", name = "core", version = "1.10.1" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidx-compose-ui" }
 androidx-fragment-core = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment" }
@@ -29,7 +29,7 @@ androidx-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycl
 androidx-savedstate = { group = "androidx.savedstate", name = "savedstate-ktx", version = "1.2.1" }
 google-truth = { group = "com.google.truth", name = "truth", version = "1.1.3" }
 gradle-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-gradle-kotlinter = { group = "org.jmailen.gradle", name = "kotlinter-gradle", version = "3.10.0" }
+gradle-kotlinter = { group = "org.jmailen.gradle", name = "kotlinter-gradle", version = "3.15.0" }
 gradle-plugin = { group = "com.android.tools.build", name = "gradle", version = "7.2.2" }
 junit-core = { group = "junit", name = "junit", version = "4.13.2" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
