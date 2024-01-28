@@ -1,13 +1,14 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-enableFeaturePreview("VERSION_CATALOGS")
 
-include ':sample'
 include ':core'
 include ':activity'
 include ':fragment'
 include ':navigation'
 include ':navigation-fragment'
 include ':compose'
+
+// Sample project, not used by the library consumers.
+include ':sample'
 
 // Test module, not used by the library consumers.
 include ':integration-tests'
