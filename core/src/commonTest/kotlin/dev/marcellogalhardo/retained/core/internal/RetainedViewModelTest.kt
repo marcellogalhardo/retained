@@ -1,8 +1,11 @@
+@file:Suppress("VisibleForTests")
+
 package dev.marcellogalhardo.retained.core.internal
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.testing.viewModelScenario
 import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.savedState
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Test
 
@@ -53,7 +56,7 @@ internal class RetainedViewModelTest {
     @Test
     fun retainedViewModel_shouldRegisterSavedStateProviderWhenImplemented() {
         val handle = SavedStateHandle()
-        val provider = SavedStateRegistry.SavedStateProvider { android.os.Bundle() }
+        val provider = SavedStateRegistry.SavedStateProvider { savedState() }
 
         val scenario =
             viewModelScenario {
