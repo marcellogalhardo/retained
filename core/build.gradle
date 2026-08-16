@@ -11,6 +11,10 @@ android {
     namespace 'dev.marcellogalhardo.retained.core'
     compileSdk 37
 
+    publishing {
+        singleVariant('release')
+    }
+
     defaultConfig {
         minSdk 23
         consumerProguardFiles 'consumer-rules.pro'

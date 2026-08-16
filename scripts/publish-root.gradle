@@ -22,10 +22,4 @@ if (secretPropsFile.exists()) {
     ext["signing.key"] = System.getenv('SIGNING_KEY')
 }
 
-// Map to com.vanniktech.maven.publish expected properties
-ext["mavenCentralUsername"] = ext["ossrhUsername"]
-ext["mavenCentralPassword"] = ext["ossrhPassword"]
-ext["signingInMemoryKeyId"] = ext["signing.keyId"]
-ext["signingInMemoryKeyPassword"] = ext["signing.password"]
-ext["signingInMemoryKey"] = ext["signing.key"]
 

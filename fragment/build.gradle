@@ -12,6 +12,10 @@ android {
     namespace 'dev.marcellogalhardo.retained.fragment'
     compileSdk 37
 
+    publishing {
+        singleVariant('release')
+    }
+
     defaultConfig {
         minSdk 23
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

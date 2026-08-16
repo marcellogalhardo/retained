@@ -11,6 +11,10 @@ android {
     namespace 'dev.marcellogalhardo.retained.navigation.view'
     compileSdk 37
 
+    publishing {
+        singleVariant('release')
+    }
+
     defaultConfig {
         minSdk 23
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
