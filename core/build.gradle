@@ -24,6 +24,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+        }
+    }
 }
 
 kotlin {
@@ -46,7 +52,10 @@ kotlin {
         }
         commonTest {
             dependencies {
+                implementation kotlin('test')
                 implementation libs.junit.core
+                implementation libs.google.truth
+                implementation libs.androidx.viewmodel.testing
             }
         }
     }
