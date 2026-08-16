@@ -27,7 +27,7 @@ mavenPublishing {
         }
     }
 
-    publishToMavenCentral("DEFAULT", false)
+    publishToMavenCentral("CENTRAL_PORTAL")
 
     if (rootProject.ext["signing.keyId"]?.trim()) {
         signAllPublications()
