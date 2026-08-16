@@ -5,7 +5,6 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import org.junit.Test
@@ -72,7 +71,7 @@ internal class FragmentRetainedObjectTest {
 
 internal class CounterViewModel(
     val entry: RetainedEntry,
-) : OnClearedListener {
+) : AutoCloseable {
     var isCleared: Boolean = false
 
     var count: Int
@@ -81,7 +80,7 @@ internal class CounterViewModel(
             entry.savedStateHandle.set("count", value)
         }
 
-    override fun onCleared() {
+    override fun close() {
         isCleared = true
     }
 }

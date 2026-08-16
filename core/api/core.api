@@ -4,10 +4,6 @@ public abstract interface annotation class dev/marcellogalhardo/retained/core/Ex
 public abstract interface annotation class dev/marcellogalhardo/retained/core/InternalRetainedApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class dev/marcellogalhardo/retained/core/OnClearedListener {
-	public abstract fun onCleared ()V
-}
-
 public abstract interface class dev/marcellogalhardo/retained/core/Retained : kotlin/properties/ReadOnlyProperty {
 	public abstract fun getValue ()Ljava/lang/Object;
 }

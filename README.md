@@ -5,7 +5,7 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 - Eliminate `ViewModel` inheritance.
 - Eliminate `ViewModelProvider.Factory` need.
 - Easy access to `ViewModel` scoped properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and many others.
-- Enable composition: callbacks can be listened with `OnClearedListener`.
+- Enable composition: callbacks can be listened with `AutoCloseable`.
 
 **Motivation:** Retained was originally created to share a `ViewModel` in Kotlin Multiplatform projects between Android & iOS with ease.
 
@@ -145,7 +145,7 @@ fun SampleView() {
 }
 ```
 
-As a convenience, if the retained instance implements the `OnClearedListener` interface, it will be automatically added to `onClearedListeners` and notified.
+As a convenience, if the retained instance implements the `AutoCloseable` interface, it will be automatically added to `onClearedListeners` and closed.
 
 #### View support (experimental)
 

@@ -34,5 +34,5 @@ public interface RetainedEntry {
     /**
      * @see [androidx.lifecycle.ViewModel.onCleared]
      */
-    public val onClearedListeners: MutableCollection<OnClearedListener>
+    public val onClearedListeners: MutableCollection<AutoCloseable>
 }

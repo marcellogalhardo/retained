@@ -3,7 +3,6 @@ package dev.marcellogalhardo.retained.core.internal
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass
 
@@ -16,21 +15,18 @@ internal class RetainedViewModel(
     RetainedEntry {
     override val scope get() = viewModelScope
 
-    override val onClearedListeners = mutableSetOf<OnClearedListener>()
+    override val onClearedListeners = mutableSetOf<AutoCloseable>()
 
     val retainedInstance = createRetainedObject(this)
 
     init {
-        if (retainedInstance is OnClearedListener) {
-            onClearedListeners += retainedInstance
-        }
         if (retainedInstance is AutoCloseable) {
-            onClearedListeners += OnClearedListener { retainedInstance.close() }
+            onClearedListeners += retainedInstance
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        onClearedListeners.forEach { listener -> listener.onCleared() }
+        onClearedListeners.forEach { closeable -> closeable.close() }
     }
 }
