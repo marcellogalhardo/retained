@@ -1,4 +1,4 @@
-public final class dev/marcellogalhardo/retained/compose/ComposeRetainedKt {
+public final class dev/marcellogalhardo/retained/compose/ComposeRetained_androidKt {
 	public static final fun findActivity (Landroid/content/Context;)Landroidx/activity/ComponentActivity;
 }
 
