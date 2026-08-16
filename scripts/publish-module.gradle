@@ -1,117 +1,35 @@
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+apply plugin: 'com.vanniktech.maven.publish'
 
-ext {
-    PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
-    PUBLISH_VERSION = '2.0.0-alpha01'
-}
+mavenPublishing {
+    coordinates('dev.marcellogalhardo', PUBLISH_ARTIFACT_ID, '2.0.0-alpha01')
 
-task androidSourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    if (project.plugins.findPlugin("com.android.library")) {
-        // For Android libraries
-        from android.sourceSets.main.java.srcDirs
-        from android.sourceSets.main.kotlin.srcDirs
-    } else {
-        // For pure Kotlin libraries
-        from sourceSets.main.java.srcDirs
-        from sourceSets.main.kotlin.srcDirs
-    }
-}
-
-artifacts {
-    archives androidSourcesJar
-}
-
-group = PUBLISH_GROUP_ID
-version = PUBLISH_VERSION
-
-afterEvaluate {
-    publishing {
-        if (project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-            publications.withType(MavenPublication).configureEach { pub ->
-                if (pub.name == "kotlinMultiplatform") {
-                    pub.artifactId = PUBLISH_ARTIFACT_ID
-                } else if (pub.name == "androidRelease" || pub.name == "android") {
-                    pub.artifactId = "${PUBLISH_ARTIFACT_ID}-android"
-                }
-
-                pub.pom {
-                    name = PUBLISH_ARTIFACT_ID
-                    description = 'Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX ViewModel. It provides a unified API to retain object instances across Kotlin Multiplatform targets.'
-                    url = 'https://github.com/marcellogalhardo/retained'
-                    licenses {
-                        license {
-                            name = 'Apache License 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'marcellogalhardo'
-                            name = 'Marcello Galhardo'
-                            email = 'marcello.galhardo@gmail.com'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git:github.com/marcellogalhardo/retained.git'
-                        developerConnection = 'scm:git:ssh://github.com/marcellogalhardo/retained.git'
-                        url = 'https://github.com/marcellogalhardo/retained/tree/main'
-                    }
-                }
-            }
-        } else {
-            publications {
-                release(MavenPublication) {
-                    groupId PUBLISH_GROUP_ID
-                    artifactId PUBLISH_ARTIFACT_ID
-                    version PUBLISH_VERSION
-
-                    if (project.plugins.findPlugin("com.android.library")) {
-                        from components.release
-                    } else {
-                        from components.java
-                    }
-
-                    artifact androidSourcesJar
-
-                    pom {
-                        name = PUBLISH_ARTIFACT_ID
-                        description = 'Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX ViewModel. It provides a unified API to retain object instances across Kotlin Multiplatform targets.'
-                        url = 'https://github.com/marcellogalhardo/retained'
-                        licenses {
-                            license {
-                                name = 'Apache License 2.0'
-                                url = 'http://www.apache.org/licenses/LICENSE-2.0'
-                            }
-                        }
-                        developers {
-                            developer {
-                                id = 'marcellogalhardo'
-                                name = 'Marcello Galhardo'
-                                email = 'marcello.galhardo@gmail.com'
-                            }
-                        }
-                        scm {
-                            connection = 'scm:git:github.com/marcellogalhardo/retained.git'
-                            developerConnection = 'scm:git:ssh://github.com/marcellogalhardo/retained.git'
-                            url = 'https://github.com/marcellogalhardo/retained/tree/main'
-                        }
-                    }
-                }
+    pom {
+        name = PUBLISH_ARTIFACT_ID
+        description = 'Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX ViewModel. It provides a unified API to retain object instances across Kotlin Multiplatform targets.'
+        url = 'https://github.com/marcellogalhardo/retained'
+        licenses {
+            license {
+                name = 'The Apache Software License, Version 2.0'
+                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
             }
         }
+        developers {
+            developer {
+                id = 'marcellogalhardo'
+                name = 'Marcello Galhardo'
+                email = 'marcello.galhardo@gmail.com'
+            }
+        }
+        scm {
+            connection = 'scm:git:github.com/marcellogalhardo/retained.git'
+            developerConnection = 'scm:git:ssh://github.com/marcellogalhardo/retained.git'
+            url = 'https://github.com/marcellogalhardo/retained/tree/main'
+        }
     }
-}
 
+    publishToMavenCentral("S01", true)
 
-if (rootProject.ext["signing.keyId"]?.trim()) {
-    signing {
-        useInMemoryPgpKeys(
-                rootProject.ext["signing.keyId"],
-                rootProject.ext["signing.key"],
-                rootProject.ext["signing.password"],
-        )
-        sign publishing.publications
+    if (rootProject.ext["signing.keyId"]?.trim()) {
+        signAllPublications()
     }
 }
