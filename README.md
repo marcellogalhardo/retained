@@ -11,19 +11,22 @@ Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX 
 
 ```gradle
 dependencies {
+    // Core Kotlin Multiplatform support
+    implementation 'dev.marcellogalhardo:retained-core:{Tag}'
+
     // `Activity` support
     implementation 'dev.marcellogalhardo:retained-activity:{Tag}'
 
-    // `Fragment` support, includes `Activity` support
+    // `Fragment` support (includes `Activity` support)
     implementation 'dev.marcellogalhardo:retained-fragment:{Tag}'
 
     // Navigation support
     implementation 'dev.marcellogalhardo:retained-navigation:{Tag}'    
 
-    // Navigation with Fragment support, includes `Navigation` support
+    // Navigation with Fragment support (includes `Navigation` support)
     implementation 'dev.marcellogalhardo:retained-navigation-fragment:{Tag}'
     
-    // Compose support
+    // Compose support (Android, iOS, Desktop)
     implementation 'dev.marcellogalhardo:retained-compose:{Tag}'
     
     // View support (experimental)
