@@ -1,8 +1,6 @@
 package dev.marcellogalhardo.retained.activity
 
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -62,36 +60,18 @@ internal class ActivityRetainedObjectTest {
             assertThat(vm?.value?.isCleared).isTrue()
         }
     }
-
-    @Test
-    fun `should receive lifecycle events when implementing DefaultLifecycleObserver`() {
-        launchActivity<EmptyActivity>().run {
-            var vm: CounterViewModel? = null
-            onActivity { sut ->
-                val delegate by sut.retain { entry -> CounterViewModel(entry) }
-                vm = delegate
-            }
-            assertThat(vm?.isStarted).isTrue()
-        }
-    }
 }
 
 internal class CounterViewModel(
     val entry: RetainedEntry,
-) : AutoCloseable,
-    DefaultLifecycleObserver {
+) : AutoCloseable {
     var isCleared: Boolean = false
-    var isStarted: Boolean = false
 
     var count: Int
         get() = entry.savedStateHandle.get("count") ?: 0
         set(value) {
             entry.savedStateHandle.set("count", value)
         }
-
-    override fun onStart(owner: LifecycleOwner) {
-        isStarted = true
-    }
 
     override fun close() {
         isCleared = true

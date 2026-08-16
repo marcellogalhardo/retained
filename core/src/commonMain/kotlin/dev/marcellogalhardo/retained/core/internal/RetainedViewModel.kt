@@ -3,7 +3,6 @@ package dev.marcellogalhardo.retained.core.internal
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistry
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass
 
@@ -21,9 +20,6 @@ internal class RetainedViewModel(
     init {
         if (retainedInstance is AutoCloseable) {
             addCloseable(retainedInstance)
-        }
-        if (retainedInstance is SavedStateRegistry.SavedStateProvider) {
-            savedStateHandle.setSavedStateProvider(key, retainedInstance)
         }
     }
 
