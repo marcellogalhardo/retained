@@ -5,7 +5,7 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 - Eliminate `ViewModel` inheritance.
 - Eliminate `ViewModelProvider.Factory` need.
 - Easy access to `ViewModel` scoped properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and many others.
-- Enable composition: callbacks can be listened with `AutoCloseable`.
+- Automatic resource & lifecycle management via `AutoCloseable` and `LifecycleObserver`.
 
 **Motivation:** Retained was originally created to share a `ViewModel` in Kotlin Multiplatform projects between Android & iOS with ease.
 
@@ -128,23 +128,31 @@ fun SampleFragment() {
 
 For more details, see `RetainedEntry`.
 
-#### Automatic Resource & Lifecycle Management
+#### Automatic Resource Management (AutoCloseable)
 
-If the retained instance implements `AutoCloseable` or `LifecycleObserver` (e.g. `DefaultLifecycleObserver`), `retained` automatically manages its lifecycle:
+If the retained instance implements `AutoCloseable`, `retained` automatically closes it when the host `ViewModel` is cleared (`ViewModel.onCleared`):
 
 ```kotlin
-class Presenter : AutoCloseable, DefaultLifecycleObserver {
-    override fun onStart(owner: LifecycleOwner) {
-        // Automatically called on host onStart
-    }
-
+class ResourcePresenter : AutoCloseable {
     override fun close() {
         // Automatically called when the host ViewModel is cleared
     }
 }
+```
 
-class CounterActivity : AppCompatActivity() {
-    private val presenter by retain { Presenter() }
+#### Automatic Lifecycle Management (LifecycleObserver)
+
+If the retained instance implements AndroidX `LifecycleObserver` (or `DefaultLifecycleObserver`), `retained` automatically binds it to the host `LifecycleOwner`:
+
+```kotlin
+class LocationPresenter : DefaultLifecycleObserver {
+    override fun onStart(owner: LifecycleOwner) {
+        // Automatically called when host starts
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        // Automatically called when host stops
+    }
 }
 ```
 
