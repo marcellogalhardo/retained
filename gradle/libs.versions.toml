@@ -37,5 +37,6 @@ robolectric-core = { group = "org.robolectric", name = "robolectric", version = 
 
 [plugins]
 publish-plugin = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
-dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version = "2.6.0" }
+dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version = "1.33.0" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.17.0" }
+dedebug = { id = "com.autonomousapps.dedebug", version = "0.1" }
