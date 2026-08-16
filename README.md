@@ -66,21 +66,20 @@ class CounterFragment : Fragment() {
 }
 ```
 
-### Compose Support
+### Use Retained in Compose
 
 ```kotlin
 @Composable
-fun SampleView() {
+fun CounterScreen() {
+    // Scope to LocalViewModelStoreOwner (default)
     val viewModel = retain { ViewModel() }
-    
-    val activity: ComponentActivity // Find Activity
-    val viewModel = retain(owner = activity) { ViewModel() }
-    
-    val fragment: Fragment // Find Fragment
-    val viewModel = retain(owner = fragment) { ViewModel() }
-    
+
+    // Scope to ComponentActivity (Android)
+    val activityViewModel = retainInActivity { ViewModel() }
+
+    // Scope to a specific ViewModelStoreOwner (e.g. NavBackStackEntry)
     val navBackStackEntry: NavBackStackEntry // Find NavBackStackEntry
-    val viewModel = retain(owner = navBackStackEntry) { ViewModel() }
+    val scopedViewModel = retain(owner = navBackStackEntry) { ViewModel() }
 }
 ```
 
@@ -92,7 +91,7 @@ When you retain an instance, `RetainedEntry` provides access to host parameters.
 
 ```kotlin
 @Composable
-fun SampleView() {
+fun CounterScreen() {
     val viewModel = retain { entry: RetainedEntry ->
         ViewModel()
     }
