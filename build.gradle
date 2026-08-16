@@ -46,7 +46,9 @@ subprojects {
     }
 
     tasks.withType(Test).configureEach {
-        failOnNoDiscoveredTests = false
+        if (hasProperty('failOnNoDiscoveredTests')) {
+            failOnNoDiscoveredTests = false
+        }
     }
 }
 
