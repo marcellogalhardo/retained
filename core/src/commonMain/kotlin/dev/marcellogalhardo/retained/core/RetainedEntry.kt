@@ -1,5 +1,6 @@
 package dev.marcellogalhardo.retained.core
 
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
@@ -35,4 +36,9 @@ public interface RetainedEntry {
      * @see [androidx.lifecycle.ViewModel.onCleared]
      */
     public val closeables: MutableCollection<AutoCloseable>
+
+    /**
+     * @see [androidx.lifecycle.Lifecycle.addObserver]
+     */
+    public val lifecycleObservers: MutableCollection<LifecycleObserver>
 }

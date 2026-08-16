@@ -1,5 +1,6 @@
 package dev.marcellogalhardo.retained.core.internal
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import dev.marcellogalhardo.retained.core.Retained
@@ -16,9 +17,16 @@ internal class LazyRetained<out T : Any>(
 ) : Retained<T> {
     @Suppress("UNCHECKED_CAST")
     override val value: T by lazy(LazyThreadSafetyMode.NONE) {
+        val owner = findOwner()
         val factory = RetainedViewModelFactory(retainedClass, instantiate)
-        val provider = ViewModelProvider(findOwner(), factory)
-        provider.get(key, RetainedViewModel::class).retainedInstance as T
+        val provider = ViewModelProvider(owner, factory)
+        val viewModel = provider.get(key, RetainedViewModel::class)
+        if (owner is LifecycleOwner) {
+            viewModel.lifecycleObservers.forEach { observer ->
+                owner.lifecycle.addObserver(observer)
+            }
+        }
+        viewModel.retainedInstance as T
     }
 
     override fun getValue(

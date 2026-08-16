@@ -1,5 +1,6 @@
 package dev.marcellogalhardo.retained.core.internal
 
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,16 +18,22 @@ internal class RetainedViewModel(
 
     override val closeables = mutableSetOf<AutoCloseable>()
 
+    override val lifecycleObservers = mutableSetOf<LifecycleObserver>()
+
     val retainedInstance = createRetainedObject(this)
 
     init {
         if (retainedInstance is AutoCloseable) {
             closeables += retainedInstance
         }
+        if (retainedInstance is LifecycleObserver) {
+            lifecycleObservers += retainedInstance
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
         closeables.forEach { closeable -> closeable.close() }
+        lifecycleObservers.clear()
     }
 }
