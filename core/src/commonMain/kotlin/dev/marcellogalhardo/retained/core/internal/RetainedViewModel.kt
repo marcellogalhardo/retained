@@ -15,18 +15,18 @@ internal class RetainedViewModel(
     RetainedEntry {
     override val scope get() = viewModelScope
 
-    override val onClearedListeners = mutableSetOf<AutoCloseable>()
+    override val closeables = mutableSetOf<AutoCloseable>()
 
     val retainedInstance = createRetainedObject(this)
 
     init {
         if (retainedInstance is AutoCloseable) {
-            onClearedListeners += retainedInstance
+            closeables += retainedInstance
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        onClearedListeners.forEach { closeable -> closeable.close() }
+        closeables.forEach { closeable -> closeable.close() }
     }
 }

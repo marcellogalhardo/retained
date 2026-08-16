@@ -128,15 +128,15 @@ fun SampleFragment() {
 
 For more details, see `RetainedEntry`.
 
-#### Listening `onCleared` calls
+#### Closing resources when cleared
 
-When retaining an instance, you can use the `RetainedEntry` to be notified when a retained instance is cleared (`ViewModel.onCleared`).
+When retaining an instance, you can use `RetainedEntry` to register `AutoCloseable` resources that are closed when the host `ViewModel` is cleared (`ViewModel.onCleared`).
 
 ```kotlin
 @Composable
 fun SampleView() {
     val viewModel = retain { entry ->
-        entry.onClearedListeners += {
+        entry.closeables += AutoCloseable {
             println("Invoked when the host 'ViewModel.onCleared' is called")
         }
         // ...
@@ -145,7 +145,7 @@ fun SampleView() {
 }
 ```
 
-As a convenience, if the retained instance implements the `AutoCloseable` interface, it will be automatically added to `onClearedListeners` and closed.
+As a convenience, if the retained instance implements the `AutoCloseable` interface, it will be automatically added to `closeables` and closed.
 
 #### View support (experimental)
 
