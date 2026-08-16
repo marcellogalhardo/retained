@@ -142,7 +142,7 @@ class ResourcePresenter : AutoCloseable {
 
 #### Automatic Lifecycle Management (LifecycleObserver)
 
-If a retained instance implements `LifecycleObserver` (or `DefaultLifecycleObserver`), `retained` automatically binds it to the host `LifecycleOwner`.
+If a retained instance implements `LifecycleObserver` (or `DefaultLifecycleObserver`), `retained` automatically binds it to the host `LifecycleOwner` when the retained instance is first accessed.
 
 ```kotlin
 class LocationPresenter : DefaultLifecycleObserver {
