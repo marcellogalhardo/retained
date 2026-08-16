@@ -1,13 +1,11 @@
 # Retained Instance
 
-Retained is a small Kotlin library built on top of Android Architecture Component `ViewModel`. It helps UI controllers (`Activity`, `Fragment`, `NavBackStackEntry`) retain object instances on Android.
+Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX `ViewModel`. It provides a unified API to retain object instances across Kotlin Multiplatform targets.
 
 - Remove the need for `ViewModel` inheritance.
 - Remove the need for `ViewModelProvider.Factory`.
 - Provide direct access to `ViewModel` properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and parameters.
 - Automatic resource, lifecycle, and saved state management via `AutoCloseable`, `LifecycleObserver`, and `SavedStateProvider`.
-
-**Motivation:** Retained helps share a `ViewModel` in Kotlin Multiplatform projects between Android and iOS.
 
 ## Download
 
