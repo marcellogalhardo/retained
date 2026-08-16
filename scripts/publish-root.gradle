@@ -22,13 +22,3 @@ if (secretPropsFile.exists()) {
     ext["signing.key"] = System.getenv('SIGNING_KEY')
 }
 
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://central.sonatype.com/api/v1/publisher/"))
-            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/api/v1/publisher/"))
-            username = ossrhUsername
-            password = ossrhPassword
-        }
-    }
-}
