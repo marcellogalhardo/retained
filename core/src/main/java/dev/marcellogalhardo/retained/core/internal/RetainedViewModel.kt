@@ -1,6 +1,5 @@
 package dev.marcellogalhardo.retained.core.internal
 
-import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +9,6 @@ import kotlin.reflect.KClass
 
 internal class RetainedViewModel(
     override val key: String,
-    override val application: Application,
     override val retainedClass: KClass<out Any>,
     override val savedStateHandle: SavedStateHandle,
     createRetainedObject: (RetainedEntry) -> Any,
@@ -25,6 +23,9 @@ internal class RetainedViewModel(
     init {
         if (retainedInstance is OnClearedListener) {
             onClearedListeners += retainedInstance
+        }
+        if (retainedInstance is AutoCloseable) {
+            onClearedListeners += OnClearedListener { retainedInstance.close() }
         }
     }
 

@@ -16,7 +16,6 @@ internal class RetainedViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         return RetainedViewModel(
             key = requireNotNull(extras[ViewModelProvider.NewInstanceFactory.VIEW_MODEL_KEY]),
-            application = requireNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]),
             retainedClass = retainedClass,
             savedStateHandle = extras.createSavedStateHandle(),
             createRetainedObject = instantiate,

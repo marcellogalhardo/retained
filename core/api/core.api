@@ -13,7 +13,6 @@ public abstract interface class dev/marcellogalhardo/retained/core/Retained : ko
 }
 
 public abstract interface class dev/marcellogalhardo/retained/core/RetainedEntry {
-	public abstract fun getApplication ()Landroid/app/Application;
 	public abstract fun getKey ()Ljava/lang/String;
 	public abstract fun getOnClearedListeners ()Ljava/util/Collection;
 	public abstract fun getRetainedClass ()Lkotlin/reflect/KClass;

@@ -1,6 +1,5 @@
 package dev.marcellogalhardo.retained.core
 
-import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
@@ -22,11 +21,6 @@ public interface RetainedEntry {
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */
     public val retainedClass: KClass<out Any>
-
-    /**
-     * @see [android.app.Application]
-     */
-    public val application: Application
 
     /**
      * @see [androidx.lifecycle.viewModelScope]
