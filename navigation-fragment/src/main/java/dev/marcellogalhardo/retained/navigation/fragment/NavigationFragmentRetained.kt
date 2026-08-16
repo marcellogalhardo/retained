@@ -29,8 +29,9 @@ public inline fun <reified T : Any> Fragment.retainInNavGraph(
     @IdRes navGraphId: Int,
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retainInNavGraph(
-    findNavGraph = { findNavController().getBackStackEntry(navGraphId) },
-    key = key,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retainInNavGraph(
+        findNavGraph = { findNavController().getBackStackEntry(navGraphId) },
+        key = key,
+        instantiate = instantiate,
+    )

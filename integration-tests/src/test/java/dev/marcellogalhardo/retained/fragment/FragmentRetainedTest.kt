@@ -13,7 +13,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class FragmentRetainedObjectTest {
-
     @Test
     fun `should retain object when owner is recreated`() {
         launchFragmentInContainer { CounterFragment() }.run {
@@ -71,8 +70,9 @@ internal class FragmentRetainedObjectTest {
     }
 }
 
-internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
-
+internal class CounterViewModel(
+    val entry: RetainedEntry,
+) : OnClearedListener {
     var isCleared: Boolean = false
 
     var count: Int

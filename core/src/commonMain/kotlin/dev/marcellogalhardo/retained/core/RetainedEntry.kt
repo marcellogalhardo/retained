@@ -11,7 +11,6 @@ import kotlin.reflect.KClass
  * If the host is terminated (e.g., pop back stack) [onClearedListeners] will be called.
  */
 public interface RetainedEntry {
-
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */

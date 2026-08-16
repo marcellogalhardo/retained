@@ -10,7 +10,6 @@ class ComplexPresenter(
     private val coroutineScope: CoroutineScope,
     var counter: Int,
 ) : OnClearedListener {
-
     override fun onCleared() {
         coroutineScope.coroutineContext.cancelChildren()
     }

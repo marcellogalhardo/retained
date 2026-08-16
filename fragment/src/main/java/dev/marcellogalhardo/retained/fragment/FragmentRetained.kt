@@ -28,11 +28,12 @@ public inline fun <reified T : Any> retainInFragment(
     noinline findFragment: () -> Fragment,
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retain(
-    key = key,
-    findOwner = findFragment,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retain(
+        key = key,
+        findOwner = findFragment,
+        instantiate = instantiate,
+    )
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this [Fragment]:
@@ -59,11 +60,12 @@ public inline fun <reified T : Any> retainInFragment(
 public inline fun <reified T : Any> Fragment.retain(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retainInFragment(
-    findFragment = { this },
-    key = key,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retainInFragment(
+        findFragment = { this },
+        key = key,
+        instantiate = instantiate,
+    )
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -84,8 +86,9 @@ public inline fun <reified T : Any> Fragment.retain(
 public inline fun <reified T : Any> Fragment.retainInActivity(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retainInActivity(
-    findActivity = ::requireActivity,
-    key = key,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retainInActivity(
+        findActivity = ::requireActivity,
+        key = key,
+        instantiate = instantiate,
+    )

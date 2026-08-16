@@ -12,8 +12,8 @@ internal class RetainedViewModel(
     override val retainedClass: KClass<out Any>,
     override val savedStateHandle: SavedStateHandle,
     createRetainedObject: (RetainedEntry) -> Any,
-) : ViewModel(), RetainedEntry {
-
+) : ViewModel(),
+    RetainedEntry {
     override val scope get() = viewModelScope
 
     override val onClearedListeners = mutableSetOf<OnClearedListener>()

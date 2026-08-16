@@ -17,13 +17,15 @@ internal class EagerRetained<out T : Any>(
     owner: ViewModelStoreOwner,
     instantiate: (RetainedEntry) -> T,
 ) : Retained<T> {
-
     private val factory = RetainedViewModelFactory(retainedClass, instantiate)
 
     private val provider = ViewModelProvider(owner, factory)
 
     @Suppress("UNCHECKED_CAST")
-    override val value: T = provider[key, RetainedViewModel::class.java].retainedInstance as T
+    override val value: T = provider.get(key, RetainedViewModel::class).retainedInstance as T
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
+    override fun getValue(
+        thisRef: Any?,
+        property: KProperty<*>,
+    ): T = value
 }

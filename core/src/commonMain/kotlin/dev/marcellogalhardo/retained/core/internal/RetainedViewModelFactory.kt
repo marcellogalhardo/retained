@@ -11,14 +11,15 @@ internal class RetainedViewModelFactory(
     private val retainedClass: KClass<out Any>,
     private val instantiate: (RetainedEntry) -> Any,
 ) : ViewModelProvider.Factory {
-
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return RetainedViewModel(
-            key = requireNotNull(extras[ViewModelProvider.NewInstanceFactory.VIEW_MODEL_KEY]),
+    override fun <T : ViewModel> create(
+        modelClass: KClass<T>,
+        extras: CreationExtras,
+    ): T =
+        RetainedViewModel(
+            key = requireNotNull(extras[ViewModelProvider.VIEW_MODEL_KEY]),
             retainedClass = retainedClass,
             savedStateHandle = extras.createSavedStateHandle(),
             createRetainedObject = instantiate,
         ) as T
-    }
 }

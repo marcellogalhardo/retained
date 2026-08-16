@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-multiplatform'
 
 ext {
     PUBLISH_ARTIFACT_ID = 'retained-core'
@@ -17,54 +17,37 @@ android {
 
     defaultConfig {
         minSdk 23
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        allWarningsAsErrors = true
-        freeCompilerArgs += ["-Xexplicit-api=strict"]
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
 }
 
-dependencies {
-    implementation libs.kotlin.stdlib
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+            allWarningsAsErrors = true
+            freeCompilerArgs.add("-Xexplicit-api=strict")
+        }
+    }
 
-    implementation libs.androidx.viewmodel.core
-    implementation libs.androidx.viewmodel.savedstate
-    implementation libs.androidx.savedstate
-
-    implementation libs.androidx.activity.core
-
-    // Unit Testing
-    testImplementation libs.junit.core
-    testImplementation libs.robolectric.core
-    testImplementation libs.androidx.test.core
-    testImplementation libs.androidx.test.runner
-    testImplementation libs.androidx.test.rules
-    testImplementation libs.androidx.test.junit
-    testImplementation libs.androidx.test.truth
-    testImplementation libs.google.truth
-
-    // Android Testing
-    androidTestImplementation libs.androidx.test.junit
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation libs.kotlin.stdlib
+                implementation libs.androidx.lifecycle.runtime
+                implementation libs.androidx.viewmodel.core
+                implementation libs.androidx.viewmodel.savedstate
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation libs.junit.core
+            }
+        }
+    }
 }

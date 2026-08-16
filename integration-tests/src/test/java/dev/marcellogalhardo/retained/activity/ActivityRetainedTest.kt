@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class ActivityRetainedObjectTest {
-
     @Test
     fun `should retain object when Activity is recreated`() {
         launchActivity<EmptyActivity>().run {
@@ -64,8 +63,9 @@ internal class ActivityRetainedObjectTest {
     }
 }
 
-internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
-
+internal class CounterViewModel(
+    val entry: RetainedEntry,
+) : OnClearedListener {
     var isCleared: Boolean = false
 
     var count: Int

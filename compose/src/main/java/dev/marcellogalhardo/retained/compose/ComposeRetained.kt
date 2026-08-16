@@ -30,18 +30,20 @@ import dev.marcellogalhardo.retained.core.retain
 @OptIn(InternalRetainedApi::class)
 @Composable
 public inline fun <reified T : Any> retain(
-    owner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    },
+    owner: ViewModelStoreOwner =
+        checkNotNull(LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        },
     key: String = T::class.java.name,
     noinline instantiate: @DisallowComposableCalls (RetainedEntry) -> T,
-): T = remember(key1 = key) {
-    retain(
-        key = key,
-        findOwner = { owner },
-        instantiate = instantiate,
-    ).value
-}
+): T =
+    remember(key1 = key) {
+        retain(
+            key = key,
+            findOwner = { owner },
+            instantiate = instantiate,
+        ).value
+    }
 
 /**
  * Returns an existing retained instance of [T] scoped to this [ComponentActivity]:
@@ -71,8 +73,9 @@ public inline fun <reified T : Any> retainInActivity(
 }
 
 @PublishedApi
-internal tailrec fun Context.findActivity(): ComponentActivity = when (this) {
-    is ComponentActivity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> error("Your view is not attached to an activity.")
-}
+internal tailrec fun Context.findActivity(): ComponentActivity =
+    when (this) {
+        is ComponentActivity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> error("Your view is not attached to an activity.")
+    }
