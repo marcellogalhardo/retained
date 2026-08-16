@@ -47,7 +47,7 @@ afterEvaluate {
 
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'A lightweight alternative to Android\'s ViewModels. The easiest way to retain instances in Activities, Fragments or Composables.'
+                    description = 'Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX ViewModel. It provides a unified API to retain object instances across Kotlin Multiplatform targets.'
                     url = 'https://github.com/marcellogalhardo/retained'
                     licenses {
                         license {
