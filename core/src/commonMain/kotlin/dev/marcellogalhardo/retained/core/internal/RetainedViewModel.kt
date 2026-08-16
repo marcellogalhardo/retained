@@ -16,24 +16,13 @@ internal class RetainedViewModel(
     RetainedEntry {
     override val scope get() = viewModelScope
 
-    override val closeables: MutableCollection<AutoCloseable> =
-        object : LinkedHashSet<AutoCloseable>() {
-            override fun add(element: AutoCloseable): Boolean {
-                val added = super.add(element)
-                if (added) {
-                    addCloseable(element)
-                }
-                return added
-            }
-        }
-
-    override val lifecycleObservers = mutableSetOf<LifecycleObserver>()
+    val lifecycleObservers = mutableSetOf<LifecycleObserver>()
 
     val retainedInstance = createRetainedObject(this)
 
     init {
         if (retainedInstance is AutoCloseable) {
-            closeables += retainedInstance
+            addCloseable(retainedInstance)
         }
         if (retainedInstance is LifecycleObserver) {
             lifecycleObservers += retainedInstance
@@ -42,7 +31,9 @@ internal class RetainedViewModel(
 
     public override fun onCleared() {
         super.onCleared()
-        closeables.forEach { closeable -> closeable.close() }
+        if (retainedInstance is AutoCloseable) {
+            retainedInstance.close()
+        }
         lifecycleObservers.clear()
     }
 }

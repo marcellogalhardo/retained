@@ -9,9 +9,7 @@ public abstract interface class dev/marcellogalhardo/retained/core/Retained : ko
 }
 
 public abstract interface class dev/marcellogalhardo/retained/core/RetainedEntry {
-	public abstract fun getCloseables ()Ljava/util/Collection;
 	public abstract fun getKey ()Ljava/lang/String;
-	public abstract fun getLifecycleObservers ()Ljava/util/Collection;
 	public abstract fun getRetainedClass ()Lkotlin/reflect/KClass;
 	public abstract fun getSavedStateHandle ()Landroidx/lifecycle/SavedStateHandle;
 	public abstract fun getScope ()Lkotlinx/coroutines/CoroutineScope;

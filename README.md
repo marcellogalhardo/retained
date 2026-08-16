@@ -128,24 +128,25 @@ fun SampleFragment() {
 
 For more details, see `RetainedEntry`.
 
-#### Closing resources when cleared
+#### Automatic Resource & Lifecycle Management
 
-When retaining an instance, you can use `RetainedEntry` to register `AutoCloseable` resources that are closed when the host `ViewModel` is cleared (`ViewModel.onCleared`).
+If the retained instance implements `AutoCloseable` or `LifecycleObserver` (e.g. `DefaultLifecycleObserver`), `retained` automatically manages its lifecycle:
 
 ```kotlin
-@Composable
-fun SampleView() {
-    val viewModel = retain { entry ->
-        entry.closeables += AutoCloseable {
-            println("Invoked when the host 'ViewModel.onCleared' is called")
-        }
-        // ...
+class Presenter : AutoCloseable, DefaultLifecycleObserver {
+    override fun onStart(owner: LifecycleOwner) {
+        // Automatically called on host onStart
     }
-    // ...
+
+    override fun close() {
+        // Automatically called when the host ViewModel is cleared
+    }
+}
+
+class CounterActivity : AppCompatActivity() {
+    private val presenter by retain { Presenter() }
 }
 ```
-
-As a convenience, if the retained instance implements the `AutoCloseable` interface, it will be automatically added to `closeables` and closed.
 
 #### View support (experimental)
 

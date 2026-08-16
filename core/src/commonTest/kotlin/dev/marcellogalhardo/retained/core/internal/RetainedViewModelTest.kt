@@ -48,29 +48,4 @@ internal class RetainedViewModelTest {
 
         assertThat(closed).isTrue()
     }
-
-    @Test
-    fun retainedViewModel_shouldCloseRegisteredCloseablesWhenCleared() {
-        var closeableCount = 0
-
-        val scenario =
-            viewModelScenario {
-                RetainedViewModel(
-                    key = "closeables_key",
-                    retainedClass = Any::class,
-                    savedStateHandle = SavedStateHandle(),
-                    createRetainedObject = { entry ->
-                        entry.closeables += AutoCloseable { closeableCount++ }
-                        entry.closeables += AutoCloseable { closeableCount++ }
-                        "custom_object"
-                    },
-                )
-            }
-
-        assertThat(closeableCount).isEqualTo(0)
-
-        scenario.viewModel.onCleared()
-
-        assertThat(closeableCount).isEqualTo(2)
-    }
 }
