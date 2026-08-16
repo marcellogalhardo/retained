@@ -5,7 +5,7 @@ A lightweight library built on top of Android Architecture Component ViewModel t
 - Eliminate `ViewModel` inheritance.
 - Eliminate `ViewModelProvider.Factory` need.
 - Easy access to `ViewModel` scoped properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and many others.
-- Automatic resource & lifecycle management via `AutoCloseable` and `LifecycleObserver`.
+- Automatic resource, lifecycle, and saved state management via `AutoCloseable`, `LifecycleObserver`, and `SavedStateProvider`.
 
 **Motivation:** Retained was originally created to share a `ViewModel` in Kotlin Multiplatform projects between Android & iOS with ease.
 
@@ -118,7 +118,7 @@ It also exposes a `CoroutineScope` that works just like `viewModelScope` from th
 ```kotlin
 class Presenter(scope: CoroutineScope) { /* ... */ }
 
-fun SampleFragment() {
+class SampleFragment : Fragment() {
     private val presenter: Presenter by retain { entry -> 
         Presenter(scope = entry.scope)
     }
