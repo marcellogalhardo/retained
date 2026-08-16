@@ -21,7 +21,7 @@ public interface RetainedEntry {
     /**
      * @see [androidx.lifecycle.viewModelScope]
      */
-    public val scope: CoroutineScope
+    public val coroutineScope: CoroutineScope
 
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory]
