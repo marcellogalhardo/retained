@@ -120,7 +120,7 @@ class Presenter(scope: CoroutineScope) { /* ... */ }
 
 class SampleFragment : Fragment() {
     private val presenter: Presenter by retain { entry -> 
-        Presenter(scope = entry.scope)
+        Presenter(scope = entry.coroutineScope)
     }
     // ...
 }

@@ -13,7 +13,7 @@ internal class RetainedViewModel(
     createRetainedObject: (RetainedEntry) -> Any,
 ) : ViewModel(),
     RetainedEntry {
-    override val scope get() = viewModelScope
+    override val coroutineScope get() = viewModelScope
 
     val retainedInstance = createRetainedObject(this)
 

@@ -11,7 +11,7 @@ import dev.marcellogalhardo.retained.fragment.retain
 
 class SampleFragment : Fragment() {
     private val presenter by retain { entry ->
-        ComplexPresenter(entry.savedStateHandle, entry.scope, 5)
+        ComplexPresenter(entry.savedStateHandle, entry.coroutineScope, 5)
     }
 
     override fun onCreateView(
