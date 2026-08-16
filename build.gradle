@@ -10,10 +10,12 @@ buildscript {
         classpath libs.gradle.kotlin
         classpath libs.gradle.compose
         classpath libs.gradle.kotlinter
+        classpath "com.vanniktech:gradle-maven-publish-plugin:0.30.0"
     }
 }
 
 plugins {
+    alias(libs.plugins.vanniktech.publish) apply false
     alias(libs.plugins.dependency.analysis)
     alias(libs.plugins.binary.compatibility.validator)
 }
