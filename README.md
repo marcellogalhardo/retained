@@ -5,7 +5,7 @@ Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX 
 - Remove the need for `ViewModel` inheritance.
 - Remove the need for `ViewModelProvider.Factory`.
 - Provide direct access to `ViewModel` properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and parameters.
-- Automatic resource, lifecycle, and saved state management via `AutoCloseable`, `LifecycleObserver`, and `SavedStateProvider`.
+- Automatic resource management via `AutoCloseable`.
 
 ## Download
 
@@ -137,34 +137,6 @@ class ResourcePresenter : AutoCloseable {
     override fun close() {
         // Automatically called when the host ViewModel is cleared
     }
-}
-```
-
-#### Automatic Lifecycle Management (LifecycleObserver)
-
-If a retained instance implements `LifecycleObserver` (or `DefaultLifecycleObserver`), `retained` automatically binds it to the host `LifecycleOwner` when the retained instance is first accessed.
-
-```kotlin
-class LocationPresenter : DefaultLifecycleObserver {
-    override fun onStart(owner: LifecycleOwner) {
-        // Automatically called when host starts
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-        // Automatically called when host stops
-    }
-}
-```
-
-#### Automatic SavedState Management (SavedStateProvider)
-
-If a retained instance implements `SavedStateRegistry.SavedStateProvider`, `retained` automatically registers it to the host `SavedStateHandle`.
-
-```kotlin
-class FormPresenter : SavedStateRegistry.SavedStateProvider {
-    override fun saveState(): Bundle = bundleOf(
-        "step" to currentStep
-    )
 }
 ```
 
