@@ -27,7 +27,7 @@ mavenPublishing {
         }
     }
 
-    publishToMavenCentral("S01", true)
+    publishToMavenCentral("DEFAULT", true)
 
     if (rootProject.ext["signing.keyId"]?.trim()) {
         signAllPublications()
