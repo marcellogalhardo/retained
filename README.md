@@ -42,7 +42,7 @@ dependencies {
 This section shows how to retain instances in activities and fragments. All examples use this class:
 
 ```kotlin
-class ViewModel(var counter: Int = 0)
+class Presenter(var counter: Int = 0)
 ```
 
 ### Use Retained in Activities and Fragments
@@ -50,22 +50,22 @@ class ViewModel(var counter: Int = 0)
 ```kotlin
 // Retain an instance in an Activity:
 class CounterActivity : AppCompatActivity() {
-    private val viewModel: ViewModel by retain { ViewModel() }
+    private val presenter: Presenter by retain { Presenter() }
 }
 
 // Retain an instance in a Fragment:
 class CounterFragment : Fragment() {
-    private val viewModel: ViewModel by retain { ViewModel() }
+    private val presenter: Presenter by retain { Presenter() }
 }
 
 // Share an instance between Fragments scoped to the Activity
 class CounterFragment : Fragment() {
-    private val sharedViewModel: ViewModel by retainInActivity { ViewModel() }
+    private val sharedPresenter: Presenter by retainInActivity { Presenter() }
 }
 
 // Share an instance between Fragments scoped to the NavGraph
 class CounterFragment : Fragment() {
-    private val viewModel: ViewModel by retainInNavGraph(R.navigation.nav_graph) { ViewModel() }
+    private val presenter: Presenter by retainInNavGraph(R.navigation.nav_graph) { Presenter() }
 }
 ```
 
@@ -75,14 +75,14 @@ class CounterFragment : Fragment() {
 @Composable
 fun CounterScreen() {
     // Scope to LocalViewModelStoreOwner (default)
-    val viewModel = retain { ViewModel() }
+    val presenter = retain { Presenter() }
 
     // Scope to ComponentActivity (Android)
-    val activityViewModel = retainInActivity { ViewModel() }
+    val activityPresenter = retainInActivity { Presenter() }
 
     // Scope to a specific ViewModelStoreOwner (e.g. NavBackStackEntry)
     val navBackStackEntry: NavBackStackEntry // Find NavBackStackEntry
-    val scopedViewModel = retain(owner = navBackStackEntry) { ViewModel() }
+    val scopedPresenter = retain(owner = navBackStackEntry) { Presenter() }
 }
 ```
 
@@ -95,8 +95,8 @@ When you retain an instance, `RetainedEntry` provides access to host parameters.
 ```kotlin
 @Composable
 fun CounterScreen() {
-    val viewModel = retain { entry: RetainedEntry ->
-        ViewModel()
+    val presenter = retain { entry: RetainedEntry ->
+        Presenter()
     }
     // ...
 }
@@ -106,8 +106,8 @@ fun CounterScreen() {
 
 ```kotlin
 class CounterFragment : Fragment() {
-    private val viewModel: ViewModel by retain { entry -> 
-        ViewModel(counter = entry.savedStateHandle.get<Int>("count"))
+    private val presenter: Presenter by retain { entry -> 
+        Presenter(counter = entry.savedStateHandle.get<Int>("count") ?: 0)
     }
     // ...
 }
