@@ -48,6 +48,7 @@ kotlin {
                 implementation libs.androidx.lifecycle.runtime
                 implementation libs.androidx.viewmodel.core
                 implementation libs.androidx.viewmodel.savedstate
+                implementation libs.androidx.savedstate
             }
         }
         commonTest {

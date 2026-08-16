@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedStateRegistry
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import kotlin.reflect.KClass
 
@@ -26,6 +27,9 @@ internal class RetainedViewModel(
         }
         if (retainedInstance is LifecycleObserver) {
             lifecycleObservers += retainedInstance
+        }
+        if (retainedInstance is SavedStateRegistry.SavedStateProvider) {
+            savedStateHandle.setSavedStateProvider(key, retainedInstance)
         }
     }
 

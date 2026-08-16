@@ -2,6 +2,7 @@ package dev.marcellogalhardo.retained.core.internal
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.testing.viewModelScenario
+import androidx.savedstate.SavedStateRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Test
 
@@ -47,5 +48,23 @@ internal class RetainedViewModelTest {
         scenario.viewModel.onCleared()
 
         assertThat(closed).isTrue()
+    }
+
+    @Test
+    fun retainedViewModel_shouldRegisterSavedStateProviderWhenImplemented() {
+        val handle = SavedStateHandle()
+        val provider = SavedStateRegistry.SavedStateProvider { android.os.Bundle() }
+
+        val scenario =
+            viewModelScenario {
+                RetainedViewModel(
+                    key = "provider_key",
+                    retainedClass = SavedStateRegistry.SavedStateProvider::class,
+                    savedStateHandle = handle,
+                    createRetainedObject = { provider },
+                )
+            }
+
+        assertThat(scenario.viewModel.savedStateHandle.keys()).contains("provider_key")
     }
 }

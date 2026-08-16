@@ -156,6 +156,18 @@ class LocationPresenter : DefaultLifecycleObserver {
 }
 ```
 
+#### Automatic SavedState Management (SavedStateProvider)
+
+If the retained instance implements `SavedStateRegistry.SavedStateProvider`, `retained` automatically registers it to the host `SavedStateHandle`:
+
+```kotlin
+class FormPresenter : SavedStateRegistry.SavedStateProvider {
+    override fun saveState(): Bundle = bundleOf(
+        "step" to currentStep
+    )
+}
+```
+
 #### View support (experimental)
 
 Besides Activities and Fragments, it's also possible to retain instances in a view. There are a couple of extra modules for that:
