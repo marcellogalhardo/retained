@@ -12,7 +12,6 @@ import kotlin.properties.ReadOnlyProperty
  * To create an instance of [Retained] use the [retain] function.
  */
 public interface Retained<out T : Any> : ReadOnlyProperty<Any?, T> {
-
     /**
      * Gets the retained with lazy initialization value of the current Retained instance.
      * Once the value was initialized it must not change during the rest of lifetime of this [Retained] instance.
@@ -48,12 +47,13 @@ public interface Retained<out T : Any> : ReadOnlyProperty<Any?, T> {
  */
 @InternalRetainedApi
 public inline fun <reified T : Any> retain(
-    key: String = T::class.java.name,
+    key: String = T::class.qualifiedName ?: T::class.simpleName ?: "RetainedInstance",
     noinline findOwner: () -> ViewModelStoreOwner,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = LazyRetained(
-    key = key,
-    retainedClass = T::class,
-    findOwner = findOwner,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    LazyRetained(
+        key = key,
+        retainedClass = T::class,
+        findOwner = findOwner,
+        instantiate = instantiate,
+    )

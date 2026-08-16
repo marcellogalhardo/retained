@@ -1,10 +1,11 @@
 package dev.marcellogalhardo.retained.activity
 
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import org.junit.Test
@@ -12,7 +13,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class ActivityRetainedObjectTest {
-
     @Test
     fun `should retain object when Activity is recreated`() {
         launchActivity<EmptyActivity>().run {
@@ -62,11 +62,26 @@ internal class ActivityRetainedObjectTest {
             assertThat(vm?.value?.isCleared).isTrue()
         }
     }
+
+    @Test
+    fun `should receive lifecycle events when implementing DefaultLifecycleObserver`() {
+        launchActivity<EmptyActivity>().run {
+            var vm: CounterViewModel? = null
+            onActivity { sut ->
+                val delegate by sut.retain { entry -> CounterViewModel(entry) }
+                vm = delegate
+            }
+            assertThat(vm?.isStarted).isTrue()
+        }
+    }
 }
 
-internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
-
+internal class CounterViewModel(
+    val entry: RetainedEntry,
+) : AutoCloseable,
+    DefaultLifecycleObserver {
     var isCleared: Boolean = false
+    var isStarted: Boolean = false
 
     var count: Int
         get() = entry.savedStateHandle.get("count") ?: 0
@@ -74,7 +89,11 @@ internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
             entry.savedStateHandle.set("count", value)
         }
 
-    override fun onCleared() {
+    override fun onStart(owner: LifecycleOwner) {
+        isStarted = true
+    }
+
+    override fun close() {
         isCleared = true
     }
 }

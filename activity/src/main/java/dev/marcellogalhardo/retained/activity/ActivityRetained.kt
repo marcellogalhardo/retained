@@ -28,11 +28,12 @@ public inline fun <reified T : Any> retainInActivity(
     noinline findActivity: () -> ComponentActivity,
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retain(
-    key = key,
-    findOwner = findActivity,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retain(
+        key = key,
+        findOwner = findActivity,
+        instantiate = instantiate,
+    )
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -53,8 +54,9 @@ public inline fun <reified T : Any> retainInActivity(
 public inline fun <reified T : Any> ComponentActivity.retain(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retainInActivity(
-    findActivity = { this },
-    key = key,
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retainInActivity(
+        findActivity = { this },
+        key = key,
+        instantiate = instantiate,
+    )

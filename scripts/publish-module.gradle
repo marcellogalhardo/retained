@@ -3,7 +3,7 @@ apply plugin: 'signing'
 
 ext {
     PUBLISH_GROUP_ID = 'dev.marcellogalhardo'
-    PUBLISH_VERSION = '1.0.2'
+    PUBLISH_VERSION = '2.0.0-alpha01'
 }
 
 task androidSourcesJar(type: Jar) {
@@ -47,7 +47,7 @@ afterEvaluate {
 
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'A lightweight alternative to Android\'s ViewModels. The easiest way to retain instances in Activities, Fragments or Composables.'
+                    description = 'Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX ViewModel. It provides a unified API to retain object instances across Kotlin Multiplatform targets.'
                     url = 'https://github.com/marcellogalhardo/retained'
                     licenses {
                         license {
@@ -74,11 +74,13 @@ afterEvaluate {
     }
 }
 
-signing {
-    useInMemoryPgpKeys(
-            rootProject.ext["signing.keyId"],
-            rootProject.ext["signing.key"],
-            rootProject.ext["signing.password"],
-    )
-    sign publishing.publications
+if (rootProject.ext["signing.keyId"]?.trim()) {
+    signing {
+        useInMemoryPgpKeys(
+                rootProject.ext["signing.keyId"],
+                rootProject.ext["signing.key"],
+                rootProject.ext["signing.password"],
+        )
+        sign publishing.publications
+    }
 }

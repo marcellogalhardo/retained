@@ -22,11 +22,12 @@ public inline fun <reified T : Any> retainInNavGraph(
     crossinline findNavGraph: () -> NavBackStackEntry,
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retain(
-    key = key,
-    findOwner = { findNavGraph() },
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retain(
+        key = key,
+        findOwner = { findNavGraph() },
+        instantiate = instantiate,
+    )
 
 /**
  * Returns a [Retained] delegate to access a retained object scoped to a navigation graph present on the
@@ -42,8 +43,9 @@ public inline fun <reified T : Any> retainInNavGraph(
 public inline fun <reified T : Any> NavBackStackEntry.retain(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retain(
-    key = key,
-    findOwner = { this },
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retain(
+        key = key,
+        findOwner = { this },
+        instantiate = instantiate,
+    )

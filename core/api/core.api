@@ -4,18 +4,12 @@ public abstract interface annotation class dev/marcellogalhardo/retained/core/Ex
 public abstract interface annotation class dev/marcellogalhardo/retained/core/InternalRetainedApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class dev/marcellogalhardo/retained/core/OnClearedListener {
-	public abstract fun onCleared ()V
-}
-
 public abstract interface class dev/marcellogalhardo/retained/core/Retained : kotlin/properties/ReadOnlyProperty {
 	public abstract fun getValue ()Ljava/lang/Object;
 }
 
 public abstract interface class dev/marcellogalhardo/retained/core/RetainedEntry {
-	public abstract fun getApplication ()Landroid/app/Application;
 	public abstract fun getKey ()Ljava/lang/String;
-	public abstract fun getOnClearedListeners ()Ljava/util/Collection;
 	public abstract fun getRetainedClass ()Lkotlin/reflect/KClass;
 	public abstract fun getSavedStateHandle ()Landroidx/lifecycle/SavedStateHandle;
 	public abstract fun getScope ()Lkotlinx/coroutines/CoroutineScope;

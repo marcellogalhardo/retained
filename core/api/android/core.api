@@ -1,0 +1,34 @@
+public abstract interface annotation class dev/marcellogalhardo/retained/core/ExperimentalRetainedApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class dev/marcellogalhardo/retained/core/InternalRetainedApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class dev/marcellogalhardo/retained/core/OnClearedListener {
+	public abstract fun onCleared ()V
+}
+
+public abstract interface class dev/marcellogalhardo/retained/core/Retained : kotlin/properties/ReadOnlyProperty {
+	public abstract fun getValue ()Ljava/lang/Object;
+}
+
+public abstract interface class dev/marcellogalhardo/retained/core/RetainedEntry {
+	public abstract fun getKey ()Ljava/lang/String;
+	public abstract fun getOnClearedListeners ()Ljava/util/Collection;
+	public abstract fun getRetainedClass ()Lkotlin/reflect/KClass;
+	public abstract fun getSavedStateHandle ()Landroidx/lifecycle/SavedStateHandle;
+	public abstract fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+}
+
+public final class dev/marcellogalhardo/retained/core/internal/EagerRetained : dev/marcellogalhardo/retained/core/Retained {
+	public fun <init> (Ljava/lang/String;Lkotlin/reflect/KClass;Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/jvm/functions/Function1;)V
+	public fun getValue ()Ljava/lang/Object;
+	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+}
+
+public final class dev/marcellogalhardo/retained/core/internal/LazyRetained : dev/marcellogalhardo/retained/core/Retained {
+	public fun <init> (Ljava/lang/String;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public fun getValue ()Ljava/lang/Object;
+	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+}
+

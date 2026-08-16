@@ -2,6 +2,8 @@
 
 package dev.marcellogalhardo.retained.core.internal
 
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import dev.marcellogalhardo.retained.core.InternalRetainedApi
@@ -17,13 +19,22 @@ internal class EagerRetained<out T : Any>(
     owner: ViewModelStoreOwner,
     instantiate: (RetainedEntry) -> T,
 ) : Retained<T> {
-
     private val factory = RetainedViewModelFactory(retainedClass, instantiate)
 
     private val provider = ViewModelProvider(owner, factory)
 
     @Suppress("UNCHECKED_CAST")
-    override val value: T = provider[key, RetainedViewModel::class.java].retainedInstance as T
+    override val value: T =
+        run {
+            val viewModel = provider[key, RetainedViewModel::class]
+            if (owner is LifecycleOwner && viewModel.retainedInstance is LifecycleObserver) {
+                owner.lifecycle.addObserver(viewModel.retainedInstance)
+            }
+            viewModel.retainedInstance as T
+        }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
+    override fun getValue(
+        thisRef: Any?,
+        property: KProperty<*>,
+    ): T = value
 }

@@ -1,31 +1,32 @@
 # Retained Instance
 
-A lightweight library built on top of Android Architecture Component ViewModel to simplify how UI Controllers (e.g., `Activity`, `Fragment` & `NavBackStackEntry`) retain instances on Android.
+Retained is a lightweight Kotlin Multiplatform library built on top of AndroidX `ViewModel`. It provides a unified API to retain object instances across Kotlin Multiplatform targets.
 
-- Eliminate `ViewModel` inheritance.
-- Eliminate `ViewModelProvider.Factory` need.
-- Easy access to `ViewModel` scoped properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and many others.
-- Enable composition: callbacks can be listened with `OnClearedListener`.
-
-**Motivation:** Retained was originally created to share a `ViewModel` in Kotlin Multiplatform projects between Android & iOS with ease.
+- Remove the need for `ViewModel` inheritance.
+- Remove the need for `ViewModelProvider.Factory`.
+- Provide direct access to `ViewModel` properties: `CoroutineScope` (`viewModelScope`), `SavedStateHandle`, and parameters.
+- Automatic resource, lifecycle, and saved state management via `AutoCloseable`, `LifecycleObserver`, and `SavedStateProvider`.
 
 ## Download
 
 ```gradle
 dependencies {
+    // Core Kotlin Multiplatform support
+    implementation 'dev.marcellogalhardo:retained-core:{Tag}'
+
     // `Activity` support
     implementation 'dev.marcellogalhardo:retained-activity:{Tag}'
 
-    // `Fragment` support, includes `Activity` support
+    // `Fragment` support (includes `Activity` support)
     implementation 'dev.marcellogalhardo:retained-fragment:{Tag}'
 
     // Navigation support
     implementation 'dev.marcellogalhardo:retained-navigation:{Tag}'    
 
-    // Navigation with Fragment support, includes `Navigation` support
+    // Navigation with Fragment support (includes `Navigation` support)
     implementation 'dev.marcellogalhardo:retained-navigation-fragment:{Tag}'
     
-    // Compose support
+    // Compose support (Android, iOS, Desktop)
     implementation 'dev.marcellogalhardo:retained-compose:{Tag}'
     
     // View support (experimental)
@@ -34,91 +35,90 @@ dependencies {
 }
 ```
 
-(Please replace `{Tag}` with the [latest version numbers](https://github.com/marcellogalhardo/retained/releases))
+(Replace `{Tag}` with the [latest release version](https://github.com/marcellogalhardo/retained/releases))
 
 ## Usage
 
-The following sections demonstrate how to retain instances in activities and fragments. For simplicity, all examples will retain the following class:
+This section shows how to retain instances in activities and fragments. All examples use this class:
 
 ```kotlin
-class ViewModel(var counter: Int = 0)
+class Presenter(var counter: Int = 0)
 ```
 
 ### Use Retained in Activities and Fragments
 
 ```kotlin
-// retain an instance in an Activity:
+// Retain an instance in an Activity:
 class CounterActivity : AppCompatActivity() {
-    private val viewModel: ViewModel by retain { ViewModel() }
+    private val presenter: Presenter by retain { Presenter() }
 }
 
-// retain an instance in a Fragment:
+// Retain an instance in a Fragment:
 class CounterFragment : Fragment() {
-    private val viewModel: ViewModel by retain { ViewModel() }
+    private val presenter: Presenter by retain { Presenter() }
 }
 
-// share an instance between Fragments scoped to the Activity
+// Share an instance between Fragments scoped to the Activity
 class CounterFragment : Fragment() {
-    private val sharedViewModel: ViewModel by retainInActivity { ViewModel() }
+    private val sharedPresenter: Presenter by retainInActivity { Presenter() }
 }
 
-// share an instance between Fragments scoped to the NavGraph
+// Share an instance between Fragments scoped to the NavGraph
 class CounterFragment : Fragment() {
-    private val viewModel: ViewModel by retainInNavGraph(R.navigation.nav_graph) { ViewModel() }
+    private val presenter: Presenter by retainInNavGraph(R.navigation.nav_graph) { Presenter() }
 }
 ```
 
-### Compose Support
+### Use Retained in Compose
 
 ```kotlin
 @Composable
-fun SampleView() {
-    val viewModel = retain { ViewModel() }
-    
-    val activity: ComponentActivity // find Activity
-    val viewModel = retain(owner = activity) { ViewModel() }
-    
-    val fragment: Fragment // find Fragment
-    val viewModel = retain(owner = fragment) { ViewModel() }
-    
-    val navBackStackEntry: NavBackStackEntry // find NavBackStackEntry
-    val viewModel = retain(owner = navBackStackEntry) { ViewModel() }
+fun CounterScreen() {
+    // Scope to LocalViewModelStoreOwner (default)
+    val presenter = retain { Presenter() }
+
+    // Scope to ComponentActivity (Android)
+    val activityPresenter = retainInActivity { Presenter() }
+
+    // Scope to a specific ViewModelStoreOwner (e.g. NavBackStackEntry)
+    val navBackStackEntry: NavBackStackEntry // Find NavBackStackEntry
+    val scopedPresenter = retain(owner = navBackStackEntry) { Presenter() }
 }
 ```
 
-### Advanced usage
+### Advanced Usage
 
-#### Custom parameters from Jetpack's ViewModel
+#### Custom Parameters from Jetpack ViewModel
 
-When retaining an instance, you have access to a `RetainedEntry` which contains all parameters you might need.
+When you retain an instance, `RetainedEntry` provides access to host parameters.
 
 ```kotlin
 @Composable
-fun SampleView() {
-    val viewModel = retain { entry: RetainedEntry ->
-        ViewModel()
+fun CounterScreen() {
+    val presenter = retain { entry: RetainedEntry ->
+        Presenter()
     }
     // ...
 }
 ```
 
-The entry exposes a `SavedStateHandle` that can be used to work with the saved state, just like in a regular Android `ViewModel`.
+`RetainedEntry` provides a `SavedStateHandle` to save and restore state.
 
 ```kotlin
 class CounterFragment : Fragment() {
-    private val viewModel: ViewModel by retain { entry -> 
-        ViewModel(counter = entry.savedStateHandle.get<Int>("count"))
+    private val presenter: Presenter by retain { entry -> 
+        Presenter(counter = entry.savedStateHandle.get<Int>("count") ?: 0)
     }
     // ...
 }
 ```
 
-It also exposes a `CoroutineScope` that works just like `viewModelScope` from the Android `ViewModel`.
+`RetainedEntry` provides a `CoroutineScope` that matches `viewModelScope`.
 
 ```kotlin
 class Presenter(scope: CoroutineScope) { /* ... */ }
 
-fun SampleFragment() {
+class SampleFragment : Fragment() {
     private val presenter: Presenter by retain { entry -> 
         Presenter(scope = entry.scope)
     }
@@ -128,28 +128,49 @@ fun SampleFragment() {
 
 For more details, see `RetainedEntry`.
 
-#### Listening `onCleared` calls
+#### Automatic Resource Management (AutoCloseable)
 
-When retaining an instance, you can use the `RetainedEntry` to be notified when a retained instance is cleared (`ViewModel.onCleared`).
+If a retained instance implements `AutoCloseable`, `retained` automatically closes it when the host `ViewModel` is cleared (`ViewModel.onCleared`).
 
 ```kotlin
-@Composable
-fun SampleView() {
-    val viewModel = retain { entry ->
-        entry.onClearedListeners += {
-            println("Invoked when the host 'ViewModel.onCleared' is called")
-        }
-        // ...
+class ResourcePresenter : AutoCloseable {
+    override fun close() {
+        // Automatically called when the host ViewModel is cleared
     }
-    // ...
 }
 ```
 
-As a convenience, if the retained instance implements the `OnClearedListener` interface, it will be automatically added to `onClearedListeners` and notified.
+#### Automatic Lifecycle Management (LifecycleObserver)
 
-#### View support (experimental)
+If a retained instance implements `LifecycleObserver` (or `DefaultLifecycleObserver`), `retained` automatically binds it to the host `LifecycleOwner` when the retained instance is first accessed.
 
-Besides Activities and Fragments, it's also possible to retain instances in a view. There are a couple of extra modules for that:
+```kotlin
+class LocationPresenter : DefaultLifecycleObserver {
+    override fun onStart(owner: LifecycleOwner) {
+        // Automatically called when host starts
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        // Automatically called when host stops
+    }
+}
+```
+
+#### Automatic SavedState Management (SavedStateProvider)
+
+If a retained instance implements `SavedStateRegistry.SavedStateProvider`, `retained` automatically registers it to the host `SavedStateHandle`.
+
+```kotlin
+class FormPresenter : SavedStateRegistry.SavedStateProvider {
+    override fun saveState(): Bundle = bundleOf(
+        "step" to currentStep
+    )
+}
+```
+
+#### View Support (Experimental)
+
+You can also retain instances in a `View`. Use these modules:
 
 ```gradle
 dependencies {
@@ -158,7 +179,7 @@ dependencies {
 }
 ```
 
-The `retained-view` module exposes `retainInActivity` and `retain`, which will scope the instance to the parent being it an activity or a fragment. The `retained-view-navigation` module exposes `retainInNavGraph` to retain instances scoped to the `NavGraph`.
+The `retained-view` module provides `retain` and `retainInActivity` to scope instances to an `Activity` or `Fragment`. The `retained-navigation-view` module provides `retainInNavGraph` to scope instances to a `NavGraph`.
 
 License
 -------

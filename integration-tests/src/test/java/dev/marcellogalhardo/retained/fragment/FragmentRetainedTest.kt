@@ -5,7 +5,6 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dev.marcellogalhardo.retained.core.OnClearedListener
 import dev.marcellogalhardo.retained.core.Retained
 import dev.marcellogalhardo.retained.core.RetainedEntry
 import org.junit.Test
@@ -13,7 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 internal class FragmentRetainedObjectTest {
-
     @Test
     fun `should retain object when owner is recreated`() {
         launchFragmentInContainer { CounterFragment() }.run {
@@ -71,8 +69,9 @@ internal class FragmentRetainedObjectTest {
     }
 }
 
-internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
-
+internal class CounterViewModel(
+    val entry: RetainedEntry,
+) : AutoCloseable {
     var isCleared: Boolean = false
 
     var count: Int
@@ -81,7 +80,7 @@ internal class CounterViewModel(val entry: RetainedEntry) : OnClearedListener {
             entry.savedStateHandle.set("count", value)
         }
 
-    override fun onCleared() {
+    override fun close() {
         isCleared = true
     }
 }

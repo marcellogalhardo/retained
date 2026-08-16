@@ -10,8 +10,10 @@ import dev.marcellogalhardo.retained.core.ExperimentalRetainedApi
 import dev.marcellogalhardo.retained.view.retain
 
 @OptIn(ExperimentalRetainedApi::class)
-class SampleView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
-
+class SampleView(
+    context: Context,
+    attrs: AttributeSet,
+) : AppCompatTextView(context, attrs) {
     private val presenter: SimplePresenter by retain {
         SimplePresenter()
     }
@@ -27,6 +29,5 @@ class SampleView(context: Context, attrs: AttributeSet) : AppCompatTextView(cont
         }
     }
 
-    private fun resolveHostName() =
-        if (runCatching { findFragment<Fragment>() }.isSuccess) "Fragment" else "Activity"
+    private fun resolveHostName() = if (runCatching { findFragment<Fragment>() }.isSuccess) "Fragment" else "Activity"
 }

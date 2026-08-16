@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import dev.marcellogalhardo.retained.fragment.retain
 
 class SampleFragment : Fragment() {
-
     private val presenter by retain { entry ->
         ComplexPresenter(entry.savedStateHandle, entry.scope, 5)
     }
@@ -19,12 +18,13 @@ class SampleFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.fragment_sample, container)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_sample, container)
 
     @SuppressLint("SetTextI18n")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<TextView>(R.id.fragmentTextView).apply {
             text = "Fragment: ${presenter.counter}"

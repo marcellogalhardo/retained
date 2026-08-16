@@ -1,18 +1,13 @@
 package dev.marcellogalhardo.retained.core
 
-import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
 /**
- * Representation of an retained object entry in a [androidx.lifecycle.LifecycleOwner] and hosted
- * in a [androidx.lifecycle.ViewModel].
- *
- * If the host is terminated (e.g., pop back stack) [onClearedListeners] will be called.
+ * Representation of a retained object entry hosted in a [androidx.lifecycle.ViewModel].
  */
 public interface RetainedEntry {
-
     /**
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory.create]
      */
@@ -24,11 +19,6 @@ public interface RetainedEntry {
     public val retainedClass: KClass<out Any>
 
     /**
-     * @see [android.app.Application]
-     */
-    public val application: Application
-
-    /**
      * @see [androidx.lifecycle.viewModelScope]
      */
     public val scope: CoroutineScope
@@ -37,9 +27,4 @@ public interface RetainedEntry {
      * @see [androidx.lifecycle.AbstractSavedStateViewModelFactory]
      */
     public val savedStateHandle: SavedStateHandle
-
-    /**
-     * @see [androidx.lifecycle.ViewModel.onCleared]
-     */
-    public val onClearedListeners: MutableCollection<OnClearedListener>
 }

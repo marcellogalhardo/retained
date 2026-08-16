@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import dev.marcellogalhardo.retained.activity.retain
 
 class SampleActivity : AppCompatActivity() {
-
     private val presenter: SimplePresenter by retain {
         SimplePresenter()
     }

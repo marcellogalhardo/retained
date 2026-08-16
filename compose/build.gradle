@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 ext {
     PUBLISH_ARTIFACT_ID = 'retained-compose'
@@ -8,64 +9,57 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "30.0.3"
+    namespace 'dev.marcellogalhardo.retained.compose'
+    compileSdk 37
+
+    publishing {
+        singleVariant('release')
+    }
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdk 23
         consumerProguardFiles 'consumer-rules.pro'
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildFeatures {
         compose true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.androidx.compose.compiler.get()
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-        allWarningsAsErrors = true
-        freeCompilerArgs += ["-Xexplicit-api=strict"]
-    }
 }
 
-dependencies {
-    api projects.core
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+            allWarningsAsErrors = true
+            freeCompilerArgs.add("-Xexplicit-api=strict")
+        }
+    }
 
-    implementation libs.kotlin.stdlib
+    sourceSets {
+        commonMain {
+            dependencies {
+                api projects.core
 
-    implementation libs.androidx.viewmodel.core
-    implementation libs.androidx.viewmodel.compose
-    implementation libs.androidx.viewmodel.savedstate
-
-    implementation libs.androidx.activity.core
-
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.tooling
-
-    // Unit Testing
-    testImplementation libs.junit.core
-
-    // Android Testing
-    androidTestImplementation libs.androidx.test.junit
-    androidTestImplementation libs.androidx.test.espresso
+                implementation libs.kotlin.stdlib
+                implementation libs.androidx.viewmodel.core
+                implementation libs.androidx.viewmodel.compose
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation libs.androidx.activity.core
+                implementation libs.androidx.compose.ui
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation libs.junit.core
+            }
+        }
+    }
 }

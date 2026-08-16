@@ -37,13 +37,12 @@ public inline fun <reified T : Any> retainInView(
     noinline findView: () -> View,
     key: String = "${findView().id}:${T::class.java.name}",
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> {
-    return retain(
+): Retained<T> =
+    retain(
         key = key,
         findOwner = { findView().findViewModelStoreOwnerOrThrow() },
         instantiate = instantiate,
     )
-}
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to this
@@ -66,13 +65,12 @@ public inline fun <reified T : Any> retainInView(
 public inline fun <reified T : Any> View.retain(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> {
-    return retainInView(
+): Retained<T> =
+    retainInView(
         findView = { this },
         key = key,
         instantiate = instantiate,
     )
-}
 
 /**
  * Returns a [Lazy] delegate to access a retained object by **default** scoped to the
@@ -94,24 +92,27 @@ public inline fun <reified T : Any> View.retain(
 public inline fun <reified T : Any> View.retainInActivity(
     key: String = T::class.java.name,
     noinline instantiate: (RetainedEntry) -> T,
-): Retained<T> = retain(
-    key = key,
-    findOwner = { context.findActivity() },
-    instantiate = instantiate,
-)
+): Retained<T> =
+    retain(
+        key = key,
+        findOwner = { context.findActivity() },
+        instantiate = instantiate,
+    )
 
 @PublishedApi
 internal fun View.findViewModelStoreOwnerOrThrow(): ViewModelStoreOwner {
-    val owner = checkNotNull(findViewTreeViewModelStoreOwner()) {
-        "Your view is not yet attached, and thus its ViewModelStoreOwner is null."
-    }
+    val owner =
+        checkNotNull(findViewTreeViewModelStoreOwner()) {
+            "Your view is not yet attached, and thus its ViewModelStoreOwner is null."
+        }
     setViewTreeViewModelStoreOwner(owner)
     return owner
 }
 
 @PublishedApi
-internal tailrec fun Context.findActivity(): ComponentActivity = when (this) {
-    is ComponentActivity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> error("Your view is not attached to an activity.")
-}
+internal tailrec fun Context.findActivity(): ComponentActivity =
+    when (this) {
+        is ComponentActivity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> error("Your view is not attached to an activity.")
+    }
