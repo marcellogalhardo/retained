@@ -4,7 +4,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'dev.marcellogalhardo.retained.sample'
-    compileSdk 35
+    compileSdk 37
 
     defaultConfig {
         applicationId "com.marcellogalhardo.retainedinstance.sample"

@@ -26,9 +26,9 @@ internal class EagerRetained<out T : Any>(
     @Suppress("UNCHECKED_CAST")
     override val value: T =
         run {
-            val viewModel = provider.get(key, RetainedViewModel::class)
+            val viewModel = provider[key, RetainedViewModel::class]
             if (owner is LifecycleOwner && viewModel.retainedInstance is LifecycleObserver) {
-                owner.lifecycle.addObserver(viewModel.retainedInstance as LifecycleObserver)
+                owner.lifecycle.addObserver(viewModel.retainedInstance)
             }
             viewModel.retainedInstance as T
         }

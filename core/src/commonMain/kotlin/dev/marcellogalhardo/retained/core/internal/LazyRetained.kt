@@ -21,9 +21,9 @@ internal class LazyRetained<out T : Any>(
         val owner = findOwner()
         val factory = RetainedViewModelFactory(retainedClass, instantiate)
         val provider = ViewModelProvider(owner, factory)
-        val viewModel = provider.get(key, RetainedViewModel::class)
+        val viewModel = provider[key, RetainedViewModel::class]
         if (owner is LifecycleOwner && viewModel.retainedInstance is LifecycleObserver) {
-            owner.lifecycle.addObserver(viewModel.retainedInstance as LifecycleObserver)
+            owner.lifecycle.addObserver(viewModel.retainedInstance)
         }
         viewModel.retainedInstance as T
     }

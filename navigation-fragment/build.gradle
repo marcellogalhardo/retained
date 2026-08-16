@@ -9,7 +9,7 @@ apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     namespace 'dev.marcellogalhardo.retained.navigation.fragment'
-    compileSdk 35
+    compileSdk 37
 
     publishing {
         singleVariant('release')
